@@ -869,3 +869,160 @@ fieldset {
     transition: none !important;
   }
 }
+
+/* Established studio network: directory rows, with Brickell kept as the local action. */
+.studio-network {
+  padding: var(--section-space) var(--gutter);
+  background: var(--white);
+  border-top: 1px solid var(--line);
+}
+.network-intro {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 72px;
+  align-items: start;
+  margin-bottom: 52px;
+}
+.network-intro h2,
+.amenities-copy h2 {
+  font: 700 clamp(42px, 4.5vw, 62px)/1.08 var(--display);
+  text-transform: uppercase;
+  letter-spacing: -0.015em;
+}
+.network-intro h2 span {
+  color: var(--blue);
+}
+.network-intro > p,
+.amenities-copy > p {
+  max-width: 440px;
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--secondary);
+}
+.network-directory {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr 0.85fr;
+  gap: 48px;
+}
+.network-city h3 {
+  font: 700 34px/1.15 var(--display);
+  text-transform: uppercase;
+  padding-bottom: 22px;
+}
+.network-city ul,
+.amenities-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.network-city li {
+  border-top: 1px solid var(--line);
+}
+.network-city li:last-child {
+  border-bottom: 1px solid var(--line);
+}
+.network-city a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 0;
+  text-decoration: none;
+}
+.network-city a:hover strong {
+  color: var(--blue);
+}
+.network-city strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+}
+.network-city small {
+  display: block;
+  color: var(--secondary);
+  font-size: 11px;
+  line-height: 1.7;
+  margin-top: 7px;
+}
+.network-city svg {
+  width: 16px;
+  flex-shrink: 0;
+}
+.network-city .network-brickell strong,
+.network-city .network-brickell svg {
+  color: var(--blue);
+}
+.network-city .network-brickell small {
+  font-size: 10px;
+}
+.studio-amenities {
+  padding: var(--section-space) var(--gutter);
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 72px;
+  align-items: start;
+  background: var(--paper);
+}
+.amenities-copy h2 span {
+  color: var(--secondary);
+}
+.amenities-copy > p {
+  max-width: 390px;
+  margin-top: 26px;
+}
+.amenities-list li {
+  border-top: 1px solid var(--line);
+  padding: 24px 0;
+}
+.amenities-list li:last-child {
+  border-bottom: 1px solid var(--line);
+}
+.amenities-list h3 {
+  font: 700 28px/1.2 var(--display);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.amenities-list p {
+  color: var(--secondary);
+  font-size: 14px;
+  line-height: 1.9;
+  max-width: 440px;
+}
+@media (max-width: 1100px) {
+  .network-intro,
+  .studio-amenities {
+    gap: 40px;
+  }
+  .network-directory {
+    gap: 28px;
+  }
+}
+@media (max-width: 767px) {
+  .network-intro,
+  .studio-amenities {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+  .network-intro {
+    margin-bottom: 40px;
+  }
+  .network-intro h2,
+  .amenities-copy h2 {
+    font-size: clamp(42px, 10vw, 54px);
+  }
+  .network-directory {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .network-city h3 {
+    font-size: 30px;
+    padding-bottom: 18px;
+  }
+  .network-city small,
+  .network-city .network-brickell small {
+    font-size: 12px;
+  }
+  .network-city a {
+    padding: 18px 0;
+  }
+}

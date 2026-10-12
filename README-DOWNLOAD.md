@@ -45,6 +45,7 @@ Email is the lead handoff; this implementation does not create a separate lead d
 Both email settings are intentionally blank. The Worker returns HTTP 503 until they are configured; it does not fake success. Local email bindings are simulated unless explicitly configured as remote. Do not mistake a simulated send for real inbox delivery.
 
 Cloudflare setup references:
+
 - https://developers.cloudflare.com/email-service/api/send-emails/workers-api/
 - https://developers.cloudflare.com/workers/static-assets/routing/worker-script/
 
@@ -56,6 +57,8 @@ Cloudflare setup references:
     pnpm run deploy:check
 
 `deploy:check` builds the frontend and performs a Wrangler dry run. It does not deploy. The automated inquiry tests use mocked bindings and never send real emails.
+
+The Cloudflare development preview is https://s3-brickell-lander-dev.justin-b75.workers.dev. Update it with `pnpm run deploy:dev`. The named `dev` environment has a separate Worker and rate-limit namespace, with email sender/recipient left blank. Production deployment remains separate.
 
 After configuration and an approved launch:
 

@@ -24,4 +24,23 @@
     "EMAIL_FROM": "",
   },
   "observability": { "enabled": true, "head_sampling_rate": 1 },
+  "env": {
+    "dev": {
+      "name": "s3-brickell-lander-dev",
+      "workers_dev": true,
+      "send_email": [{ "name": "EMAIL" }],
+      "ratelimits": [
+        {
+          "name": "INQUIRY_LIMITER",
+          "namespace_id": "310092",
+          "simple": { "limit": 10, "period": 60 },
+        },
+      ],
+      "vars": {
+        "FRONTEND_ORIGIN": "",
+        "LEAD_RECIPIENT": "",
+        "EMAIL_FROM": "",
+      },
+    },
+  },
 }

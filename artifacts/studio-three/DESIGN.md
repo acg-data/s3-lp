@@ -189,6 +189,12 @@ Use the existing Studio Three photographs with grayscale treatment. Hero and sto
 
 ## Do's and Don'ts
 
+### Studio network and Brickell amenities
+
+The extension preserves the flat Studio Three system. A white `studio-network` section pairs a condensed heading and Gotham introduction with a three-city directory: Miami, Chicago, Austin. Studios are linked list rows with 1px neutral separators, 14px medium names, supporting addresses, and small navigation arrows. Brickell's row uses the existing blue and returns to the membership action. On mobile the city groups stack in reading order, with 12px address details.
+
+The paper `studio-amenities` section pairs a heading and introduction with three text rows describing arrival, refresh, and community space. Each uses a 28px condensed heading and 14px Gotham body copy with existing neutral separators. Desktop is two columns; mobile is one. Both sections use the existing responsive gutter and section spacing, heading scale, colors, and focus behavior. The source facts come from the official Studio Three directory and Brickell page; the directory does not promise membership access across all studios.
+
 ### Do:
 
 - **Do** preserve the supplied logo and local brand font families.

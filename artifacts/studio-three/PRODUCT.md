@@ -30,6 +30,8 @@ Use the user's provided transparent Studio Three logo, including its original ta
 
 The October 9 Danielle/Justin meeting notes, confirmed by the user; existing Studio Three training photographs; the provided logo; live font and brand evidence from studiothree.com. The official Brickell page identifies 830 Brickell, 96 SE 8th St, Miami, FL 33131. Photos show the Studio Three experience and are not represented as the Brickell building.
 
+The user requested Wynwood and the five other studios as brand context. The official studio directory verifies Wynwood, four Chicago studios (River North, Lincoln Park, Fulton Market, West Loop), Austin, and Brickell. The official Brickell page lists mats/towels, lockers, refillable water, showers and grooming products, blow-dry stations, community space, retail, and Wi-Fi. Location presence is not a claim that a founding membership includes access to every studio.
+
 ## Product Principles
 
 - Make Brickell and founding memberships immediately recognizable.

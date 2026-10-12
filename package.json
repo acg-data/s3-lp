@@ -10,6 +10,7 @@
     "test:inquiries": "node --test tests/inquiries.test.mjs",
     "deploy:check": "pnpm run build:lander && wrangler deploy --dry-run",
     "deploy:lander": "pnpm run build:lander && wrangler deploy",
+    "deploy:dev": "pnpm run build:lander && wrangler deploy --env dev",
     "preinstall": "node scripts/preinstall.mjs",
     "build": "pnpm run typecheck && pnpm -r --if-present run build",
     "typecheck:libs": "tsc --build",

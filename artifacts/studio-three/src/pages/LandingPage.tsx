@@ -9,6 +9,59 @@ const logo = `${import.meta.env.BASE_URL}studio-three-logo.png`;
 const directionsHref =
   "https://maps.google.com/maps?saddr=&daddr=96+SE+8th.+St%2CMiami%2CUnited+States+of+America";
 
+const studioCities = [
+  {
+    city: "Miami",
+    studios: [
+      {
+        name: "Wynwood",
+        detail: "96 NW 29th St",
+        href: "https://studiothree.com/studio/miami/",
+      },
+      {
+        name: "Brickell",
+        detail: "Your founding membership starts here",
+        href: membershipHref,
+      },
+    ],
+  },
+  {
+    city: "Chicago",
+    studios: [
+      {
+        name: "River North",
+        detail: "648 N Clark Street",
+        href: "https://studiothree.com/studio/river-north/",
+      },
+      {
+        name: "Lincoln Park",
+        detail: "2401 Halsted Street",
+        href: "https://studiothree.com/studio/lincoln-park/",
+      },
+      {
+        name: "Fulton Market",
+        detail: "333 North Green Street",
+        href: "https://studiothree.com/studio/fulton-market/",
+      },
+      {
+        name: "West Loop",
+        detail: "176 N Racine Ave",
+        href: "https://studiothree.com/studio/west-loop/",
+      },
+    ],
+  },
+  {
+    city: "Austin",
+    studios: [
+      {
+        name: "Austin",
+        detail: "501 Brazos St",
+        href: "https://studiothree.com/studio/austin/",
+      },
+    ],
+  },
+];
+
 function Arrow() {
   return (
     <svg
@@ -184,6 +237,91 @@ export default function LandingPage() {
               <figcaption>Train for something bigger.</figcaption>
             </figure>
           </div>
+        </section>
+
+        <section className="studio-network" aria-labelledby="network-heading">
+          <div className="network-intro">
+            <h2 id="network-heading">
+              Already part of Miami.
+              <br />
+              <span>Now part of Brickell.</span>
+            </h2>
+            <p>
+              Our Miami story started in Wynwood. With five other studios across
+              Chicago and Austin, Studio Three is an established community of
+              people who train, move and grow together. Brickell is our next
+              chapter—and your chance to be here from the beginning.
+            </p>
+          </div>
+          <div className="network-directory">
+            {studioCities.map(({ city, studios }) => (
+              <div className="network-city" key={city}>
+                <h3>{city}</h3>
+                <ul>
+                  {studios.map((studio) => (
+                    <li key={studio.name}>
+                      <a
+                        className={
+                          studio.name === "Brickell" ? "network-brickell" : ""
+                        }
+                        href={studio.href}
+                        {...(studio.name !== "Brickell"
+                          ? { target: "_blank", rel: "noopener noreferrer" }
+                          : {})}
+                      >
+                        <span>
+                          <strong>{studio.name}</strong>
+                          <small>{studio.detail}</small>
+                        </span>
+                        <Arrow />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section
+          className="studio-amenities"
+          aria-labelledby="amenities-heading"
+        >
+          <div className="amenities-copy">
+            <h2 id="amenities-heading">
+              The workout is just
+              <br />
+              <span>the beginning.</span>
+            </h2>
+            <p>
+              Thoughtful spaces make it easier to fit movement into your day. At
+              Brickell, the details extend from the studio floor to the way you
+              get ready, reset and reconnect.
+            </p>
+          </div>
+          <ul className="amenities-list">
+            <li>
+              <h3>Arrive ready.</h3>
+              <p>
+                Complimentary mats and towels, easy-to-use lockers and
+                refillable water stations.
+              </p>
+            </li>
+            <li>
+              <h3>Leave refreshed.</h3>
+              <p>
+                Full locker rooms with showers, Malin + Goetz grooming products
+                and Dyson blow-dry stations.
+              </p>
+            </li>
+            <li>
+              <h3>Stay a little longer.</h3>
+              <p>
+                Community space for socializing and stretching, an onsite retail
+                boutique and complimentary Wi-Fi.
+              </p>
+            </li>
+          </ul>
         </section>
 
         <section className="membership" id="membership" ref={inquiryRef}>
