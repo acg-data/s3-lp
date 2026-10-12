@@ -18,8 +18,8 @@ Capture founding-membership interest and route the visitor's name, email, and ph
 
 - Show founding memberships; do not publish prices, gifts, guest passes, or tentative opening dates.
 - No payment collection or checkout. No fabricated bookings or visitor email confirmations.
-- Inline form with name, email, and phone only. Success requires confirmed acceptance by the email-delivery service.
-- React/Vite source deployed with a Cloudflare Worker and static assets. The receiving inbox and approved sender are still undecided.
+- Inline form with name, email, and phone only. Success requires a confirmed, durable Cloudflare D1 lead record. Email notification is separately retried and is not represented as final inbox delivery.
+- React/Vite source deployed with a Cloudflare Worker, static assets, and separate dev/production D1 lead databases. The user chose justin@aryocg.com as the temporary sender and recipient. Sending is disabled until aryocg.com can be authenticated in the relevant Cloudflare account.
 - Later CTAs can switch to the approved Mariana Tek membership purchase URL.
 
 ## Brand Commitments
@@ -33,6 +33,10 @@ The October 9 Danielle/Justin meeting notes, confirmed by the user; existing Stu
 The user requested Wynwood and the five other studios as brand context. The official studio directory verifies Wynwood, four Chicago studios (River North, Lincoln Park, Fulton Market, West Loop), Austin, and Brickell. The official Brickell page lists mats/towels, lockers, refillable water, showers and grooming products, blow-dry stations, community space, retail, and Wi-Fi. Location presence is not a claim that a founding membership includes access to every studio.
 
 The featured Brickell modalities are Interval, Pilates, and Yoga, as requested by the user. Each is shown with authentic Studio Three photography and a concise description grounded in its official class page. General modality descriptions do not announce a Brickell timetable or membership terms.
+
+The user authorized launch setup, then prioritized email. Inquiry records retain bounded first-touch campaign attribution and contact permission; a lease-protected notification queue retries temporary sending failures. Four FAQs explain the inquiry process, payment, the selected workouts, and the verified location. Existing analytics/ad account IDs and a production URL are still unavailable.
+
+The user requested reviews from all six existing studios and removal of the Miami-history paragraph. Six short public ClassPass excerpts are individually attributed and linked to their sources. They describe the existing locations, not Brickell. See REVIEW-SOURCES.md for provenance.
 
 ## Product Principles
 

@@ -1,10 +1,12 @@
 import { useRef, useState, type FormEvent } from "react";
+import { campaignAttribution, trackInquiry } from "@/lib/campaign";
 
 type Field = "name" | "email" | "phone";
 
 export default function InquiryForm() {
   const formRef = useRef<HTMLFormElement>(null);
   const successRef = useRef<HTMLDivElement>(null);
+  const submissionRef = useRef<{ payload: string; id: string } | null>(null);
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
   const [status, setStatus] = useState<"idle" | "sending" | "success">("idle");
   const [sendError, setSendError] = useState("");
@@ -39,6 +41,10 @@ export default function InquiryForm() {
     }
 
     setStatus("sending");
+    const payload = JSON.stringify([name, email, phone]);
+    if (submissionRef.current?.payload !== payload) {
+      submissionRef.current = { payload, id: crypto.randomUUID() };
+    }
     try {
       const response = await fetch(`${import.meta.env.BASE_URL}api/inquiries`, {
         method: "POST",
@@ -49,6 +55,8 @@ export default function InquiryForm() {
           phone,
           website: String(data.get("website") || ""),
           consent: true,
+          requestId: submissionRef.current.id,
+          attribution: campaignAttribution(),
         }),
         signal: AbortSignal.timeout(20000),
       });
@@ -62,7 +70,9 @@ export default function InquiryForm() {
         return;
       }
       const result = await response.json();
-      if (result.ok !== true) throw new Error("Unconfirmed inquiry");
+      if (result.ok !== true || typeof result.reference !== "string")
+        throw new Error("Unconfirmed inquiry");
+      trackInquiry(result.reference);
       setStatus("success");
       requestAnimationFrame(() => successRef.current?.focus());
     } catch {
@@ -90,8 +100,8 @@ export default function InquiryForm() {
           Let’s get you moving.
         </h3>
         <p>
-          Your inquiry has been sent to our Brickell team. Our studio manager
-          will contact you personally with founding membership details.
+          Your inquiry has been received. Our studio manager will contact you
+          personally with founding membership details.
         </p>
         <a className="text-link" href="#studio">
           Explore Studio Three <span aria-hidden="true">↑</span>
@@ -195,7 +205,7 @@ export default function InquiryForm() {
         </p>
       )}
       <p className="form-note">
-        Your details go directly to our studio manager.
+        Your details are saved for our Brickell team.
         <br />
         No payment is collected here.
       </p>

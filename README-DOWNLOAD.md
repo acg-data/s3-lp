@@ -29,20 +29,34 @@ Open http://localhost:5173. Vite proxies `/api` to the local Worker on port 8787
 
 `POST /api/inquiries` validates the visitor's name, email, phone, contact permission, request origin, and payload size. A hidden honeypot and Cloudflare rate limiting protect the public endpoint. The recipient and sender come from server configuration; visitors cannot choose the recipient. Submitted details are not written to application logs.
 
-The Worker sends a transactional notification to the configured studio manager through Cloudflare's native `EMAIL` binding. The visitor's email becomes `replyTo`, so the manager can reply personally. No automated email is sent to the visitor. The page confirms the inquiry only after Cloudflare returns a message ID. This confirms acceptance by the email service, not final inbox delivery.
+Every accepted inquiry is saved to Cloudflare D1 before confirmation. Development and production use separate databases. Stored records include contact permission, bounded first-touch campaign attribution, notification status, attempt count, and a follow-up status. No public endpoint exposes these records.
 
-Email is the lead handoff; this implementation does not create a separate lead database. If sending fails, the visitor receives a retry message and their entered details remain in the form.
+The Worker sends a transactional notification through Cloudflare's native `EMAIL` binding. The visitor's email becomes `replyTo`, so the receiving team can reply personally. No automated email is sent to the visitor. Notification success means Cloudflare accepted the message, not final inbox delivery. The page confirms durable inquiry receipt and does not claim email delivery.
+
+Temporary sending failures leave the lead saved and pending. A five-minute Worker cron retries due records, with backoff and an atomic lease to prevent simultaneous sends. After eight attempts, a record is marked failed for manual attention. Notifications are at-least-once: if sending succeeds but its database update fails, a retry can duplicate that email; every notification includes the same inquiry reference. A stable client request ID prevents a normal network retry from creating a second lead.
+
+An inquiry preserves UTM source/medium/campaign/content/term and supported ad click IDs. Only a referrer hostname is retained, never a full referrer URL. The frontend emits `studio-three:inquiry-received` after confirmed receipt with the reference and studio only; it contains no contact details. GA4, Google Ads, and Meta integrations have not been activated because account IDs are unavailable.
 
 ## Before launch
 
-1. Confirm Anastasia's email or the Brickell receiving inbox.
-2. Choose a sender address on a domain enabled for Cloudflare Email Sending in the existing account. No Studio Three sender has been configured in this project.
-3. Set `LEAD_RECIPIENT` and `EMAIL_FROM` in `wrangler.jsonc`. These are email addresses, not API keys. Optionally restrict the `EMAIL` binding to the confirmed recipient using `allowed_destination_addresses`.
+1. The user chose `justin@aryocg.com` as the temporary sender and receiving inbox. These are set in `wrangler.jsonc`, with binding restrictions for both addresses.
+2. Authenticate `aryocg.com` for Cloudflare Email Sending. Its nameservers are Cloudflare, but the connected account cannot access its zone; `wrangler email sending enable aryocg.com` was rejected because the zone was not found. Access to the account that manages the domain is required. Do not alter its existing Google Workspace MX records.
+3. After domain authentication and a real delivery test, set `EMAIL_ENABLED` to `"true"` in the intended environment. It is currently `"false"`; inquiries are saved while notification attempts remain pending.
 4. Confirm the final copy and photography with Danielle. Existing photos illustrate the Studio Three experience; they are not presented as photos of the new Brickell studio.
 5. Choose the landing-page domain/subdomain and attach it in the existing Cloudflare account.
 6. Send an approved test inquiry and verify inbox arrival, reply-to, and manager follow-up before using the URL in ads.
 
-Both email settings are intentionally blank. The Worker returns HTTP 503 until they are configured; it does not fake success. Local email bindings are simulated unless explicitly configured as remote. Do not mistake a simulated send for real inbox delivery.
+HTTP 200 means the inquiry is durably stored. If storage fails, the Worker returns HTTP 503 and the visitor can retry. Local email bindings are simulated unless explicitly configured as remote. Do not mistake a simulated send for real inbox delivery.
+
+Review leads in the account's D1 database console. Notification failures can be found with `SELECT id, created_at, notification_status, notification_attempts, last_error_code FROM inquiries WHERE notification_status = 'failed'`. After addressing the sending issue, set a selected record back to pending and reset its attempts to retry it. Keep any exported contact data out of Git and public files.
+
+Database migrations are provisioned and applied in both remote databases. For a new local checkout, run:
+
+    pnpm exec wrangler d1 migrations apply LEADS --local
+
+For deployment to a newly configured database, apply its migrations before deploying:
+
+    pnpm exec wrangler d1 migrations apply LEADS --remote --env dev
 
 Cloudflare setup references:
 
@@ -58,7 +72,9 @@ Cloudflare setup references:
 
 `deploy:check` builds the frontend and performs a Wrangler dry run. It does not deploy. The automated inquiry tests use mocked bindings and never send real emails.
 
-The Cloudflare development preview is https://s3-brickell-lander-dev.justin-b75.workers.dev. Update it with `pnpm run deploy:dev`. The named `dev` environment has a separate Worker and rate-limit namespace, with email sender/recipient left blank. Production deployment remains separate.
+The Cloudflare development preview is https://s3-brickell-lander-dev.justin-b75.workers.dev. Update it with `pnpm run deploy:dev`. The named `dev` environment has a separate Worker, D1 database, and rate-limit namespace. The temporary email addresses are configured; sending awaits domain authentication. Production deployment remains separate.
+
+The page now includes four FAQs and six real ClassPass review excerpts from Wynwood, Austin, River North, Lincoln Park, Fulton Market, and West Loop. The requested Miami-history paragraph was removed. Review provenance is recorded in `artifacts/studio-three/REVIEW-SOURCES.md`.
 
 After configuration and an approved launch:
 

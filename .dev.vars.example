@@ -2,4 +2,5 @@
 # Leave blank until the studio team confirms the addresses.
 LEAD_RECIPIENT=
 EMAIL_FROM=
+EMAIL_ENABLED=false
 FRONTEND_ORIGIN=http://localhost:5173

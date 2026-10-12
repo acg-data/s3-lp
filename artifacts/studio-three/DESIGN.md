@@ -197,6 +197,10 @@ The extension preserves the flat Studio Three system. A white `studio-network` s
 
 The paper `studio-amenities` section pairs a heading and introduction with three text rows describing arrival, refresh, and community space. Each uses a 28px condensed heading and 14px Gotham body copy with existing neutral separators. Desktop is two columns; mobile is one. Both sections use the existing responsive gutter and section spacing, heading scale, colors, and focus behavior. The source facts come from the official Studio Three directory and Brickell page; the directory does not promise membership access across all studios.
 
+The white FAQ section follows the membership form, using the same two-column heading/content structure and one-column mobile layout. Native details/summary disclosures keep keyboard and screen-reader behavior intact. Condensed 23px question text, 14px Gotham answers, and fine neutral separators preserve the flat system. Inquiry confirmation now states receipt only after durable storage; it does not claim final email delivery.
+
+The ink review section displays six sourced ClassPass excerpts as open quotations with fine dividers, Trade Gothic headings, named reviewers where available, studio/city attribution, and individual source links. Desktop uses three columns, intermediate widths two, and mobile one. A lime heading emphasis and membership link preserve the campaign's existing visual identity. No star ratings or invented review totals are shown. The preceding directory intro contains only its heading after the user's requested paragraph removal.
+
 ### Do:
 
 - **Do** preserve the supplied logo and local brand font families.

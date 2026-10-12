@@ -1,5 +1,13 @@
+import {
+  emailPattern,
+  flushNotifications,
+  notifyInquiry,
+  type Inquiry,
+} from "./notifications.ts";
+
 const MAX_BODY_BYTES = 4096;
-const emailPattern = /^[^\s@<>(),;:"\\[\]]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+const idPattern =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 function json(
   body: object,
@@ -39,14 +47,37 @@ async function readBody(request: Request) {
   }
 }
 
-function escapeHtml(value: string) {
-  return value.replace(
-    /[&<>"']/g,
-    (character) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[
-        character
-      ]!,
-  );
+function attribution(value: unknown) {
+  const result: Record<string, string> = {};
+  if (!value || typeof value !== "object" || Array.isArray(value))
+    return result;
+  const source = value as Record<string, unknown>;
+  for (const key of [
+    "utm_source",
+    "utm_medium",
+    "utm_campaign",
+    "utm_content",
+    "utm_term",
+    "gclid",
+    "fbclid",
+    "gbraid",
+    "wbraid",
+  ]) {
+    const field = source[key];
+    if (
+      typeof field === "string" &&
+      field.length <= 200 &&
+      !/[\r\n\0]/.test(field)
+    )
+      result[key] = field.trim();
+  }
+  if (
+    typeof source.referrer === "string" &&
+    source.referrer.length <= 253 &&
+    /^[a-z0-9.-]+$/i.test(source.referrer)
+  )
+    result.referrer = source.referrer;
+  return result;
 }
 
 export default {
@@ -101,6 +132,9 @@ export default {
       const phone = typeof data.phone === "string" ? data.phone.trim() : "";
       const digits = phone.replace(/\D/g, "").length;
       if (
+        (data.requestId !== undefined &&
+          (typeof data.requestId !== "string" ||
+            !idPattern.test(data.requestId))) ||
         data.consent !== true ||
         name.length < 2 ||
         name.length > 100 ||
@@ -114,30 +148,60 @@ export default {
         digits > 15
       )
         return json({ error: "invalid_fields" }, 400);
-      if (
-        !emailPattern.test(env.LEAD_RECIPIENT) ||
-        !emailPattern.test(env.EMAIL_FROM)
-      )
-        return json({ error: "temporarily_unavailable" }, 503);
-
-      const sent = await env.EMAIL.send({
-        from: { email: env.EMAIL_FROM, name: "Studio Three Brickell" },
-        to: env.LEAD_RECIPIENT,
-        replyTo: email,
-        subject: "New Brickell founding membership inquiry",
-        text: `A visitor requested founding membership details. Please follow up personally.\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nStudio: Brickell, Miami\nContact permission: agreed to personal follow-up about this inquiry.\nReference: ${requestId}`,
-        html: `<h1>Brickell founding membership inquiry</h1><p>Please follow up personally with membership details.</p><dl><dt>Name</dt><dd>${escapeHtml(name)}</dd><dt>Email</dt><dd>${escapeHtml(email)}</dd><dt>Phone</dt><dd>${escapeHtml(phone)}</dd><dt>Studio</dt><dd>Brickell, Miami</dd></dl><p>This visitor agreed to be contacted about their membership inquiry.</p><p>Reference: ${requestId}</p>`,
-      });
-      if (!sent.messageId) throw new Error("email_not_accepted");
-      console.log(
-        JSON.stringify({ event: "inquiry_email_accepted", requestId }),
+      const id =
+        typeof data.requestId === "string"
+          ? data.requestId.toLowerCase()
+          : requestId;
+      const digest = await crypto.subtle.digest(
+        "SHA-256",
+        new TextEncoder().encode(
+          JSON.stringify([name, email.toLowerCase(), phone]),
+        ),
       );
-      return json({ ok: true, reference: requestId }, 200);
+      const fingerprint = Array.from(new Uint8Array(digest), (byte) =>
+        byte.toString(16).padStart(2, "0"),
+      ).join("");
+      await env.LEADS.prepare(
+        `INSERT INTO inquiries (id, fingerprint, created_at, name, email, phone, contact_permission, attribution)
+         VALUES (?, ?, ?, ?, ?, ?, 1, ?) ON CONFLICT(id) DO NOTHING`,
+      )
+        .bind(
+          id,
+          fingerprint,
+          new Date().toISOString(),
+          name,
+          email,
+          phone,
+          JSON.stringify(attribution(data.attribution)),
+        )
+        .run();
+      const saved = await env.LEADS.prepare(
+        "SELECT * FROM inquiries WHERE id = ?",
+      )
+        .bind(id)
+        .first<Inquiry>();
+      if (!saved) throw new Error("inquiry_not_saved");
+      if (saved.fingerprint !== fingerprint)
+        return json({ error: "request_conflict" }, 409);
+      try {
+        await notifyInquiry(env, id);
+      } catch {
+        console.error(
+          JSON.stringify({
+            event: "inquiry_notification_deferred",
+            reference: id,
+          }),
+        );
+      }
+      return json({ ok: true, reference: id }, 200);
     } catch {
       console.error(
         JSON.stringify({ event: "inquiry_delivery_failed", requestId }),
       );
       return json({ error: "temporarily_unavailable" }, 503);
     }
+  },
+  async scheduled(_controller: ScheduledController, env: Env): Promise<void> {
+    await flushNotifications(env);
   },
 } satisfies ExportedHandler<Env>;

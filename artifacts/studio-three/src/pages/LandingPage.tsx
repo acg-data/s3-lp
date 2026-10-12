@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import InquiryForm from "@/components/InquiryForm";
+import StudioReviews from "@/components/StudioReviews";
 import community from "@assets/image_1777662764571.png";
 import yoga from "@assets/image_1777662794631.png";
 
@@ -286,12 +287,6 @@ export default function LandingPage() {
               <br />
               <span>Now part of Brickell.</span>
             </h2>
-            <p>
-              Our Miami story started in Wynwood. With five other studios across
-              Chicago and Austin, Studio Three is an established community of
-              people who train, move and grow together. Brickell is our next
-              chapter—and your chance to be here from the beginning.
-            </p>
           </div>
           <div className="network-directory">
             {studioCities.map(({ city, studios }) => (
@@ -322,6 +317,8 @@ export default function LandingPage() {
             ))}
           </div>
         </section>
+
+        <StudioReviews membershipHref={membershipHref} />
 
         <section
           className="studio-amenities"
@@ -408,6 +405,58 @@ export default function LandingPage() {
               </a>
             </div>
           )}
+        </section>
+        <section className="studio-faq" aria-labelledby="faq-heading">
+          <div className="faq-intro">
+            <h2 id="faq-heading">
+              Your next chapter.
+              <br />
+              <span>A few answers.</span>
+            </h2>
+            <p>
+              Get to know Studio Three Brickell. Our team is here to help you
+              find your place.
+            </p>
+          </div>
+          <div className="faq-list">
+            <details>
+              <summary>What happens after I submit my details?</summary>
+              <p>
+                Your inquiry is saved for our Brickell team. Our studio manager
+                will reach out personally with founding membership details and
+                help you explore your options.
+              </p>
+            </details>
+            <details>
+              <summary>Do I purchase a membership on this page?</summary>
+              <p>
+                This form lets us know you’re interested. No payment is
+                collected here. Our studio manager will walk you through
+                membership details and the next steps.
+              </p>
+            </details>
+            <details>
+              <summary>Which workouts can I explore?</summary>
+              <p>
+                Discover Interval, Pilates and Yoga. Talk with our team about
+                your goals, the class experience and the membership options
+                available at Brickell.
+              </p>
+            </details>
+            <details>
+              <summary>Where is Studio Three Brickell?</summary>
+              <p>
+                Find us at 830 Brickell, 96 SE 8th St, Miami, FL 33131.{" "}
+                <a
+                  href={directionsHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Get directions.
+                </a>
+              </p>
+            </details>
+          </div>
         </section>
       </main>
 

@@ -10,7 +10,22 @@
     "not_found_handling": "single-page-application",
     "run_worker_first": ["/api/*"],
   },
-  "send_email": [{ "name": "EMAIL" }],
+  "send_email": [
+    {
+      "name": "EMAIL",
+      "allowed_sender_addresses": ["justin@aryocg.com"],
+      "allowed_destination_addresses": ["justin@aryocg.com"],
+    },
+  ],
+  "d1_databases": [
+    {
+      "binding": "LEADS",
+      "database_name": "s3-brickell-inquiries",
+      "database_id": "3a3d1eb9-4c98-4e77-b441-0ff342605dbb",
+      "migrations_dir": "migrations",
+    },
+  ],
+  "triggers": { "crons": ["*/5 * * * *"] },
   "ratelimits": [
     {
       "name": "INQUIRY_LIMITER",
@@ -20,15 +35,31 @@
   ],
   "vars": {
     "FRONTEND_ORIGIN": "",
-    "LEAD_RECIPIENT": "",
-    "EMAIL_FROM": "",
+    "LEAD_RECIPIENT": "justin@aryocg.com",
+    "EMAIL_FROM": "justin@aryocg.com",
+    "EMAIL_ENABLED": "false",
   },
   "observability": { "enabled": true, "head_sampling_rate": 1 },
   "env": {
     "dev": {
       "name": "s3-brickell-lander-dev",
       "workers_dev": true,
-      "send_email": [{ "name": "EMAIL" }],
+      "send_email": [
+        {
+          "name": "EMAIL",
+          "allowed_sender_addresses": ["justin@aryocg.com"],
+          "allowed_destination_addresses": ["justin@aryocg.com"],
+        },
+      ],
+      "d1_databases": [
+        {
+          "binding": "LEADS",
+          "database_name": "s3-brickell-inquiries-dev",
+          "database_id": "66ef7fec-6990-447d-9af4-f0625f61a805",
+          "migrations_dir": "migrations",
+        },
+      ],
+      "triggers": { "crons": ["*/5 * * * *"] },
       "ratelimits": [
         {
           "name": "INQUIRY_LIMITER",
@@ -38,8 +69,9 @@
       ],
       "vars": {
         "FRONTEND_ORIGIN": "",
-        "LEAD_RECIPIENT": "",
-        "EMAIL_FROM": "",
+        "LEAD_RECIPIENT": "justin@aryocg.com",
+        "EMAIL_FROM": "justin@aryocg.com",
+        "EMAIL_ENABLED": "false",
       },
     },
   },
