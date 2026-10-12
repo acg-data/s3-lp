@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>3-Class Pass · Studio Three</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --black:  #111111;
+  --dark:   #1c1c1c;
+  --mid:    #555555;
+  --muted:  #888888;
+  --border: #d8d8d8;
+  --offwhite: #f2eeea;
+  --white:  #ffffff;
+  --red:    #c93b2e;
+  --ink:    #111111;
+  --font-d: 'Big Shoulders Display', sans-serif;
+  --font-b: 'DM Sans', sans-serif;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-b); background: var(--black); color: var(--white); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+img { display: block; width: 100%; }
+
+/* NAV */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: 56px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px;
+  background: rgba(17,17,17,0.92);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.nav-logo { font-family: var(--font-d); font-size: 1.05rem; font-weight: 900; letter-spacing: 0.18em; color: var(--white); text-transform: uppercase; line-height: 1; }
+.nav-logo .slash { color: var(--red); }
+.nav-btn { font-family: var(--font-d); font-weight: 800; font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--black); background: var(--white); border: none; padding: 10px 20px; line-height: 1; transition: opacity 0.2s, transform 0.15s; cursor: pointer; }
+.nav-btn:hover { opacity: 0.85; }
+.nav-btn:active { transform: scale(0.97); }
+
+/* HERO */
+.hero { position: relative; min-height: 100svh; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; }
+.hero-bg {
+  position: absolute; inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1400&q=85&auto=format&fit=crop');
+  background-size: cover; background-position: center 20%;
+  transform: scale(1.04);
+  animation: heroZoom 8s var(--ease) forwards;
+  filter: grayscale(30%);
+}
+@keyframes heroZoom { to { transform: scale(1); } }
+.hero-gradient {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, transparent 30%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.97) 100%),
+              linear-gradient(90deg, rgba(0,0,0,0.35) 0%, transparent 65%);
+}
+.hero-grain {
+  position: absolute; inset: 0; opacity: 0.04; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+}
+.hero-content { position: relative; z-index: 2; padding: 0 24px 100px; max-width: 680px; }
+.hero-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.18); padding: 5px 12px 5px 8px; margin-bottom: 20px; animation: fadeUp 0.7s 0.2s var(--ease) both; }
+.hero-pill-dot { width: 5px; height: 5px; background: var(--white); border-radius: 50%; animation: pulse 2.5s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+.hero-pill span { font-family: var(--font-d); font-size: 0.63rem; font-weight: 800; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255,255,255,0.85); }
+.hero-hl { font-family: var(--font-d); font-weight: 900; font-size: clamp(4rem, 16vw, 9rem); line-height: 0.88; text-transform: uppercase; color: var(--white); animation: fadeUp 0.7s 0.3s var(--ease) both; }
+.hero-hl .price { color: var(--white); display: block; }
+.hero-sub { font-size: 1rem; font-weight: 300; color: rgba(255,255,255,0.58); line-height: 1.65; max-width: 360px; margin: 22px 0 36px; animation: fadeUp 0.7s 0.45s var(--ease) both; }
+.hero-actions { animation: fadeUp 0.7s 0.55s var(--ease) both; }
+.btn-hero { display: inline-flex; align-items: center; gap: 10px; background: var(--white); color: var(--black); font-family: var(--font-d); font-weight: 900; font-size: 1rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 20px 32px; border: none; cursor: pointer; transition: opacity 0.2s, transform 0.15s; width: 100%; max-width: 320px; justify-content: center; }
+.btn-hero svg { transition: transform 0.2s; }
+.btn-hero:hover { opacity: 0.88; }
+.btn-hero:hover svg { transform: translateX(4px); }
+.btn-hero:active { transform: scale(0.98); }
+.hero-trust { display: flex; gap: 24px; margin-top: 36px; animation: fadeUp 0.7s 0.65s var(--ease) both; flex-wrap: wrap; }
+.trust-item { display: flex; flex-direction: column; gap: 2px; }
+.trust-val { font-family: var(--font-d); font-weight: 900; font-size: 1.5rem; color: var(--white); line-height: 1; }
+.trust-lbl { font-size: 0.63rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+.trust-sep { width: 1px; background: rgba(255,255,255,0.1); align-self: stretch; }
+.scroll-cue { position: absolute; bottom: 28px; right: 24px; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 6px; animation: fadeUp 1s 1s var(--ease) both; }
+.scroll-line { width: 1px; height: 44px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.3)); animation: scrollAnim 2s ease-in-out infinite; }
+@keyframes scrollAnim { 0%,100% { opacity: 0.35; } 50% { opacity: 1; } }
+.scroll-cue span { font-size: 0.52rem; letter-spacing: 0.2em; color: rgba(255,255,255,0.22); text-transform: uppercase; writing-mode: vertical-rl; }
+
+/* STICKY MOBILE CTA */
+.sticky-cta {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 150;
+  background: rgba(17,17,17,0.97);
+  backdrop-filter: blur(20px);
+  padding: 14px 20px;
+  padding-bottom: calc(14px + env(safe-area-inset-bottom));
+  border-top: 1px solid rgba(255,255,255,0.09);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  transform: translateY(100%);
+  transition: transform 0.4s var(--ease);
+}
+.sticky-cta.visible { transform: translateY(0); }
+.sticky-cta-text strong { display: block; font-family: var(--font-d); font-weight: 900; font-size: 1.05rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--white); line-height: 1; }
+.sticky-cta-text span { font-size: 0.74rem; color: rgba(255,255,255,0.38); margin-top: 3px; display: block; }
+.sticky-btn { background: var(--white); color: var(--black); font-family: var(--font-d); font-weight: 900; font-size: 0.82rem; letter-spacing: 0.1em; text-transform: uppercase; border: none; padding: 14px 20px; white-space: nowrap; flex-shrink: 0; cursor: pointer; transition: opacity 0.2s; }
+.sticky-btn:hover { opacity: 0.88; }
+.sticky-btn:active { opacity: 0.75; }
+
+/* INCLUDED */
+.section-pass { background: var(--offwhite); padding: 80px 24px; }
+.eyebrow { font-family: var(--font-d); font-weight: 800; font-size: 0.62rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--mid); margin-bottom: 14px; display: block; }
+.section-title { font-family: var(--font-d); font-weight: 900; font-size: clamp(2.6rem, 9vw, 5rem); line-height: 0.9; text-transform: uppercase; color: var(--black); margin-bottom: 44px; }
+.pass-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+.pass-card { background: var(--white); padding: 28px 22px; position: relative; overflow: hidden; }
+.pass-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--border); transition: background 0.3s; }
+.pass-card:hover::before { background: var(--black); }
+.pass-card-num { font-family: var(--font-d); font-weight: 900; font-size: 3rem; color: #e8e8e8; line-height: 1; margin-bottom: 12px; transition: color 0.3s; }
+.pass-card:hover .pass-card-num { color: #d0d0d0; }
+.pass-card-title { font-family: var(--font-d); font-weight: 800; font-size: 0.92rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--black); margin-bottom: 8px; }
+.pass-card-desc { font-size: 0.82rem; line-height: 1.65; color: var(--muted); }
+
+/* MOSAIC */
+.mosaic { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 220px 220px; gap: 3px; background: var(--black); }
+.mosaic-cell { position: relative; overflow: hidden; background: var(--dark); }
+.mosaic-cell img { height: 100%; width: 100%; object-fit: cover; transition: transform 0.6s var(--ease); filter: brightness(0.78) grayscale(20%); }
+.mosaic-cell:hover img { transform: scale(1.06); filter: brightness(0.88) grayscale(0%); }
+.mosaic-cell-wide { grid-column: 1 / -1; }
+.mosaic-label { position: absolute; bottom: 12px; left: 12px; font-family: var(--font-d); font-weight: 800; font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255,255,255,0.8); background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); padding: 5px 10px; }
+
+/* FORMATS */
+.section-formats { background: var(--black); padding: 80px 24px; }
+.section-formats .section-title { color: var(--white); margin-bottom: 8px; }
+.section-formats .eyebrow { color: rgba(255,255,255,0.35); }
+.formats-sub { font-size: 0.88rem; color: rgba(255,255,255,0.4); margin-bottom: 44px; max-width: 420px; line-height: 1.65; }
+.format-list { border-top: 1px solid rgba(255,255,255,0.07); }
+.format-row { display: flex; align-items: center; gap: 14px; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.07); transition: all 0.2s; }
+.format-idx { font-family: var(--font-d); font-weight: 800; font-size: 0.6rem; color: rgba(255,255,255,0.16); min-width: 20px; }
+.format-name { font-family: var(--font-d); font-weight: 900; font-size: 1.55rem; letter-spacing: 0.03em; text-transform: uppercase; color: var(--white); flex: 1; transition: color 0.2s; }
+.format-row:hover .format-name { color: rgba(255,255,255,0.55); }
+.format-tag { font-size: 0.7rem; color: rgba(255,255,255,0.26); text-align: right; line-height: 1.45; }
+.format-arrow { color: rgba(255,255,255,0.12); font-size: 0.9rem; transition: color 0.2s, transform 0.2s; }
+.format-row:hover .format-arrow { color: rgba(255,255,255,0.5); transform: translateX(4px); }
+
+/* QUOTE */
+.quote-section { position: relative; min-height: 360px; display: flex; align-items: center; overflow: hidden; }
+.quote-bg { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1576678927484-cc907957088c?w=1200&q=80&auto=format&fit=crop'); background-size: cover; background-position: center 35%; filter: brightness(0.22) grayscale(40%); }
+.quote-content { position: relative; z-index: 2; padding: 60px 24px; max-width: 640px; }
+.quote-stars { color: var(--white); font-size: 0.85rem; letter-spacing: 5px; margin-bottom: 20px; opacity: 0.7; }
+.quote-text { font-family: var(--font-d); font-weight: 900; font-size: clamp(1.8rem, 6vw, 2.8rem); text-transform: uppercase; line-height: 1.05; color: var(--white); margin-bottom: 18px; }
+.quote-attr { font-size: 0.74rem; color: rgba(255,255,255,0.38); letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* REVIEWS */
+.section-reviews { background: var(--white); padding: 72px 24px; }
+.section-reviews .section-title { margin-bottom: 36px; }
+.reviews-list { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--border); }
+.review-card { background: var(--white); padding: 28px 0; border-bottom: 1px solid var(--border); }
+.review-stars { color: var(--black); font-size: 0.65rem; letter-spacing: 4px; margin-bottom: 12px; opacity: 0.45; }
+.review-text { font-size: 0.9rem; line-height: 1.78; color: var(--ink); margin-bottom: 14px; }
+.review-attr { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+
+/* FINAL CTA */
+.section-final { position: relative; min-height: 420px; display: flex; align-items: center; overflow: hidden; }
+.final-bg { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1200&q=80&auto=format&fit=crop'); background-size: cover; background-position: center 30%; filter: brightness(0.18) grayscale(40%); }
+.final-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 100%); }
+.final-content { position: relative; z-index: 2; padding: 72px 24px; width: 100%; max-width: 520px; }
+.final-content .eyebrow { color: rgba(255,255,255,0.4); margin-bottom: 16px; }
+.final-title { font-family: var(--font-d); font-weight: 900; font-size: clamp(3rem, 11vw, 5.5rem); line-height: 0.88; text-transform: uppercase; color: var(--white); margin-bottom: 28px; }
+.btn-final { display: inline-flex; align-items: center; gap: 10px; background: var(--white); color: var(--black); font-family: var(--font-d); font-weight: 900; font-size: 1rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 20px 32px; border: none; cursor: pointer; width: 100%; max-width: 320px; justify-content: center; transition: opacity 0.2s, transform 0.15s; }
+.btn-final:hover { opacity: 0.88; }
+.btn-final:active { transform: scale(0.98); }
+.final-note { margin-top: 16px; font-size: 0.72rem; color: rgba(255,255,255,0.3); letter-spacing: 0.04em; }
+
+/* FOOTER */
+footer { background: var(--black); padding: 32px 24px calc(32px + env(safe-area-inset-bottom)); display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.06); }
+.footer-logo { font-family: var(--font-d); font-weight: 900; font-size: 0.82rem; letter-spacing: 0.18em; color: rgba(255,255,255,0.45); text-transform: uppercase; }
+.footer-logo .slash { color: var(--red); }
+.footer-copy { font-size: 0.7rem; color: rgba(255,255,255,0.16); }
+
+/* ═══════════ BOOKING PAGE ═══════════ */
+#booking-page { display: none; min-height: 100svh; min-height: 100vh; background: #0f0f0f; }
+.booking-hero { position: relative; height: 200px; overflow: hidden; }
+.booking-hero-bg { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1200&q=80&auto=format&fit=crop'); background-size: cover; background-position: center 40%; filter: brightness(0.2) grayscale(50%); }
+.booking-hero-content { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 24px 24px; }
+.back-btn { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-d); font-weight: 800; font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.4); background: none; border: none; cursor: pointer; transition: color 0.2s; position: absolute; top: 68px; left: 20px; z-index: 3; }
+.back-btn:hover { color: var(--white); }
+.booking-page-title { font-family: var(--font-d); font-weight: 900; font-size: 2.2rem; text-transform: uppercase; line-height: 0.9; color: var(--white); }
+.booking-page-sub { font-size: 0.8rem; color: rgba(255,255,255,0.35); margin-top: 6px; }
+.booking-body { padding: 24px 20px 120px; display: flex; flex-direction: column; gap: 16px; max-width: 600px; margin: 0 auto; width: 100%; }
+.order-card { background: var(--dark); border: 1px solid rgba(255,255,255,0.07); padding: 22px; }
+.order-card-label { font-family: var(--font-d); font-weight: 800; font-size: 0.58rem; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(255,255,255,0.28); margin-bottom: 14px; }
+.order-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.83rem; }
+.order-row:last-of-type { border-bottom: none; }
+.order-row span:first-child { color: rgba(255,255,255,0.42); }
+.order-row span:last-child { color: var(--white); font-weight: 500; }
+.order-total-row { display: flex; justify-content: space-between; align-items: baseline; padding-top: 14px; margin-top: 6px; border-top: 1px solid rgba(255,255,255,0.08); }
+.order-total-label { font-family: var(--font-d); font-size: 0.65rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.28); }
+.order-total-price { font-family: var(--font-d); font-weight: 900; font-size: 2.2rem; color: var(--white); line-height: 1; }
+.checks { display: flex; flex-direction: column; gap: 7px; margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06); }
+.check-row { display: flex; align-items: center; gap: 9px; font-size: 0.8rem; color: rgba(255,255,255,0.45); }
+.check-icon { width: 16px; height: 16px; border: 1px solid rgba(255,255,255,0.18); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.55rem; color: rgba(255,255,255,0.6); }
+.form-card { background: var(--white); padding: 26px 22px; }
+.form-card-title { font-family: var(--font-d); font-weight: 900; font-size: 1.4rem; text-transform: uppercase; color: var(--black); margin-bottom: 4px; }
+.form-card-sub { font-size: 0.78rem; color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
+.fsec { font-family: var(--font-d); font-weight: 800; font-size: 0.58rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--mid); margin-bottom: 12px; margin-top: 20px; display: block; }
+.fsec:first-of-type { margin-top: 0; }
+.fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.fg-full { grid-column: 1 / -1; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-family: var(--font-d); font-weight: 800; font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--black); }
+.field input, .field select, .field textarea {
+  font-family: var(--font-b); font-size: 0.95rem; color: var(--black);
+  background: #f8f7f5; border: 1.5px solid var(--border);
+  padding: 13px 14px; outline: none; width: 100%; appearance: none; -webkit-appearance: none;
+  border-radius: 0; transition: border-color 0.2s, background 0.2s; line-height: 1.4;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--black); background: var(--white); }
+.field input.error { border-color: var(--red); }
+.field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23111111' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 13px center; padding-right: 36px; cursor: pointer; }
+.field textarea { resize: vertical; min-height: 78px; }
+.fdivider { height: 1px; background: var(--border); margin: 18px 0 6px; grid-column: 1/-1; }
+.btn-submit { margin-top: 20px; width: 100%; background: var(--black); color: var(--white); font-family: var(--font-d); font-weight: 900; font-size: 1rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 20px; border: none; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; position: relative; overflow: hidden; transition: transform 0.15s, opacity 0.2s; }
+.btn-submit:hover { opacity: 0.82; }
+.btn-submit > span { position: relative; z-index: 1; display: flex; align-items: center; gap: 10px; }
+.btn-submit:active { transform: scale(0.99); }
+.form-fine { font-size: 0.7rem; color: var(--muted); text-align: center; margin-top: 11px; line-height: 1.6; }
+
+/* ═══════════ SUCCESS ═══════════ */
+#success-page { display: none; min-height: 100svh; min-height: 100vh; background: var(--black); align-items: center; justify-content: center; position: relative; overflow: hidden; }
+.success-bg { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1200&q=80&auto=format&fit=crop'); background-size: cover; background-position: center; filter: brightness(0.08) grayscale(60%); }
+.success-inner { position: relative; z-index: 2; text-align: center; padding: 60px 28px; max-width: 460px; width: 100%; animation: fadeUp 0.7s var(--ease) both; }
+.success-ring { width: 76px; height: 76px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 28px; position: relative; }
+.success-ring::before { content: ''; position: absolute; inset: -8px; border: 1px solid rgba(255,255,255,0.06); border-radius: 50%; }
+.success-check { font-size: 1.5rem; color: var(--white); }
+.success-title { font-family: var(--font-d); font-weight: 900; font-size: clamp(2.5rem, 9vw, 4rem); text-transform: uppercase; color: var(--white); line-height: 0.9; margin-bottom: 18px; }
+.success-msg { font-size: 0.88rem; color: rgba(255,255,255,0.42); line-height: 1.7; margin-bottom: 36px; }
+.btn-back { display: inline-flex; align-items: center; gap: 8px; background: var(--white); color: var(--black); font-family: var(--font-d); font-weight: 900; font-size: 0.82rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 15px 26px; border: none; cursor: pointer; transition: opacity 0.2s; }
+.btn-back:hover { opacity: 0.85; }
+
+/* ═══════════ DESKTOP ≥768 ═══════════ */
+@media (min-width: 768px) {
+  .nav { padding: 0 48px; height: 60px; }
+  .hero-content { padding: 0 60px 120px; max-width: 760px; }
+  .btn-hero { width: auto; }
+  .sticky-cta { display: none; }
+  .section-pass { padding: 120px 60px; max-width: 1200px; margin: 0 auto; }
+  .pass-cards { grid-template-columns: repeat(4, 1fr); }
+  .mosaic { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 340px; }
+  .mosaic-cell-wide { grid-column: auto; }
+  .section-formats { padding: 120px 60px; max-width: 1200px; margin: 0 auto; }
+  .format-name { font-size: 2.2rem; }
+  .quote-content { padding: 100px 60px; }
+  .section-reviews { padding: 100px 60px; max-width: 1200px; margin: 0 auto; }
+  .reviews-list { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; border-top: 1px solid var(--border); }
+  .review-card { border-bottom: none; border-right: 1px solid var(--border); padding: 32px 28px; }
+  .review-card:last-child { border-right: none; }
+  .final-content { padding: 100px 60px; }
+  footer { padding: 36px 60px; }
+  .booking-body { padding: 36px 40px 80px; max-width: 900px; }
+  .booking-hero { height: 260px; }
+  .booking-page-title { font-size: 3rem; }
+}
+@media (min-width: 1100px) {
+  .section-pass { padding: 140px 80px; }
+  .section-formats { padding: 140px 80px; }
+  .section-reviews { padding: 120px 80px; }
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.65s var(--ease), transform 0.65s var(--ease); }
+.reveal.in { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ LANDING ══════════════ -->
+<div id="landing-page">
+
+<nav class="nav">
+  <div class="nav-logo">STUDIO<span class="slash">///</span></div>
+  <button class="nav-btn" onclick="showBooking()">Book Pass →</button>
+</nav>
+
+<div class="sticky-cta" id="sticky-cta">
+  <div class="sticky-cta-text">
+    <strong>3-Class Pass</strong>
+    <span>All formats · All studios · $60</span>
+  </div>
+  <button class="sticky-btn" onclick="showBooking()">Book Now →</button>
+</div>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-gradient"></div>
+  <div class="hero-grain"></div>
+  <div class="hero-content">
+    <div class="hero-pill">
+      <div class="hero-pill-dot"></div>
+      <span>Intro Offer · Limited Access</span>
+    </div>
+    <h1 class="hero-hl">THREE<br>CLASSES.<span class="price">$60.</span></h1>
+    <p class="hero-sub">Try any format — Cycle, Interval, Strength, Yoga, Pilates — across all Studio Three locations. No commitment. No conditions.</p>
+    <div class="hero-actions">
+      <button class="btn-hero" onclick="showBooking()">
+        Book Your Pass
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <div class="hero-trust">
+      <div class="trust-item"><span class="trust-val">3</span><span class="trust-lbl">Classes</span></div>
+      <div class="trust-sep"></div>
+      <div class="trust-item"><span class="trust-val">All</span><span class="trust-lbl">Formats</span></div>
+      <div class="trust-sep"></div>
+      <div class="trust-item"><span class="trust-val">60</span><span class="trust-lbl">Day Window</span></div>
+      <div class="trust-sep"></div>
+      <div class="trust-item"><span class="trust-val">$60</span><span class="trust-lbl">Total</span></div>
+    </div>
+  </div>
+  <div class="scroll-cue"><div class="scroll-line"></div><span>Scroll</span></div>
+</section>
+
+<section class="section-pass">
+  <span class="eyebrow reveal">What You Get</span>
+  <h2 class="section-title reveal">Three Classes.<br>No Catch.</h2>
+  <div class="pass-cards">
+    <div class="pass-card reveal"><div class="pass-card-num">01</div><div class="pass-card-title">Any Format</div><p class="pass-card-desc">Mix Cycle, Interval, Strength, Yoga Flow, Yoga Strength, and Hot Mat Pilates — however you like across your three sessions.</p></div>
+    <div class="pass-card reveal"><div class="pass-card-num">02</div><div class="pass-card-title">All Studios</div><p class="pass-card-desc">Your pass works at every Studio Three location. Book wherever fits your schedule, day by day.</p></div>
+    <div class="pass-card reveal"><div class="pass-card-num">03</div><div class="pass-card-title">60-Day Window</div><p class="pass-card-desc">Use your three classes anytime within 60 days of purchase. Zero pressure. Full flexibility.</p></div>
+    <div class="pass-card reveal"><div class="pass-card-num">04</div><div class="pass-card-title">Expert Coaches</div><p class="pass-card-desc">The exact experience members pay monthly for — world-class instructors in state-of-the-art facilities.</p></div>
+  </div>
+</section>
+
+<div class="mosaic">
+  <div class="mosaic-cell">
+    <img src="https://images.unsplash.com/photo-1594381898411-846e7d193883?w=800&q=80&auto=format&fit=crop" alt="Cycle" loading="lazy">
+    <div class="mosaic-label">Cycle</div>
+  </div>
+  <div class="mosaic-cell">
+    <img src="https://images.unsplash.com/photo-1549060279-7e168fcee0c2?w=800&q=80&auto=format&fit=crop" alt="Strength" loading="lazy">
+    <div class="mosaic-label">Strength</div>
+  </div>
+  <div class="mosaic-cell mosaic-cell-wide">
+    <img src="https://images.unsplash.com/photo-1600881333168-2ef49b341f30?w=1200&q=80&auto=format&fit=crop" alt="Yoga" loading="lazy" style="object-position:center 30%;">
+    <div class="mosaic-label">Yoga &amp; Pilates</div>
+  </div>
+</div>
+
+<section class="section-formats">
+  <span class="eyebrow reveal" style="color:rgba(255,255,255,0.35)">Your Options</span>
+  <h2 class="section-title reveal">Five Ways<br>To Train.</h2>
+  <p class="formats-sub reveal">Use all three on one format or try something new each time. Your pass, your call.</p>
+  <div class="format-list">
+    <div class="format-row reveal"><span class="format-idx">01</span><span class="format-name">Interval</span><span class="format-tag">High intensity<br>functional</span><span class="format-arrow">→</span></div>
+    <div class="format-row reveal"><span class="format-idx">02</span><span class="format-name">Cycle</span><span class="format-tag">Immersive<br>cardio</span><span class="format-arrow">→</span></div>
+    <div class="format-row reveal"><span class="format-idx">03</span><span class="format-name">Strength</span><span class="format-tag">Progressive<br>resistance</span><span class="format-arrow">→</span></div>
+    <div class="format-row reveal"><span class="format-idx">04</span><span class="format-name">Yoga</span><span class="format-tag">Flow &amp;<br>strength</span><span class="format-arrow">→</span></div>
+    <div class="format-row reveal"><span class="format-idx">05</span><span class="format-name">Pilates</span><span class="format-tag">Hot mat<br>core work</span><span class="format-arrow">→</span></div>
+  </div>
+</section>
+
+<section class="quote-section">
+  <div class="quote-bg"></div>
+  <div class="quote-content">
+    <div class="quote-stars">★★★★★</div>
+    <p class="quote-text reveal">"I came in skeptical. I left having booked my membership before the class even ended."</p>
+    <p class="quote-attr reveal">— Melissa R. · River North · Cycle + Interval Member</p>
+  </div>
+</section>
+
+<section class="section-reviews">
+  <span class="eyebrow reveal">Member Stories</span>
+  <h2 class="section-title reveal">From The<br>Community.</h2>
+  <div class="reviews-list">
+    <div class="review-card reveal">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"I'd been putting off trying a boutique studio for years — too intimidating, too expensive to commit without knowing. The three-class pass removed every excuse. First class was Cycle at Lincoln Park. The energy in that room is something you don't find at a regular gym. By class three I was asking the front desk about membership options before I'd even showered."</p>
+      <div class="review-attr">Jordan K. · Lincoln Park · Member since Jan 2025</div>
+    </div>
+    <div class="review-card reveal">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"I tried Interval on a Wednesday morning expecting it to feel like a standard HIIT class. It's not. The programming is genuinely different — it builds on itself, the coaches actually coach. I used my second class on Hot Mat Pilates thinking it'd be a recovery day. That was humbling. Both are now in my weekly rotation. Signed up for All-Access the week after."</p>
+      <div class="review-attr">Danielle M. · River North · All-Access Member</div>
+    </div>
+    <div class="review-card reveal">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"My wife convinced me to use the three-class pass with her. I'm not a yoga person — I came in on my terms and did Strength twice and Interval once. Every single instructor knew my name by the third session. That's what got me. It's not just a gym. Twelve months later we both still go four times a week."</p>
+      <div class="review-attr">Marcus T. · Bucktown · Member since Mar 2024</div>
+    </div>
+  </div>
+</section>
+
+<section class="section-final">
+  <div class="final-bg"></div>
+  <div class="final-overlay"></div>
+  <div class="final-content">
+    <span class="eyebrow reveal">Intro Offer</span>
+    <h2 class="final-title reveal">3 Classes.<br>$60.<br>Start Now.</h2>
+    <button class="btn-final reveal" onclick="showBooking()">
+      Book My Pass
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <p class="final-note reveal">No auto-renew · No commitment · 60 days to use all three</p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">STUDIO<span class="slash">///</span></div>
+  <div class="footer-copy">© 2026 Studio Three. All rights reserved.</div>
+</footer>
+
+</div><!-- /landing-page -->
+
+
+<!-- ══════════════ BOOKING ══════════════ -->
+<div id="booking-page">
+  <nav class="nav">
+    <div class="nav-logo">STUDIO<span class="slash">///</span></div>
+    <button class="back-btn" onclick="showLanding()">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M10 6.5H3M6 3L2.5 6.5 6 10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back
+    </button>
+  </nav>
+
+  <div class="booking-hero">
+    <div class="booking-hero-bg"></div>
+    <div class="booking-hero-content">
+      <div class="booking-page-title">Book Your<br>Pass.</div>
+      <div class="booking-page-sub">3 classes · All formats · 60-day window</div>
+    </div>
+  </div>
+
+  <div class="booking-body">
+    <div class="order-card">
+      <div class="order-card-label">Order Summary</div>
+      <div class="order-row"><span>3-Class Pass</span><span>×1</span></div>
+      <div class="order-row"><span>Formats</span><span>All Formats</span></div>
+      <div class="order-row"><span>Studios</span><span>All Locations</span></div>
+      <div class="order-row"><span>Valid For</span><span>60 Days</span></div>
+      <div class="order-total-row">
+        <span class="order-total-label">Total</span>
+        <span class="order-total-price">$60</span>
+      </div>
+      <div class="checks">
+        <div class="check-row"><div class="check-icon">✓</div>No auto-renew or hidden fees</div>
+        <div class="check-row"><div class="check-icon">✓</div>Works at every Studio Three location</div>
+        <div class="check-row"><div class="check-icon">✓</div>Confirmation sent immediately</div>
+        <div class="check-row"><div class="check-icon">✓</div>No commitment required</div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-card-title">Your Details</div>
+      <div class="form-card-sub">Fill in your info below. Payment is collected at confirmation — we'll send everything to your email right away.</div>
+
+      <span class="fsec">Personal Information</span>
+      <div class="fgrid">
+        <div class="field"><label for="f-first">First Name *</label><input type="text" id="f-first" placeholder="Jane" autocomplete="given-name"></div>
+        <div class="field"><label for="f-last">Last Name *</label><input type="text" id="f-last" placeholder="Smith" autocomplete="family-name"></div>
+        <div class="field fg-full"><label for="f-email">Email Address *</label><input type="email" id="f-email" placeholder="jane@email.com" autocomplete="email"></div>
+        <div class="field fg-full"><label for="f-phone">Phone Number *</label><input type="tel" id="f-phone" placeholder="(312) 000-0000" autocomplete="tel"></div>
+      </div>
+
+      <div style="height:1px;background:var(--border);margin:18px 0 6px;"></div>
+      <span class="fsec" style="margin-top:0;">Your Preferences</span>
+      <div class="fgrid">
+        <div class="field"><label for="f-studio">Preferred Studio</label><select id="f-studio"><option value="">Select location...</option><option>Lincoln Park</option><option>River North</option><option>Bucktown</option><option>No preference</option></select></div>
+        <div class="field"><label for="f-format">First Class Format</label><select id="f-format"><option value="">Select format...</option><option>Interval</option><option>Cycle</option><option>Strength</option><option>Yoga Flow</option><option>Yoga Strength</option><option>Hot Mat Pilates</option><option>Not sure yet</option></select></div>
+        <div class="field"><label for="f-time">Preferred Time</label><select id="f-time"><option value="">Select window...</option><option>Early Morning (5–8am)</option><option>Morning (8–11am)</option><option>Midday (11am–2pm)</option><option>Afternoon (2–5pm)</option><option>Evening (5–8pm)</option><option>Late Evening (8pm+)</option></select></div>
+        <div class="field"><label for="f-level">Experience Level</label><select id="f-level"><option value="">Select level...</option><option>Complete Beginner</option><option>Some Experience</option><option>Intermediate</option><option>Advanced</option></select></div>
+        <div class="field fg-full"><label for="f-notes">Anything we should know? (optional)</label><textarea id="f-notes" placeholder="Injuries, goals, or questions for our team..."></textarea></div>
+      </div>
+
+      <button class="btn-submit" onclick="submitForm()">
+        <span>Complete Booking — $60 <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2.5 7.5h10M9 4l3.5 3.5L9 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </button>
+      <p class="form-fine">Secure checkout · Confirmation sent immediately · 60-day pass validity from purchase</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════ SUCCESS ══════════════ -->
+<div id="success-page">
+  <div class="success-bg"></div>
+  <div class="success-inner">
+    <div class="success-ring"><div class="success-check">✓</div></div>
+    <h2 class="success-title">You're<br>Booked In.</h2>
+    <p class="success-msg">Your 3-class pass is confirmed. Check your inbox — we've sent everything you need to book your first class. See you on the floor.</p>
+    <button class="btn-back" onclick="showLanding()">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M10 6.5H3M6 3L2.5 6.5 6 10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back to Studio Three
+    </button>
+  </div>
+</div>
+
+
+<script>
+/* Scroll reveal */
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('in'), i * 55);
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+revealEls.forEach(el => io.observe(el));
+
+/* Sticky CTA */
+const stickyCta = document.getElementById('sticky-cta');
+const heroEl = document.querySelector('.hero');
+new IntersectionObserver(([e]) => {
+  stickyCta.classList.toggle('visible', !e.isIntersecting);
+}, { threshold: 0.1 }).observe(heroEl);
+
+/* Navigation */
+function showBooking() {
+  document.getElementById('landing-page').style.display = 'none';
+  document.getElementById('booking-page').style.display = 'block';
+  document.getElementById('success-page').style.display = 'none';
+  window.scrollTo({ top: 0 });
+}
+function showLanding() {
+  document.getElementById('landing-page').style.display = 'block';
+  document.getElementById('booking-page').style.display = 'none';
+  document.getElementById('success-page').style.display = 'none';
+  window.scrollTo({ top: 0 });
+}
+
+/* Form submit */
+function submitForm() {
+  const required = ['f-first','f-last','f-email','f-phone'];
+  let valid = true;
+  required.forEach(id => {
+    const el = document.getElementById(id);
+    const empty = !el.value.trim();
+    el.classList.toggle('error', empty);
+    if (empty) valid = false;
+    el.addEventListener('input', () => el.classList.remove('error'), { once: true });
+  });
+  const emailEl = document.getElementById('f-email');
+  if (emailEl.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim())) {
+    emailEl.classList.add('error'); valid = false;
+  }
+  if (!valid) {
+    document.querySelector('.field input.error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  document.getElementById('landing-page').style.display = 'none';
+  document.getElementById('booking-page').style.display = 'none';
+  document.getElementById('success-page').style.display = 'flex';
+  window.scrollTo({ top: 0 });
+}
+</script>
+</body>
+</html>
