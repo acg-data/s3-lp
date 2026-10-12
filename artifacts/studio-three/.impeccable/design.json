@@ -262,11 +262,11 @@
       "css": ".ds-field{display:flex;flex-direction:column;gap:9px}.ds-field label{font:500 12px var(--body,\"Gotham\",Arial,sans-serif);color:var(--ink,#0b0b0b)}.ds-field input{width:100%;min-height:52px;padding:12px 14px;border:1px solid #c9c9c2;border-radius:0;background:var(--white,#fff);color:var(--ink,#0b0b0b);font:400 16px/1.5 var(--body,\"Gotham\",Arial,sans-serif)}.ds-field input::placeholder{color:#6b6c65;opacity:1}.ds-field input:focus{outline:2px solid var(--blue,#007495);outline-offset:2px}.ds-field input[aria-invalid=\"true\"]{border-color:#b42c12}.ds-field input:disabled{opacity:.7}.ds-field-error{font:400 11px/1.8 var(--body,\"Gotham\",Arial,sans-serif);color:#b42c12}.ds-panel{padding:clamp(28px,3.3vw,48px);background:var(--paper,#f7f7f4);color:var(--ink,#0b0b0b)}.ds-panel h3{margin:0;font:700 34px/1.12 var(--heading,\"Trade Gothic Next\",Arial,sans-serif);text-transform:uppercase;letter-spacing:-.02em}.ds-panel-intro{margin:16px 0 28px;color:var(--secondary,#555650);font:400 12px/1.9 var(--body,\"Gotham\",Arial,sans-serif)}@media(max-width:1100px){.ds-panel h3{font-size:28px}}@media(max-width:767px){.ds-panel-intro{font-size:14px}}@media(max-width:360px){.ds-panel{padding:24px}}"
     },
     {
-      "name": "Photo Caption Band",
+      "name": "Modality Description",
       "kind": "custom",
-      "description": "Condensed uppercase caption band used across the grayscale story images.",
-      "html": "<div class=\"ds-photo-caption\">Move with intention.</div>",
-      "css": ".ds-photo-caption{padding:20px 24px;background:rgba(0,0,0,.78);color:var(--white,#fff);font:700 26px/1.2 var(--display,\"Trade Gothic Next Condensed\",\"Arial Narrow\",sans-serif);text-transform:uppercase}@media(max-width:767px){.ds-photo-caption{font-size:23px;padding:16px 20px}}"
+      "description": "Open condensed heading and Gotham description beneath a grayscale modality photograph.",
+      "html": "<article class=\"ds-modality\"><h3>Cycle</h3><p>Clip in for a rhythm-driven ride, athletic intervals and energizing playlists. Expert coaching keeps you moving with the room.</p></article>",
+      "css": ".ds-modality{background:var(--paper,#f7f7f4);color:var(--ink,#0b0b0b)}.ds-modality h3{margin:24px 0 0;font:700 42px/1.08 var(--display,\"Trade Gothic Next Condensed\",\"Arial Narrow\",sans-serif);text-transform:uppercase}.ds-modality p{margin:12px 0 0;max-width:40ch;color:var(--secondary,#555650);font:400 14px/1.8 var(--body,\"Gotham\",Arial,sans-serif)}@media(max-width:767px){.ds-modality h3{margin-top:20px}}"
     }
   ],
   "narrative": {

@@ -32,6 +32,8 @@ The October 9 Danielle/Justin meeting notes, confirmed by the user; existing Stu
 
 The user requested Wynwood and the five other studios as brand context. The official studio directory verifies Wynwood, four Chicago studios (River North, Lincoln Park, Fulton Market, West Loop), Austin, and Brickell. The official Brickell page lists mats/towels, lockers, refillable water, showers and grooming products, blow-dry stations, community space, retail, and Wi-Fi. Location presence is not a claim that a founding membership includes access to every studio.
 
+The user requested all three modalities on the lander: Interval, Cycle, and Yoga. Each is shown with authentic Studio Three photography and a concise description grounded in its official class page. General modality descriptions do not announce a Brickell timetable or membership terms.
+
 ## Product Principles
 
 - Make Brickell and founding memberships immediately recognizable.

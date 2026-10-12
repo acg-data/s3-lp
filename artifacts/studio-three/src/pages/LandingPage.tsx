@@ -2,10 +2,38 @@ import { useEffect, useRef, useState } from "react";
 import InquiryForm from "@/components/InquiryForm";
 import community from "@assets/image_1777662764571.png";
 import yoga from "@assets/image_1777662794631.png";
-import strength from "@assets/image_1777662826834.png";
 
 const membershipHref = import.meta.env.VITE_MEMBERSHIP_URL || "#membership";
 const logo = `${import.meta.env.BASE_URL}studio-three-logo.png`;
+const modalities = [
+  {
+    name: "Interval",
+    image: `${import.meta.env.BASE_URL}modalities/interval.jpg`,
+    alt: "A Studio Three athlete doing strength work with a medicine ball",
+    width: 800,
+    height: 1200,
+    description:
+      "Build strength and endurance with coached treadmill intervals and strength work. High energy, purposeful effort, and a pace you can make your own.",
+  },
+  {
+    name: "Cycle",
+    image: `${import.meta.env.BASE_URL}modalities/cycle.jpg`,
+    alt: "Three Studio Three riders training together on indoor bikes",
+    width: 800,
+    height: 800,
+    description:
+      "Clip in for a rhythm-driven ride, athletic intervals and energizing playlists. Expert coaching keeps you moving with the room.",
+  },
+  {
+    name: "Yoga",
+    image: yoga,
+    alt: "Three Studio Three members practicing yoga together",
+    width: 435,
+    height: 442,
+    description:
+      "Connect breath with movement through thoughtfully guided flows. Find your balance, build your practice and make space for yourself.",
+  },
+];
 const directionsHref =
   "https://maps.google.com/maps?saddr=&daddr=96+SE+8th.+St%2CMiami%2CUnited+States+of+America";
 
@@ -204,9 +232,9 @@ export default function LandingPage() {
             </h2>
             <div className="intro-copy">
               <p>
-                From high-energy Interval and Cycle to Yoga, Strength and
-                Pilates, discover the Studio Three experience—with a new chapter
-                at 830 Brickell.
+                Interval. Cycle. Yoga. Three distinct ways to train, connected
+                by one community. Discover the Studio Three experience—with a
+                new chapter at 830 Brickell.
               </p>
               <p>
                 Be here from the beginning. Connect with our studio manager to
@@ -215,27 +243,39 @@ export default function LandingPage() {
               </p>
             </div>
           </div>
-          <div className="photo-story" aria-label="The Studio Three experience">
-            <figure className="story-image story-wide">
-              <img
-                src={yoga}
-                alt="A Studio Three group practicing yoga"
-                width="800"
-                height="600"
-                loading="lazy"
-              />
-              <figcaption>Move with intention.</figcaption>
-            </figure>
-            <figure className="story-image story-tall">
-              <img
-                src={strength}
-                alt="Strength and core training at Studio Three"
-                width="800"
-                height="600"
-                loading="lazy"
-              />
-              <figcaption>Train for something bigger.</figcaption>
-            </figure>
+          <div
+            className="modality-grid"
+            id="modalities"
+            role="group"
+            aria-label="Interval, Cycle and Yoga"
+          >
+            {modalities.map((modality) => (
+              <article
+                className="modality"
+                key={modality.name}
+                aria-labelledby={`modality-${modality.name.toLowerCase()}`}
+              >
+                <img
+                  className={`modality-photo modality-photo-${modality.name.toLowerCase()}`}
+                  src={modality.image}
+                  alt={modality.alt}
+                  width={modality.width}
+                  height={modality.height}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <h3 id={`modality-${modality.name.toLowerCase()}`}>
+                  {modality.name}
+                </h3>
+                <p>{modality.description}</p>
+              </article>
+            ))}
+          </div>
+          <div className="modality-invitation">
+            <p>Find your mix in Brickell.</p>
+            <a className="text-link" href={membershipHref}>
+              Explore founding membership <Arrow />
+            </a>
           </div>
         </section>
 

@@ -145,9 +145,9 @@ Local font files register Gotham Book/Medium/Bold at weights 400/500/700, and bo
 
 ## Layout
 
-The shared gutter and section spacing in frontmatter set the horizontal and vertical rhythm. Desktop pairs editorial copy and imagery, then copy and the inquiry panel. The studio intro uses a 1.1:1 grid; the photo story uses a 1.4:1 grid; membership uses a 1.1:1 grid with a 1200px-centered inset. The header stays sticky.
+The shared gutter and section spacing in frontmatter set the horizontal and vertical rhythm. Desktop pairs editorial copy and imagery, then copy and the inquiry panel. The studio intro uses a 1.1:1 grid; the modality gallery uses three equal columns; membership uses a 1.1:1 grid with a 1200px-centered inset. The header stays sticky.
 
-At 1100px and below, the location label leaves the header, gaps compress, and hero copy widens. At 767px and below, navigation simplifies; intro, images, membership, and footer stack. The hero becomes a text-first composition with its photo below the principal copy, retaining a deliberate gradient for contrast. Story photos become matching 1.4-ratio frames. At 360px and below, the header, action, and inquiry panel tighten further.
+At 1100px and below, the location label leaves the header, gaps compress, and hero copy widens. At 767px and below, navigation simplifies; intro, modalities, membership, and footer stack. The hero becomes a text-first composition with its photo below the principal copy, retaining a deliberate gradient for contrast. Modality photos become matching 1.4-ratio frames. At 360px and below, the header, action, and inquiry panel tighten further.
 
 The mobile action appears only after the hero leaves view and before the inquiry section reaches the viewport; hidden controls are inert. Safe-area padding protects the bottom action and footer. Anchor offsets account for the sticky header.
 
@@ -155,7 +155,7 @@ The mobile action appears only after the hero leaves view and before the inquiry
 
 ## Elevation & Depth
 
-No component shadows are used. Flat ink/paper/white section changes and fine dividers establish structure. Hero gradients separate copy from the photograph; dark translucent caption bands protect image captions. These overlays have a readability role rather than implying raised surfaces.
+No component shadows are used. Flat ink/paper/white section changes and fine dividers establish structure. Hero gradients separate copy from the photograph. Modality labels and descriptions sit on the paper surface below the images.
 
 The hero photo has a single 750ms clip reveal. Buttons change background over 180ms; the mobile action moves over 250ms using the source easing. Reduced-motion preference disables animation, transitions, and smooth scrolling.
 
@@ -185,7 +185,9 @@ An ink sticky header presents the original logo and a compact membership action.
 
 ### Photography and brand signature
 
-Use the existing Studio Three photographs with grayscale treatment. Hero and story crops must retain the subject and meaningful training context. These are experience images, not evidence of the Brickell building. Captions use condensed uppercase lettering over dark translucent bands. Reuse the three slashes only in their evidenced brand roles.
+Use authentic Studio Three photographs with grayscale treatment. Hero and modality crops must retain the subject and meaningful training context. These are experience images, not evidence of the Brickell building. Reuse the three slashes only in their evidenced brand roles.
+
+The Interval, Cycle, and Yoga gallery pairs each 4:3 image with a 42px condensed heading and 14px Gotham description. The three columns share a 28px gap and remain flat on paper without card borders or overlays. On mobile, they stack with a 36px gap. A fine divider introduces a 28px Brickell invitation and the founding-membership link. Image focal positions preserve the Interval athlete and Cycle riders.
 
 ## Do's and Don'ts
 
