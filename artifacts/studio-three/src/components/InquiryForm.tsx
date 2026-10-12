@@ -109,9 +109,10 @@ export default function InquiryForm() {
       aria-labelledby="inquiry-title"
       aria-busy={status === "sending"}
     >
-      <h3 id="inquiry-title">Let’s get acquainted.</h3>
+      <h3 id="inquiry-title">Start your Brickell chapter.</h3>
       <p className="form-intro">
-        Get founding membership details from our Brickell team.
+        Leave your details. Our studio manager will be in touch personally with
+        founding membership information.
       </p>
       <fieldset disabled={status === "sending"}>
         {(
@@ -184,7 +185,7 @@ export default function InquiryForm() {
         <button className="button" type="submit">
           {status === "sending"
             ? "Sending your inquiry…"
-            : "Get membership details"}
+            : "Get founding membership details"}
           <span aria-hidden="true">↗</span>
         </button>
       </fieldset>

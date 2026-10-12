@@ -4,6 +4,8 @@ A focused founding-membership inquiry page for the Brickell opening. There is no
 
 The approved call brief is implemented using existing Studio Three imagery and draft copy. Danielle's final copy and Brickell-specific assets can replace those before launch.
 
+The lander now uses the user-provided original logo and the actual Gotham / Trade Gothic font families from studiothree.com, served locally. Brickell and founding memberships lead the hero. The building name and address are verified against the official Brickell page. See `artifacts/studio-three/FONT-SOURCES.md` for asset provenance and `artifacts/studio-three/DESIGN.md` for the implemented visual system.
+
 ## Local preview
 
 Use Node.js 24 and pnpm. From the repository root:

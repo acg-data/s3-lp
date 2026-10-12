@@ -1,0 +1,312 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-12T17:42:07.690Z",
+  "title": "Design System: Studio Three Brickell",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(49% 0.0000 89.88)",
+          "oklch(61% 0.0000 89.88)",
+          "oklch(72% 0.0000 89.88)",
+          "oklch(84% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "tonalRamp": [
+          "oklch(15% 0.0040 106.47)",
+          "oklch(26% 0.0040 106.47)",
+          "oklch(38% 0.0040 106.47)",
+          "oklch(49% 0.0040 106.47)",
+          "oklch(61% 0.0040 106.47)",
+          "oklch(72% 0.0040 106.47)",
+          "oklch(84% 0.0040 106.47)",
+          "oklch(95% 0.0040 106.47)"
+        ]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "White",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(49% 0.0000 89.88)",
+          "oklch(61% 0.0000 89.88)",
+          "oklch(72% 0.0000 89.88)",
+          "oklch(84% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "secondary": {
+        "role": "neutral",
+        "displayName": "Secondary Ink",
+        "tonalRamp": [
+          "oklch(15% 0.0096 114.46)",
+          "oklch(26% 0.0096 114.46)",
+          "oklch(38% 0.0096 114.46)",
+          "oklch(49% 0.0096 114.46)",
+          "oklch(61% 0.0096 114.46)",
+          "oklch(72% 0.0096 114.46)",
+          "oklch(84% 0.0096 114.46)",
+          "oklch(95% 0.0096 114.46)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Quiet Line",
+        "tonalRamp": [
+          "oklch(15% 0.0094 106.59)",
+          "oklch(26% 0.0094 106.59)",
+          "oklch(38% 0.0094 106.59)",
+          "oklch(49% 0.0094 106.59)",
+          "oklch(61% 0.0094 106.59)",
+          "oklch(72% 0.0094 106.59)",
+          "oklch(84% 0.0094 106.59)",
+          "oklch(95% 0.0094 106.59)"
+        ]
+      },
+      "lime": {
+        "role": "primary",
+        "displayName": "Studio Lime",
+        "tonalRamp": [
+          "oklch(15% 0.1826 115.00)",
+          "oklch(26% 0.1826 115.00)",
+          "oklch(38% 0.1826 115.00)",
+          "oklch(49% 0.1826 115.00)",
+          "oklch(61% 0.1826 115.00)",
+          "oklch(72% 0.1826 115.00)",
+          "oklch(84% 0.1826 115.00)",
+          "oklch(95% 0.1826 115.00)"
+        ]
+      },
+      "blue": {
+        "role": "secondary",
+        "displayName": "Studio Blue",
+        "tonalRamp": [
+          "oklch(15% 0.0999 226.28)",
+          "oklch(26% 0.0999 226.28)",
+          "oklch(38% 0.0999 226.28)",
+          "oklch(49% 0.0999 226.28)",
+          "oklch(61% 0.0999 226.28)",
+          "oklch(72% 0.0999 226.28)",
+          "oklch(84% 0.0999 226.28)",
+          "oklch(95% 0.0999 226.28)"
+        ]
+      },
+      "orange": {
+        "role": "secondary",
+        "displayName": "Studio Orange",
+        "tonalRamp": [
+          "oklch(15% 0.1986 35.35)",
+          "oklch(26% 0.1986 35.35)",
+          "oklch(38% 0.1986 35.35)",
+          "oklch(49% 0.1986 35.35)",
+          "oklch(61% 0.1986 35.35)",
+          "oklch(72% 0.1986 35.35)",
+          "oklch(84% 0.1986 35.35)",
+          "oklch(95% 0.1986 35.35)"
+        ]
+      },
+      "taupe": {
+        "role": "neutral",
+        "displayName": "Brand Taupe",
+        "tonalRamp": [
+          "oklch(15% 0.0150 74.39)",
+          "oklch(26% 0.0150 74.39)",
+          "oklch(38% 0.0150 74.39)",
+          "oklch(49% 0.0150 74.39)",
+          "oklch(61% 0.0150 74.39)",
+          "oklch(72% 0.0150 74.39)",
+          "oklch(84% 0.0150 74.39)",
+          "oklch(95% 0.0150 74.39)"
+        ]
+      },
+      "action-hover": {
+        "role": "primary",
+        "displayName": "Action Hover",
+        "tonalRamp": [
+          "oklch(15% 0.1901 114.32)",
+          "oklch(26% 0.1901 114.32)",
+          "oklch(38% 0.1901 114.32)",
+          "oklch(49% 0.1901 114.32)",
+          "oklch(61% 0.1901 114.32)",
+          "oklch(72% 0.1901 114.32)",
+          "oklch(84% 0.1901 114.32)",
+          "oklch(95% 0.1901 114.32)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Condensed Display",
+        "purpose": "Uppercase hero headline; source responsive overrides preserve hierarchy."
+      },
+      "headline": {
+        "displayName": "Condensed Headline",
+        "purpose": "Studio and membership section headings."
+      },
+      "title": {
+        "displayName": "Regular-width Trade Gothic Title",
+        "purpose": "Inquiry, confirmation, and direct-membership panel headings."
+      },
+      "body": {
+        "displayName": "Gotham Book",
+        "purpose": "Supporting prose; primary paragraphs increase to 14px on mobile."
+      },
+      "label": {
+        "displayName": "Gotham Medium Label",
+        "purpose": "Visible form labels."
+      },
+      "action": {
+        "displayName": "Condensed Action",
+        "purpose": "Uppercase primary actions; source has compact and form sizing overrides."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Source --ease; hero arrival and mobile action transition."
+      },
+      {
+        "name": "hero-arrive",
+        "value": "750ms",
+        "purpose": "One clip-path reveal, inset(0 0 5% 0) to inset(0)."
+      },
+      {
+        "name": "action-hover",
+        "value": "background 180ms ease",
+        "purpose": "Primary button background feedback."
+      },
+      {
+        "name": "mobile-action",
+        "value": "transform 250ms var(--ease), visibility 250ms",
+        "purpose": "Sticky action enters/leaves after the hero and before the inquiry."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "animation: none !important; transition: none !important; scroll-behavior: auto",
+        "purpose": "Source prefers-reduced-motion override."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "compact-desktop",
+        "value": "1100px"
+      },
+      {
+        "name": "mobile",
+        "value": "767px"
+      },
+      {
+        "name": "small-mobile",
+        "value": "360px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Action",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main lime founding-membership action.",
+      "html": "<button class=\"ds-button\" type=\"button\">Explore founding membership <svg aria-hidden=\"true\" width=\"19\" height=\"19\" viewBox=\"0 0 20 20\" fill=\"none\"><path d=\"M3 10h14M11 4l6 6-6 6\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></button>",
+      "css": ".ds-button{display:inline-flex;align-items:center;justify-content:space-between;gap:28px;min-height:58px;padding:18px 26px;background:var(--lime,#bdcc00);color:var(--ink,#0b0b0b);border:0;border-radius:0;font:700 20px/1.2 var(--display,\"Trade Gothic Next Condensed\",\"Arial Narrow\",sans-serif);text-transform:uppercase;text-decoration:none;cursor:pointer;transition:background 180ms ease}.ds-button:hover{background:#d1df1b}.ds-button:focus-visible{outline:3px solid var(--blue,#007495);outline-offset:5px}.ds-button:disabled{cursor:wait;opacity:.65}.ds-button svg{flex-shrink:0}@media(prefers-reduced-motion:reduce){.ds-button{transition:none}}"
+    },
+    {
+      "name": "Compact Header Action",
+      "kind": "button",
+      "refersTo": "button-compact",
+      "description": "Header founding-membership action with the source's responsive sizes.",
+      "html": "<a class=\"ds-button ds-compact\" href=\"#membership\">Founding memberships <svg aria-hidden=\"true\" width=\"19\" height=\"19\" viewBox=\"0 0 20 20\" fill=\"none\"><path d=\"M3 10h14M11 4l6 6-6 6\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></a>",
+      "css": ".ds-button{display:inline-flex;align-items:center;justify-content:space-between;gap:28px;min-height:58px;padding:18px 26px;background:var(--lime,#bdcc00);color:var(--ink,#0b0b0b);border:0;border-radius:0;font:700 20px/1.2 var(--display,\"Trade Gothic Next Condensed\",\"Arial Narrow\",sans-serif);text-transform:uppercase;text-decoration:none;cursor:pointer;transition:background 180ms ease}.ds-button:hover{background:#d1df1b}.ds-button:focus-visible{outline:3px solid var(--blue,#007495);outline-offset:5px}.ds-button:disabled{cursor:wait;opacity:.65}.ds-button svg{flex-shrink:0}@media(prefers-reduced-motion:reduce){.ds-button{transition:none}}.ds-compact{min-height:48px;padding:14px 20px;font-size:17px;gap:20px}@media(max-width:767px){.ds-compact{font-size:14px;gap:12px;padding:12px 14px;min-height:44px}}@media(max-width:360px){.ds-compact{font-size:13px;padding:12px;gap:8px}}"
+    },
+    {
+      "name": "Text Link",
+      "kind": "button",
+      "description": "Understated supporting anchor with arrow and underline feedback.",
+      "html": "<a class=\"ds-text-link\" href=\"#studio\">Meet your new studio <svg aria-hidden=\"true\" width=\"19\" height=\"19\" viewBox=\"0 0 20 20\" fill=\"none\"><path d=\"M3 10h14M11 4l6 6-6 6\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></a>",
+      "css": ".ds-text-link{display:inline-flex;align-items:center;justify-content:space-between;gap:20px;min-height:44px;color:var(--ink,#0b0b0b);font:500 11px var(--body,\"Gotham\",Arial,sans-serif);text-decoration:none}.ds-text-link:hover{text-decoration:underline;text-underline-offset:5px}.ds-text-link:focus-visible{outline:3px solid var(--blue,#007495);outline-offset:5px}"
+    },
+    {
+      "name": "Inquiry Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Visible label and white square field, including focus, invalid, and disabled styles.",
+      "html": "<div class=\"ds-field\"><label for=\"ds-name\">Name</label><input id=\"ds-name\" name=\"name\" autocomplete=\"name\" placeholder=\"Your full name\" required /></div>",
+      "css": ".ds-field{display:flex;flex-direction:column;gap:9px}.ds-field label{font:500 12px var(--body,\"Gotham\",Arial,sans-serif);color:var(--ink,#0b0b0b)}.ds-field input{width:100%;min-height:52px;padding:12px 14px;border:1px solid #c9c9c2;border-radius:0;background:var(--white,#fff);color:var(--ink,#0b0b0b);font:400 16px/1.5 var(--body,\"Gotham\",Arial,sans-serif)}.ds-field input::placeholder{color:#6b6c65;opacity:1}.ds-field input:focus{outline:2px solid var(--blue,#007495);outline-offset:2px}.ds-field input[aria-invalid=\"true\"]{border-color:#b42c12}.ds-field input:disabled{opacity:.7}.ds-field-error{font:400 11px/1.8 var(--body,\"Gotham\",Arial,sans-serif);color:#b42c12}"
+    },
+    {
+      "name": "Navigation Controls",
+      "kind": "nav",
+      "description": "Controls excerpt from the ink header; the unchanged logo image remains a separate page asset.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Main navigation\"><a class=\"ds-nav-about\" href=\"#studio\">Our new studio</a><a class=\"ds-button ds-compact\" href=\"#membership\">Founding memberships <svg aria-hidden=\"true\" width=\"19\" height=\"19\" viewBox=\"0 0 20 20\" fill=\"none\"><path d=\"M3 10h14M11 4l6 6-6 6\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></a></nav>",
+      "css": ".ds-button{display:inline-flex;align-items:center;justify-content:space-between;gap:28px;min-height:58px;padding:18px 26px;background:var(--lime,#bdcc00);color:var(--ink,#0b0b0b);border:0;border-radius:0;font:700 20px/1.2 var(--display,\"Trade Gothic Next Condensed\",\"Arial Narrow\",sans-serif);text-transform:uppercase;text-decoration:none;cursor:pointer;transition:background 180ms ease}.ds-button:hover{background:#d1df1b}.ds-button:focus-visible{outline:3px solid var(--blue,#007495);outline-offset:5px}.ds-button:disabled{cursor:wait;opacity:.65}.ds-button svg{flex-shrink:0}@media(prefers-reduced-motion:reduce){.ds-button{transition:none}}.ds-nav{display:flex;gap:32px;align-items:center;padding:20px 24px;background:var(--ink,#0b0b0b);color:var(--white,#fff)}.ds-nav-about{font:700 17px/1.2 var(--display,\"Trade Gothic Next Condensed\",\"Arial Narrow\",sans-serif);text-transform:uppercase;text-decoration:none;color:inherit;padding:14px 0}.ds-nav-about:hover{color:var(--lime,#bdcc00)}.ds-nav-about:focus-visible{outline:3px solid var(--blue,#007495);outline-offset:5px}.ds-compact{min-height:48px;padding:14px 20px;font-size:17px;gap:20px}@media(max-width:1100px){.ds-nav{gap:24px}}@media(max-width:767px){.ds-nav{gap:0;padding:16px 20px}.ds-nav-about{display:none}.ds-compact{font-size:14px;gap:12px;padding:12px 14px;min-height:44px}}"
+    },
+    {
+      "name": "Inquiry Panel",
+      "kind": "card",
+      "refersTo": "form-panel",
+      "description": "Flat paper panel with regular-width Trade Gothic title and Gotham supporting text.",
+      "html": "<section class=\"ds-panel\" aria-labelledby=\"ds-panel-title\"><h3 id=\"ds-panel-title\">Start your Brickell chapter.</h3><p class=\"ds-panel-intro\">Leave your details. Our studio manager will be in touch personally with founding membership information.</p><div class=\"ds-field\"><label for=\"ds-panel-email\">Email</label><input id=\"ds-panel-email\" type=\"email\" autocomplete=\"email\" placeholder=\"you@example.com\" required /></div></section>",
+      "css": ".ds-field{display:flex;flex-direction:column;gap:9px}.ds-field label{font:500 12px var(--body,\"Gotham\",Arial,sans-serif);color:var(--ink,#0b0b0b)}.ds-field input{width:100%;min-height:52px;padding:12px 14px;border:1px solid #c9c9c2;border-radius:0;background:var(--white,#fff);color:var(--ink,#0b0b0b);font:400 16px/1.5 var(--body,\"Gotham\",Arial,sans-serif)}.ds-field input::placeholder{color:#6b6c65;opacity:1}.ds-field input:focus{outline:2px solid var(--blue,#007495);outline-offset:2px}.ds-field input[aria-invalid=\"true\"]{border-color:#b42c12}.ds-field input:disabled{opacity:.7}.ds-field-error{font:400 11px/1.8 var(--body,\"Gotham\",Arial,sans-serif);color:#b42c12}.ds-panel{padding:clamp(28px,3.3vw,48px);background:var(--paper,#f7f7f4);color:var(--ink,#0b0b0b)}.ds-panel h3{margin:0;font:700 34px/1.12 var(--heading,\"Trade Gothic Next\",Arial,sans-serif);text-transform:uppercase;letter-spacing:-.02em}.ds-panel-intro{margin:16px 0 28px;color:var(--secondary,#555650);font:400 12px/1.9 var(--body,\"Gotham\",Arial,sans-serif)}@media(max-width:1100px){.ds-panel h3{font-size:28px}}@media(max-width:767px){.ds-panel-intro{font-size:14px}}@media(max-width:360px){.ds-panel{padding:24px}}"
+    },
+    {
+      "name": "Photo Caption Band",
+      "kind": "custom",
+      "description": "Condensed uppercase caption band used across the grayscale story images.",
+      "html": "<div class=\"ds-photo-caption\">Move with intention.</div>",
+      "css": ".ds-photo-caption{padding:20px 24px;background:rgba(0,0,0,.78);color:var(--white,#fff);font:700 26px/1.2 var(--display,\"Trade Gothic Next Condensed\",\"Arial Narrow\",sans-serif);text-transform:uppercase}@media(max-width:767px){.ds-photo-caption{font-size:23px;padding:16px 20px}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Studio Three, Brickell",
+    "overview": "This lander extends the actual Studio Three identity chosen by the user: the original transparent logo, Gotham and Trade Gothic typography, monochrome training photography, and the blue/orange/lime brand marks. Bold condensed headlines and generous section spacing give the page a confident studio presence; restrained body text keeps the next step understandable.\n\nScope is this landing page. Evidence is `src/index.css`, `src/pages/LandingPage.tsx`, `src/components/InquiryForm.tsx`, the direction contract in `index.html`, and the final desktop/mobile renders. This records implemented visual decisions, not a new identity proposal.",
+    "keyCharacteristics": [
+      "Large uppercase condensed headings.",
+      "Ink and paper sections with purposeful brand-color accents.",
+      "Human training photography with readable text separation.",
+      "Square, flat actions and fields.",
+      "A legible, intent-preserving mobile composition."
+    ],
+    "rules": [
+      {
+        "name": "The Original Mark Rule",
+        "body": "Use `public/studio-three-logo.png` unchanged. Do not redraw, recolor, or substitute typeset lettering for the user's logo.",
+        "section": "colors"
+      },
+      {
+        "name": "The Brand Pairing Rule",
+        "body": "Keep condensed Trade Gothic for editorial emphasis and actions, regular Trade Gothic for form titles, and Gotham for readable supporting information.",
+        "section": "typography"
+      },
+      {
+        "name": "The Intent First Rule",
+        "body": "Responsive changes preserve headline hierarchy, visible faces, readable prose, and access to the founding-membership action.",
+        "section": "layout"
+      }
+    ],
+    "dos": [
+      "Do preserve the supplied logo and local brand font families.",
+      "Do retain monochrome photography, visible faces, and deliberate contrast behind copy.",
+      "Do use the existing square lime action, paper panel, and white field primitives.",
+      "Do preserve responsive reading order, keyboard focus, field errors, and reduced-motion behavior."
+    ],
+    "donts": [
+      "Don't redraw the logo or replace the brand fonts with an invented identity.",
+      "Don't turn the full-width brand boundary into a recurring decorative card accent.",
+      "Don't add shadows or rounded pill treatments to these flat primitives.",
+      "Don't make headline impact depend on illegible mobile supporting text."
+    ]
+  }
+}

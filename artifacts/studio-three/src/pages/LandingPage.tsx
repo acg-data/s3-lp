@@ -5,24 +5,35 @@ import yoga from "@assets/image_1777662794631.png";
 import strength from "@assets/image_1777662826834.png";
 
 const membershipHref = import.meta.env.VITE_MEMBERSHIP_URL || "#membership";
+const logo = `${import.meta.env.BASE_URL}studio-three-logo.png`;
+const directionsHref =
+  "https://maps.google.com/maps?saddr=&daddr=96+SE+8th.+St%2CMiami%2CUnited+States+of+America";
 
 function Arrow() {
   return (
     <svg
       aria-hidden="true"
-      width="18"
-      height="18"
-      viewBox="0 0 18 18"
+      width="19"
+      height="19"
+      viewBox="0 0 20 20"
       fill="none"
     >
       <path
-        d="M3 9h12M10 4l5 5-5 5"
+        d="M3 10h14M11 4l6 6-6 6"
         stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
     </svg>
+  );
+}
+
+function Logo() {
+  return (
+    <a className="brand" href="#top" aria-label="Studio Three Brickell home">
+      <img src={logo} alt="Studio Three" width="1316" height="142" />
+    </a>
   );
 }
 
@@ -56,127 +67,153 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div id="landing-page">
+    <div id="top">
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
       <header className="site-header">
-        <a className="brand" href="#" aria-label="Studio Three home">
-          STUDIO<span>///</span>
-        </a>
-        <span className="header-location">Brickell, Miami</span>
+        <Logo />
+        <span className="header-location">
+          Brickell <span aria-hidden="true">/</span> Miami
+        </span>
         <nav aria-label="Main navigation">
           <a className="nav-about" href="#studio">
-            The Studio Three experience
+            Our new studio
           </a>
           <a className="button button-small" href={membershipHref}>
-            Membership details <Arrow />
+            Founding memberships <Arrow />
           </a>
         </nav>
       </header>
 
       <main id="main-content" tabIndex={-1}>
-        <section className="hero" ref={heroRef}>
-          <div className="hero-copy">
-            <h1>
-              Make your
-              <br />
-              first <span>move.</span>
-            </h1>
-            <p>
-              Founding memberships are now available at Studio Three Brickell. A
-              new studio. A new community. Your place in it.
-            </p>
-            <a className="button button-light" href={membershipHref}>
-              Get founding membership details <Arrow />
-            </a>
-            <a className="text-link" href="#studio">
-              Discover Studio Three <span aria-hidden="true">↓</span>
-            </a>
-            <div className="hero-footnote">
-              <span className="location-mark" aria-hidden="true">
-                ↗
-              </span>{" "}
-              Studio Three is coming to Brickell.
-            </div>
-          </div>
-          <figure className="hero-photo">
+        <section className="hero" ref={heroRef} aria-labelledby="hero-heading">
+          <div className="hero-photo">
             <img
               src={community}
-              alt="Studio Three members together in a training studio"
+              alt="Studio Three members training together"
               width="800"
               height="600"
               fetchPriority="high"
             />
-            <figcaption>Good energy. Better company.</figcaption>
-          </figure>
-        </section>
-
-        <section className="intro" id="studio">
-          <h2>
-            More than a workout.
-            <br />
-            <span>A place to belong.</span>
-          </h2>
-          <div className="intro-copy">
+          </div>
+          <div className="hero-shade" />
+          <div className="hero-copy">
+            <h1 id="hero-heading">
+              <span className="hero-place">Brickell.</span>
+              <span>
+                Be part of
+                <br />
+                the beginning.
+              </span>
+            </h1>
+            <h2 className="hero-offer">Founding memberships now available.</h2>
             <p>
-              Movement brings us together. At Studio Three, the experience is as
-              much about the people beside you as the work you put in.
+              A new Studio Three. Right here in Brickell. Join our founding
+              community and make this next chapter yours.
             </p>
-            <p>
-              Be part of our next chapter in Brickell. Connect with our studio
-              manager to explore founding membership options and find your way
-              in.
-            </p>
+            <a className="button" href={membershipHref}>
+              Explore founding membership <Arrow />
+            </a>
+            <a className="text-link" href="#studio">
+              Meet your new studio <span aria-hidden="true">↓</span>
+            </a>
+          </div>
+          <div className="hero-caption">
+            <span>Studio Three</span>
+            <span>Train for something bigger.</span>
           </div>
         </section>
 
-        <section
-          className="photo-story"
-          aria-label="A look at the Studio Three experience"
-        >
-          <figure className="story-image story-wide">
-            <img
-              src={yoga}
-              alt="A Studio Three group moving through a yoga practice"
-              width="800"
-              height="600"
-              loading="lazy"
-            />
-            <figcaption>Space to reset.</figcaption>
-          </figure>
-          <figure className="story-image story-tall">
-            <img
-              src={strength}
-              alt="Focused strength and core training at Studio Three"
-              width="800"
-              height="600"
-              loading="lazy"
-            />
-            <figcaption>Room to grow.</figcaption>
-          </figure>
+        <aside className="location-strip" aria-label="Brickell studio location">
+          <div className="location-building">830 Brickell</div>
+          <address>
+            96 SE 8th St
+            <br />
+            Miami, FL 33131
+          </address>
+          <a
+            className="text-link"
+            href={directionsHref}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Find your new studio <Arrow />
+          </a>
+        </aside>
+
+        <section className="studio-section" id="studio">
+          <div className="studio-intro">
+            <h2>
+              Your neighborhood.
+              <br />
+              <span>Your new community.</span>
+            </h2>
+            <div className="intro-copy">
+              <p>
+                From high-energy Interval and Cycle to Yoga, Strength and
+                Pilates, discover the Studio Three experience—with a new chapter
+                at 830 Brickell.
+              </p>
+              <p>
+                Be here from the beginning. Connect with our studio manager to
+                explore founding membership options and find your place in the
+                community.
+              </p>
+            </div>
+          </div>
+          <div className="photo-story" aria-label="The Studio Three experience">
+            <figure className="story-image story-wide">
+              <img
+                src={yoga}
+                alt="A Studio Three group practicing yoga"
+                width="800"
+                height="600"
+                loading="lazy"
+              />
+              <figcaption>Move with intention.</figcaption>
+            </figure>
+            <figure className="story-image story-tall">
+              <img
+                src={strength}
+                alt="Strength and core training at Studio Three"
+                width="800"
+                height="600"
+                loading="lazy"
+              />
+              <figcaption>Train for something bigger.</figcaption>
+            </figure>
+          </div>
         </section>
 
         <section className="membership" id="membership" ref={inquiryRef}>
           <div className="membership-copy">
             <h2>
-              Your first step
+              Founding
               <br />
-              starts with
+              memberships.
               <br />
-              <span>a conversation.</span>
+              <span>
+                A personal
+                <br />
+                welcome.
+              </span>
             </h2>
             <p>
-              Tell us a little about yourself. Our Brickell studio manager will
-              reach out personally with founding membership details and help you
-              take the next step.
+              Make Studio Three Brickell part of your routine from day one.
+              Share your details and our studio manager will reach out
+              personally with founding membership information.
             </p>
             <div className="personal-note">
-              <span aria-hidden="true">↗</span>
+              <span className="brand-slashes" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+              </span>
               <p>
-                A personal welcome.
+                Your community starts here.
                 <br />
-                From our team to you.
+                Studio Three Brickell.
               </p>
             </div>
           </div>
@@ -184,10 +221,9 @@ export default function LandingPage() {
             <InquiryForm />
           ) : (
             <div className="membership-direct">
-              <h3>Explore your membership.</h3>
+              <h3>Join Studio Three Brickell.</h3>
               <p>
-                Visit our membership page to see the latest options and get
-                started.
+                Explore the latest membership options and take your next step.
               </p>
               <a className="button" href={membershipHref}>
                 View memberships <Arrow />
@@ -198,18 +234,23 @@ export default function LandingPage() {
       </main>
 
       <footer className="site-footer">
-        <a className="brand" href="#" aria-label="Studio Three home">
-          STUDIO<span>///</span>
-        </a>
-        <span>Brickell, Miami</span>
-        <span>© {new Date().getFullYear()} Studio Three</span>
+        <Logo />
+        <div className="footer-location">
+          Studio Three Brickell
+          <br />
+          96 SE 8th St · Miami, FL
+        </div>
+        <div className="footer-meta">
+          <a href="https://studiothree.com/privacy-policy/">Privacy policy</a>
+          <span>© {new Date().getFullYear()} Studio Three</span>
+        </div>
       </footer>
       <div
         className={`mobile-action${stickyVisible ? " is-visible" : ""}`}
         inert={!stickyVisible}
       >
         <a className="button" href={membershipHref}>
-          Get membership details <Arrow />
+          Founding membership details <Arrow />
         </a>
       </div>
     </div>
