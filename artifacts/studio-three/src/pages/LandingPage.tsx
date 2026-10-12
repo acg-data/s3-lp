@@ -125,6 +125,23 @@ export default function LandingPage() {
   const [stickyVisible, setStickyVisible] = useState(false);
 
   useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash) return;
+    let active = true;
+    void document.fonts.ready.then(() => {
+      if (active && window.location.hash === hash) {
+        document.getElementById(hash.slice(1))?.scrollIntoView({
+          behavior: "instant",
+          block: "start",
+        });
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
     const update = () => {
       const hero = heroRef.current?.getBoundingClientRect();
       const inquiry = inquiryRef.current?.getBoundingClientRect();
