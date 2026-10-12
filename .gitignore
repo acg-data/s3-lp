@@ -48,3 +48,8 @@ Thumbs.db
 .cache/
 .local/
 /generated-artifacts/
+.wrangler/
+.dev.vars*
+.env*
+!.env.example
+!.dev.vars.example

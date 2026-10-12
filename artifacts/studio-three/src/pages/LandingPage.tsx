@@ -1,25 +1,58 @@
 import { useEffect, useRef, useState } from "react";
-import hiit from "@assets/image_1777662764571.png";
+import InquiryForm from "@/components/InquiryForm";
+import community from "@assets/image_1777662764571.png";
 import yoga from "@assets/image_1777662794631.png";
 import strength from "@assets/image_1777662826834.png";
 
-interface LandingPageProps {
-  onBook: () => void;
+const membershipHref = import.meta.env.VITE_MEMBERSHIP_URL || "#membership";
+
+function Arrow() {
+  return (
+    <svg
+      aria-hidden="true"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+    >
+      <path
+        d="M3 9h12M10 4l5 5-5 5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
 }
 
-export default function LandingPage({ onBook }: LandingPageProps) {
+export default function LandingPage() {
   const heroRef = useRef<HTMLElement>(null);
+  const inquiryRef = useRef<HTMLElement>(null);
   const [stickyVisible, setStickyVisible] = useState(false);
 
   useEffect(() => {
-    const hero = heroRef.current;
-    if (!hero) return;
-    const io = new IntersectionObserver(
-      ([e]) => setStickyVisible(!e.isIntersecting),
-      { threshold: 0.1 },
-    );
-    io.observe(hero);
-    return () => io.disconnect();
+    const update = () => {
+      const hero = heroRef.current?.getBoundingClientRect();
+      const inquiry = inquiryRef.current?.getBoundingClientRect();
+      setStickyVisible(
+        !!hero &&
+          !!inquiry &&
+          hero.bottom < 80 &&
+          inquiry.top > window.innerHeight,
+      );
+    };
+    const observer = new IntersectionObserver(update, {
+      threshold: [0, 0.1, 1],
+    });
+    if (heroRef.current) observer.observe(heroRef.current);
+    if (inquiryRef.current) observer.observe(inquiryRef.current);
+    window.addEventListener("scroll", update, { passive: true });
+    update();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", update);
+    };
   }, []);
 
   return (
@@ -27,299 +60,158 @@ export default function LandingPage({ onBook }: LandingPageProps) {
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
-      <nav className="nav" aria-label="Main navigation">
-        <div className="nav-logo">
-          STUDIO<span className="slash">///</span>
-        </div>
-        <div className="nav-links">
-          <a href="#the-pass">The pass</a>
-          <a href="#formats">Class formats</a>
-          <a href="#community">Community</a>
-        </div>
-        <button className="nav-btn" onClick={onBook}>
-          Book Pass →
-        </button>
-      </nav>
-
-      <div
-        className={`sticky-cta${stickyVisible ? " visible" : ""}`}
-        inert={!stickyVisible}
-      >
-        <div className="sticky-cta-text">
-          <strong>3-Class Pass</strong>
-          <span>All formats · All studios · $60</span>
-        </div>
-        <button className="sticky-btn" onClick={onBook}>
-          Book Now →
-        </button>
-      </div>
+      <header className="site-header">
+        <a className="brand" href="#" aria-label="Studio Three home">
+          STUDIO<span>///</span>
+        </a>
+        <span className="header-location">Brickell, Miami</span>
+        <nav aria-label="Main navigation">
+          <a className="nav-about" href="#studio">
+            The Studio Three experience
+          </a>
+          <a className="button button-small" href={membershipHref}>
+            Membership details <Arrow />
+          </a>
+        </nav>
+      </header>
 
       <main id="main-content" tabIndex={-1}>
-        <section
-          className="hero"
-          ref={heroRef}
-          aria-label="Three-class introductory pass"
-        >
-          <div
-            className="hero-bg"
-            style={{ backgroundImage: `url(${hiit})` }}
-          />
-          <div className="hero-content">
-            <h1 className="hero-hl">
-              Three
+        <section className="hero" ref={heroRef}>
+          <div className="hero-copy">
+            <h1>
+              Make your
               <br />
-              classes.<span className="price">$60.</span>
+              first <span>move.</span>
             </h1>
-            <p className="hero-sub">
-              Try any format — Cycle, Interval, Strength, Yoga, Pilates — across
-              all Studio Three locations. No commitment. No conditions.
+            <p>
+              Founding memberships are now available at Studio Three Brickell. A
+              new studio. A new community. Your place in it.
             </p>
-            <div className="hero-actions">
-              <button className="btn-hero" onClick={onBook}>
-                Book Your Pass
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path
-                    d="M3 8h10M9 4l4 4-4 4"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-              <a className="hero-secondary" href="#the-pass">
-                Explore the pass <span aria-hidden="true">↓</span>
-              </a>
-            </div>
-            <div className="hero-trust">
-              <div className="trust-item">
-                <span className="trust-val">3</span>
-                <span className="trust-lbl">Classes</span>
-              </div>
-              <div className="trust-sep" />
-              <div className="trust-item">
-                <span className="trust-val">All</span>
-                <span className="trust-lbl">Formats</span>
-              </div>
-              <div className="trust-sep" />
-              <div className="trust-item">
-                <span className="trust-val">60</span>
-                <span className="trust-lbl">Day Window</span>
-              </div>
-              <div className="trust-sep" />
-              <div className="trust-item">
-                <span className="trust-val">$60</span>
-                <span className="trust-lbl">Total</span>
-              </div>
+            <a className="button button-light" href={membershipHref}>
+              Get founding membership details <Arrow />
+            </a>
+            <a className="text-link" href="#studio">
+              Discover Studio Three <span aria-hidden="true">↓</span>
+            </a>
+            <div className="hero-footnote">
+              <span className="location-mark" aria-hidden="true">
+                ↗
+              </span>{" "}
+              Studio Three is coming to Brickell.
             </div>
           </div>
+          <figure className="hero-photo">
+            <img
+              src={community}
+              alt="Studio Three members together in a training studio"
+              width="800"
+              height="600"
+              fetchPriority="high"
+            />
+            <figcaption>Good energy. Better company.</figcaption>
+          </figure>
         </section>
 
-        <section className="section-pass" id="the-pass">
-          <h2 className="section-title">
-            Three Classes.
+        <section className="intro" id="studio">
+          <h2>
+            More than a workout.
             <br />
-            No Catch.
+            <span>A place to belong.</span>
           </h2>
-          <div className="pass-cards">
-            <div className="pass-card">
-              <div className="pass-card-title">HIIT</div>
-              <p className="pass-card-desc">
-                High-intensity functional training that builds power, burns
-                calories, and pushes your limits — coached by world-class
-                instructors.
-              </p>
-            </div>
-            <div className="pass-card">
-              <div className="pass-card-title">Yoga</div>
-              <p className="pass-card-desc">
-                Flow and strength sessions that deepen flexibility, sharpen
-                focus, and leave you reset — available at every Studio Three
-                location.
-              </p>
-            </div>
-            <div className="pass-card">
-              <div className="pass-card-title">Pilates</div>
-              <p className="pass-card-desc">
-                Hot mat Pilates that targets your core from every angle.
-                Precise, challenging, and genuinely different from anything else
-                you've tried.
-              </p>
-            </div>
-            <div className="pass-card">
-              <div className="pass-card-title">60-Day Window</div>
-              <p className="pass-card-desc">
-                Use your three classes anytime within 60 days of purchase. Zero
-                pressure. Full flexibility.
-              </p>
-            </div>
+          <div className="intro-copy">
+            <p>
+              Movement brings us together. At Studio Three, the experience is as
+              much about the people beside you as the work you put in.
+            </p>
+            <p>
+              Be part of our next chapter in Brickell. Connect with our studio
+              manager to explore founding membership options and find your way
+              in.
+            </p>
           </div>
         </section>
 
-        <div className="mosaic">
-          <div className="mosaic-cell">
-            <img
-              src={hiit}
-              alt="Athlete training in the Studio Three HIIT studio"
-              loading="lazy"
-              width="800"
-              height="600"
-            />
-            <div className="mosaic-label">HIIT</div>
-          </div>
-          <div className="mosaic-cell">
-            <img
-              src={strength}
-              alt="Strength and core training at Studio Three"
-              loading="lazy"
-              width="800"
-              height="600"
-            />
-            <div className="mosaic-label">Core</div>
-          </div>
-          <div className="mosaic-cell mosaic-cell-wide">
+        <section
+          className="photo-story"
+          aria-label="A look at the Studio Three experience"
+        >
+          <figure className="story-image story-wide">
             <img
               src={yoga}
-              alt="Yoga practice at Studio Three"
-              loading="lazy"
+              alt="A Studio Three group moving through a yoga practice"
               width="800"
               height="600"
-              style={{ objectPosition: "center 30%" }}
+              loading="lazy"
             />
-            <div className="mosaic-label">Yoga</div>
-          </div>
-        </div>
-
-        <section className="section-formats" id="formats">
-          <h2 className="section-title">
-            Three Ways
-            <br />
-            To Train.
-          </h2>
-          <p className="formats-sub">
-            Use all three on one format or try something new each time. Your
-            pass, your call.
-          </p>
-          <div className="format-list">
-            {[
-              { idx: "01", name: "HIIT", tag: "High intensity\nfunctional" },
-              { idx: "02", name: "Yoga", tag: "Flow &\nstrength" },
-              { idx: "03", name: "Pilates", tag: "Hot mat\ncore work" },
-            ].map((f) => (
-              <div className="format-row" key={f.idx}>
-                <span className="format-name">{f.name}</span>
-                <span className="format-tag" style={{ whiteSpace: "pre-line" }}>
-                  {f.tag}
-                </span>
-              </div>
-            ))}
-          </div>
+            <figcaption>Space to reset.</figcaption>
+          </figure>
+          <figure className="story-image story-tall">
+            <img
+              src={strength}
+              alt="Focused strength and core training at Studio Three"
+              width="800"
+              height="600"
+              loading="lazy"
+            />
+            <figcaption>Room to grow.</figcaption>
+          </figure>
         </section>
 
-        <section className="quote-section">
-          <div className="quote-content">
-            <div className="quote-stars">★★★★★</div>
-            <p className="quote-text">
-              "I came in skeptical. I left having booked my membership before
-              the class even ended."
-            </p>
-            <p className="quote-attr">
-              — Melissa R. · River North · Cycle + Interval Member
-            </p>
-          </div>
-        </section>
-
-        <section className="section-reviews" id="community">
-          <h2 className="section-title">
-            From The
-            <br />
-            Community.
-          </h2>
-          <div className="reviews-list">
-            <div className="review-card">
-              <div className="review-stars">★★★★★</div>
-              <p className="review-text">
-                "I'd been putting off trying a boutique studio for years — too
-                intimidating, too expensive to commit without knowing. The
-                three-class pass removed every excuse. First class was Cycle at
-                Lincoln Park. The energy in that room is something you don't
-                find at a regular gym. By class three I was asking the front
-                desk about membership options before I'd even showered."
-              </p>
-              <div className="review-attr">
-                Jordan K. · Lincoln Park · Member since Jan 2025
-              </div>
-            </div>
-            <div className="review-card">
-              <div className="review-stars">★★★★★</div>
-              <p className="review-text">
-                "I tried Interval on a Wednesday morning expecting it to feel
-                like a standard HIIT class. It's not. The programming is
-                genuinely different — it builds on itself, the coaches actually
-                coach. I used my second class on Hot Mat Pilates thinking it'd
-                be a recovery day. That was humbling. Both are now in my weekly
-                rotation. Signed up for All-Access the week after."
-              </p>
-              <div className="review-attr">
-                Danielle M. · River North · All-Access Member
-              </div>
-            </div>
-            <div className="review-card">
-              <div className="review-stars">★★★★★</div>
-              <p className="review-text">
-                "My wife convinced me to use the three-class pass with her. I'm
-                not a yoga person — I came in on my terms and did Strength twice
-                and Interval once. Every single instructor knew my name by the
-                third session. That's what got me. It's not just a gym. Twelve
-                months later we both still go four times a week."
-              </p>
-              <div className="review-attr">
-                Marcus T. · Bucktown · Member since Mar 2024
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="section-final">
-          <div
-            className="final-bg"
-            style={{ backgroundImage: `url(${yoga})` }}
-          />
-          <div className="final-content">
-            <h2 className="final-title">
-              3 Classes.
+        <section className="membership" id="membership" ref={inquiryRef}>
+          <div className="membership-copy">
+            <h2>
+              Your first step
               <br />
-              $60.
+              starts with
               <br />
-              Start Now.
+              <span>a conversation.</span>
             </h2>
-            <button className="btn-final" onClick={onBook}>
-              Book My Pass
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path
-                  d="M3 8h10M9 4l4 4-4 4"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-            <p className="final-note">
-              No auto-renew · No commitment · 60 days to use all three
+            <p>
+              Tell us a little about yourself. Our Brickell studio manager will
+              reach out personally with founding membership details and help you
+              take the next step.
             </p>
+            <div className="personal-note">
+              <span aria-hidden="true">↗</span>
+              <p>
+                A personal welcome.
+                <br />
+                From our team to you.
+              </p>
+            </div>
           </div>
+          {membershipHref === "#membership" ? (
+            <InquiryForm />
+          ) : (
+            <div className="membership-direct">
+              <h3>Explore your membership.</h3>
+              <p>
+                Visit our membership page to see the latest options and get
+                started.
+              </p>
+              <a className="button" href={membershipHref}>
+                View memberships <Arrow />
+              </a>
+            </div>
+          )}
         </section>
       </main>
 
-      <footer>
-        <div className="footer-logo">
-          STUDIO<span className="slash">///</span>
-        </div>
-        <div className="footer-copy">
-          © 2026 Studio Three. All rights reserved.
-        </div>
+      <footer className="site-footer">
+        <a className="brand" href="#" aria-label="Studio Three home">
+          STUDIO<span>///</span>
+        </a>
+        <span>Brickell, Miami</span>
+        <span>© {new Date().getFullYear()} Studio Three</span>
       </footer>
+      <div
+        className={`mobile-action${stickyVisible ? " is-visible" : ""}`}
+        inert={!stickyVisible}
+      >
+        <a className="button" href={membershipHref}>
+          Get membership details <Arrow />
+        </a>
+      </div>
     </div>
   );
 }

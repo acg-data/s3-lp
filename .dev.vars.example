@@ -1,0 +1,5 @@
+# Copy to .dev.vars for LOCAL tests with a real, approved sender and recipient.
+# Leave blank until the studio team confirms the addresses.
+LEAD_RECIPIENT=
+EMAIL_FROM=
+FRONTEND_ORIGIN=http://localhost:5173

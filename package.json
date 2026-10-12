@@ -3,6 +3,13 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "build:lander": "node scripts/build-lander.mjs",
+    "dev:worker": "wrangler dev --local --port 8787",
+    "typecheck:worker": "tsc -p tsconfig.worker.json",
+    "types:worker": "wrangler types --include-runtime=false --strict-vars=false",
+    "test:inquiries": "node --test tests/inquiries.test.mjs",
+    "deploy:check": "pnpm run build:lander && wrangler deploy --dry-run",
+    "deploy:lander": "pnpm run build:lander && wrangler deploy",
     "preinstall": "node scripts/preinstall.mjs",
     "build": "pnpm run typecheck && pnpm -r --if-present run build",
     "typecheck:libs": "tsc --build",
@@ -10,7 +17,9 @@
   },
   "private": true,
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261011.1",
+    "prettier": "^3.8.1",
     "typescript": "~5.9.2",
-    "prettier": "^3.8.1"
+    "wrangler": "^4.149.0"
   }
 }
