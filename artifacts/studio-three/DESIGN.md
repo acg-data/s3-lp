@@ -187,7 +187,7 @@ An ink sticky header presents the original logo and a compact membership action.
 
 Use authentic Studio Three photographs with grayscale treatment. Hero and modality crops must retain the subject and meaningful training context. These are experience images, not evidence of the Brickell building. Reuse the three slashes only in their evidenced brand roles.
 
-The Interval, Cycle, and Yoga gallery pairs each 4:3 image with a 42px condensed heading and 14px Gotham description. The three columns share a 28px gap and remain flat on paper without card borders or overlays. On mobile, they stack with a 36px gap. A fine divider introduces a 28px Brickell invitation and the founding-membership link. Image focal positions preserve the Interval athlete and Cycle riders.
+The Interval, Pilates, and Yoga gallery pairs each 4:3 image with a 42px condensed heading and 14px Gotham description. The three columns share a 28px gap and remain flat on paper without card borders or overlays. On mobile, they stack with a 36px gap. A fine divider introduces a 28px Brickell invitation and the founding-membership link. Image focal positions preserve the Interval athlete and Pilates instructor.
 
 ## Do's and Don'ts
 

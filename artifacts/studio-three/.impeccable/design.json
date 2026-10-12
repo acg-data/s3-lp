@@ -265,7 +265,7 @@
       "name": "Modality Description",
       "kind": "custom",
       "description": "Open condensed heading and Gotham description beneath a grayscale modality photograph.",
-      "html": "<article class=\"ds-modality\"><h3>Cycle</h3><p>Clip in for a rhythm-driven ride, athletic intervals and energizing playlists. Expert coaching keeps you moving with the room.</p></article>",
+      "html": "<article class=\"ds-modality\"><h3>Pilates</h3><p>Low-impact mat work with rings, balls and light weights. Build core strength and flexibility through intentional movement for every level.</p></article>",
       "css": ".ds-modality{background:var(--paper,#f7f7f4);color:var(--ink,#0b0b0b)}.ds-modality h3{margin:24px 0 0;font:700 42px/1.08 var(--display,\"Trade Gothic Next Condensed\",\"Arial Narrow\",sans-serif);text-transform:uppercase}.ds-modality p{margin:12px 0 0;max-width:40ch;color:var(--secondary,#555650);font:400 14px/1.8 var(--body,\"Gotham\",Arial,sans-serif)}@media(max-width:767px){.ds-modality h3{margin-top:20px}}"
     }
   ],

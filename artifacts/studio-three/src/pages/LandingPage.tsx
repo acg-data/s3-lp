@@ -16,13 +16,13 @@ const modalities = [
       "Build strength and endurance with coached treadmill intervals and strength work. High energy, purposeful effort, and a pace you can make your own.",
   },
   {
-    name: "Cycle",
-    image: `${import.meta.env.BASE_URL}modalities/cycle.jpg`,
-    alt: "Three Studio Three riders training together on indoor bikes",
-    width: 800,
-    height: 800,
+    name: "Pilates",
+    image: `${import.meta.env.BASE_URL}modalities/pilates.jpg`,
+    alt: "A Studio Three instructor guiding a mat Pilates class with Pilates rings",
+    width: 2048,
+    height: 2048,
     description:
-      "Clip in for a rhythm-driven ride, athletic intervals and energizing playlists. Expert coaching keeps you moving with the room.",
+      "Low-impact mat work with rings, balls and light weights. Build core strength and flexibility through intentional movement for every level.",
   },
   {
     name: "Yoga",
@@ -232,7 +232,7 @@ export default function LandingPage() {
             </h2>
             <div className="intro-copy">
               <p>
-                Interval. Cycle. Yoga. Three distinct ways to train, connected
+                Interval. Pilates. Yoga. Three distinct ways to train, connected
                 by one community. Discover the Studio Three experience—with a
                 new chapter at 830 Brickell.
               </p>
@@ -247,7 +247,7 @@ export default function LandingPage() {
             className="modality-grid"
             id="modalities"
             role="group"
-            aria-label="Interval, Cycle and Yoga"
+            aria-label="Interval, Pilates and Yoga"
           >
             {modalities.map((modality) => (
               <article

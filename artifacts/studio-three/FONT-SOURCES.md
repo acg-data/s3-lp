@@ -16,9 +16,9 @@ The address and building name are supported by https://studiothree.com/studio/br
 
 The three-modality section uses the existing project Yoga photograph and the following official Studio Three photographs, saved unchanged on October 12, 2026:
 
-| Local file                       | Official source                                                  |
-| -------------------------------- | ---------------------------------------------------------------- |
-| `public/modalities/interval.jpg` | https://studiothree.com/wp-content/uploads/2022/11/torch.jpeg    |
-| `public/modalities/cycle.jpg`    | https://studiothree.com/wp-content/uploads/2022/10/CYCLE-SIG.jpg |
+| Local file                       | Official source                                                         |
+| -------------------------------- | ----------------------------------------------------------------------- |
+| `public/modalities/interval.jpg` | https://studiothree.com/wp-content/uploads/2022/11/torch.jpeg           |
+| `public/modalities/pilates.jpg`  | https://studiothree.com/wp-content/uploads/2024/11/2N1A6546-Final-1.jpg |
 
-Descriptions are grounded in the official class pages: https://studiothree.com/classes/interval/, https://studiothree.com/classes/cycle/, and https://studiothree.com/classes/yoga/. No class schedule or equipment beyond these general training descriptions is promised for Brickell.
+Descriptions are grounded in the official class pages: https://studiothree.com/classes/interval/, https://studiothree.com/classes/pilates/, and https://studiothree.com/classes/yoga/. No class schedule or equipment beyond these general training descriptions is promised for Brickell.
