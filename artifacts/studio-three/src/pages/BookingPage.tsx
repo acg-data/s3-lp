@@ -18,7 +18,7 @@ export default function BookingPage({ onBack, onSuccess }: BookingPageProps) {
 
     const first = firstRef.current?.value.trim() ?? "";
     const last = lastRef.current?.value.trim() ?? "";
-    const email = firstRef.current ? emailRef.current?.value.trim() ?? "" : "";
+    const email = emailRef.current?.value.trim() ?? "";
     const phone = phoneRef.current?.value.trim() ?? "";
 
     if (!first) newErrors["first"] = true;
@@ -33,6 +33,7 @@ export default function BookingPage({ onBack, onSuccess }: BookingPageProps) {
     if (Object.keys(newErrors).length > 0) {
       const firstErrId = Object.keys(newErrors)[0];
       const el = document.getElementById(`f-${firstErrId}`);
+      el?.focus({ preventScroll: true });
       el?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
@@ -69,13 +70,12 @@ export default function BookingPage({ onBack, onSuccess }: BookingPageProps) {
       </nav>
 
       <div className="booking-hero">
-        <div className="booking-hero-bg" />
         <div className="booking-hero-content">
-          <div className="booking-page-title">
+          <h1 className="booking-page-title">
             Book Your
             <br />
             Pass.
-          </div>
+          </h1>
           <div className="booking-page-sub">
             3 classes · All formats · 60-day window
           </div>
@@ -125,7 +125,14 @@ export default function BookingPage({ onBack, onSuccess }: BookingPageProps) {
           </div>
         </div>
 
-        <div className="form-card">
+        <form
+          className="form-card"
+          noValidate
+          onSubmit={(event) => {
+            event.preventDefault();
+            handleSubmit();
+          }}
+        >
           <div className="form-card-title">Your Details</div>
           <div className="form-card-sub">
             Fill in your info below. Payment is collected at confirmation —
@@ -143,8 +150,16 @@ export default function BookingPage({ onBack, onSuccess }: BookingPageProps) {
                 placeholder="Jane"
                 autoComplete="given-name"
                 className={errors.first ? "error" : ""}
+                required
+                aria-invalid={!!errors.first}
+                aria-describedby={errors.first ? "error-first" : undefined}
                 onChange={() => clearError("first")}
               />
+              {errors.first && (
+                <p className="field-error" id="error-first">
+                  Enter your first name.
+                </p>
+              )}
             </div>
             <div className="field">
               <label htmlFor="f-last">Last Name *</label>
@@ -155,8 +170,16 @@ export default function BookingPage({ onBack, onSuccess }: BookingPageProps) {
                 placeholder="Smith"
                 autoComplete="family-name"
                 className={errors.last ? "error" : ""}
+                required
+                aria-invalid={!!errors.last}
+                aria-describedby={errors.last ? "error-last" : undefined}
                 onChange={() => clearError("last")}
               />
+              {errors.last && (
+                <p className="field-error" id="error-last">
+                  Enter your last name.
+                </p>
+              )}
             </div>
             <div className="field fg-full">
               <label htmlFor="f-email">Email Address *</label>
@@ -167,8 +190,16 @@ export default function BookingPage({ onBack, onSuccess }: BookingPageProps) {
                 placeholder="jane@email.com"
                 autoComplete="email"
                 className={errors.email ? "error" : ""}
+                required
+                aria-invalid={!!errors.email}
+                aria-describedby={errors.email ? "error-email" : undefined}
                 onChange={() => clearError("email")}
               />
+              {errors.email && (
+                <p className="field-error" id="error-email">
+                  Enter a valid email address.
+                </p>
+              )}
             </div>
             <div className="field fg-full">
               <label htmlFor="f-phone">Phone Number *</label>
@@ -179,12 +210,26 @@ export default function BookingPage({ onBack, onSuccess }: BookingPageProps) {
                 placeholder="(312) 000-0000"
                 autoComplete="tel"
                 className={errors.phone ? "error" : ""}
+                required
+                aria-invalid={!!errors.phone}
+                aria-describedby={errors.phone ? "error-phone" : undefined}
                 onChange={() => clearError("phone")}
               />
+              {errors.phone && (
+                <p className="field-error" id="error-phone">
+                  Enter your phone number.
+                </p>
+              )}
             </div>
           </div>
 
-          <div style={{ height: "1px", background: "var(--border)", margin: "18px 0 6px" }} />
+          <div
+            style={{
+              height: "1px",
+              background: "var(--border)",
+              margin: "18px 0 6px",
+            }}
+          />
           <span className="fsec" style={{ marginTop: 0 }}>
             Your Preferences
           </span>
@@ -209,7 +254,7 @@ export default function BookingPage({ onBack, onSuccess }: BookingPageProps) {
             </div>
           </div>
 
-          <button className="btn-submit" onClick={handleSubmit}>
+          <button className="btn-submit" type="submit">
             <span>
               Complete Booking — $60{" "}
               <svg
@@ -233,7 +278,7 @@ export default function BookingPage({ onBack, onSuccess }: BookingPageProps) {
             Secure checkout · Confirmation sent immediately · 60-day pass
             validity from purchase
           </p>
-        </div>
+        </form>
       </div>
     </div>
   );
