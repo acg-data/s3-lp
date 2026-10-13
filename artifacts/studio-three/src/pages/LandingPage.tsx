@@ -12,8 +12,7 @@ const modalities = [
     alt: "A Studio Three athlete doing strength work with a medicine ball",
     width: 800,
     height: 1200,
-    description:
-      "Build strength and endurance with coached treadmill intervals and strength work. High energy, purposeful effort, and a pace you can make your own.",
+    description: "Coach-led treadmill intervals and strength training.",
   },
   {
     name: "Pilates",
@@ -22,8 +21,7 @@ const modalities = [
     alt: "A Studio Three instructor guiding a mat Pilates class with Pilates rings",
     width: 800,
     height: 800,
-    description:
-      "Low-impact mat work with rings, balls and light weights. Build core strength and flexibility through intentional movement for every level.",
+    description: "Mat Pilates with rings, balls and light weights.",
   },
   {
     name: "Yoga",
@@ -32,8 +30,7 @@ const modalities = [
     alt: "Three Studio Three members practicing yoga together",
     width: 435,
     height: 442,
-    description:
-      "Connect breath with movement through thoughtfully guided flows. Find your balance, build your practice and make space for yourself.",
+    description: "Flow classes that connect breath and movement.",
   },
 ];
 const directionsHref =
@@ -50,7 +47,7 @@ const studioCities = [
       },
       {
         name: "Brickell",
-        detail: "Your founding membership starts here",
+        detail: "830 Brickell · 96 SE 8th St",
         href: membershipHref,
       },
     ],
@@ -178,7 +175,7 @@ export default function LandingPage() {
         </span>
         <nav aria-label="Main navigation">
           <a className="nav-about" href="#studio">
-            Our new studio
+            The studio
           </a>
           <a className="button button-small" href={membershipHref}>
             Founding memberships <Arrow />
@@ -204,24 +201,17 @@ export default function LandingPage() {
               <span className="hero-tagline">
                 Train for
                 <br />
-                Something Bigger.
+                Something Bigger
               </span>
             </h1>
-            <h2 className="hero-offer">Become a Brickell founder.</h2>
-            <p>
-              Founding memberships are now available. Be here from day one—with
-              Interval, Pilates and Yoga, all in one community.
-            </p>
+            <h2 className="hero-offer">Founding memberships now available.</h2>
+            <p>Interval, Pilates and Yoga at 830 Brickell.</p>
             <a className="button" href={membershipHref}>
-              Explore founding membership <Arrow />
+              Get membership details <Arrow />
             </a>
             <a className="text-link" href="#studio">
-              Meet your new studio <span aria-hidden="true">↓</span>
+              View the studio <span aria-hidden="true">↓</span>
             </a>
-          </div>
-          <div className="hero-caption">
-            <span>Studio Three</span>
-            <span>Train for Something Bigger</span>
           </div>
         </section>
 
@@ -238,29 +228,13 @@ export default function LandingPage() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Find your new studio <Arrow />
+            Get directions <Arrow />
           </a>
         </aside>
 
         <section className="studio-section" id="studio">
           <div className="studio-intro">
-            <h2>
-              Your neighborhood.
-              <br />
-              <span>Your new community.</span>
-            </h2>
-            <div className="intro-copy">
-              <p>
-                Interval. Pilates. Yoga. Three distinct ways to train, connected
-                by one community. Discover the Studio Three experience—with a
-                new chapter at 830 Brickell.
-              </p>
-              <p>
-                Be here from the beginning. Connect with our studio team to
-                explore founding membership options and find your place in the
-                community.
-              </p>
-            </div>
+            <h2>Three ways to train</h2>
           </div>
           <div
             className="modality-grid"
@@ -292,21 +266,36 @@ export default function LandingPage() {
               </article>
             ))}
           </div>
-          <div className="modality-invitation">
-            <p>Find your mix in Brickell.</p>
-            <a className="text-link" href={membershipHref}>
-              Explore founding membership <Arrow />
-            </a>
+        </section>
+
+        <section className="membership" id="membership" ref={inquiryRef}>
+          <div className="membership-copy">
+            <h2>
+              Founding
+              <br />
+              memberships
+            </h2>
+            <p>
+              Leave your details. Our Brickell team will contact you with
+              founding membership options and pricing.
+            </p>
           </div>
+          {membershipHref === "#membership" ? (
+            <InquiryForm />
+          ) : (
+            <div className="membership-direct">
+              <h3>Join Studio Three Brickell.</h3>
+              <p>View current membership options and pricing.</p>
+              <a className="button" href={membershipHref}>
+                View memberships <Arrow />
+              </a>
+            </div>
+          )}
         </section>
 
         <section className="studio-network" aria-labelledby="network-heading">
           <div className="network-intro">
-            <h2 id="network-heading">
-              Already part of Miami.
-              <br />
-              <span>Now part of Brickell.</span>
-            </h2>
+            <h2 id="network-heading">Studio locations</h2>
           </div>
           <div className="network-directory">
             {studioCities.map(({ city, studios }) => (
@@ -338,129 +327,58 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <StudioReviews membershipHref={membershipHref} />
+        <StudioReviews />
 
         <section
           className="studio-amenities"
           aria-labelledby="amenities-heading"
         >
           <div className="amenities-copy">
-            <h2 id="amenities-heading">
-              The workout is just
-              <br />
-              <span>the beginning.</span>
-            </h2>
-            <p>
-              Thoughtful spaces make it easier to fit movement into your day. At
-              Brickell, the details extend from the studio floor to the way you
-              get ready, reset and reconnect.
-            </p>
+            <h2 id="amenities-heading">Inside the studio</h2>
           </div>
           <ul className="amenities-list">
             <li>
-              <h3>Arrive ready.</h3>
+              <h3>Studio essentials</h3>
               <p>
-                Complimentary mats and towels, easy-to-use lockers and
-                refillable water stations.
+                Complimentary mats and towels. Lockers and water refill
+                stations.
               </p>
             </li>
             <li>
-              <h3>Leave refreshed.</h3>
-              <p>
-                Full locker rooms with showers, Malin + Goetz grooming products
-                and Dyson blow-dry stations.
-              </p>
+              <h3>Locker rooms</h3>
+              <p>Showers, Malin + Goetz products and Dyson hair dryers.</p>
             </li>
             <li>
-              <h3>Stay a little longer.</h3>
-              <p>
-                Community space for socializing and stretching, an onsite retail
-                boutique and complimentary Wi-Fi.
-              </p>
+              <h3>Shared space</h3>
+              <p>Stretching and social space, a retail shop and Wi-Fi.</p>
             </li>
           </ul>
         </section>
 
-        <section className="membership" id="membership" ref={inquiryRef}>
-          <div className="membership-copy">
-            <h2>
-              Founding
-              <br />
-              memberships.
-              <br />
-              <span>
-                A personal
-                <br />
-                welcome.
-              </span>
-            </h2>
-            <p>
-              Be a founder. Make Studio Three Brickell part of your routine from
-              day one. Our Brickell studio manager will reach out personally to
-              walk you through founding membership options.
-            </p>
-            <div className="personal-note">
-              <span className="brand-slashes" aria-hidden="true">
-                <i />
-                <i />
-                <i />
-              </span>
-              <p>
-                A personal welcome.
-                <br />
-                Your goals. Your questions. Your place in Brickell.
-              </p>
-            </div>
-          </div>
-          {membershipHref === "#membership" ? (
-            <InquiryForm />
-          ) : (
-            <div className="membership-direct">
-              <h3>Join Studio Three Brickell.</h3>
-              <p>
-                Explore the latest membership options and take your next step.
-              </p>
-              <a className="button" href={membershipHref}>
-                View memberships <Arrow />
-              </a>
-            </div>
-          )}
-        </section>
         <section className="studio-faq" aria-labelledby="faq-heading">
           <div className="faq-intro">
-            <h2 id="faq-heading">
-              Your next chapter.
-              <br />
-              <span>A few answers.</span>
-            </h2>
-            <p>
-              Get to know Studio Three Brickell. Our team is here to help you
-              find your place.
-            </p>
+            <h2 id="faq-heading">Questions</h2>
           </div>
           <div className="faq-list">
             <details>
               <summary>What happens after I submit my details?</summary>
               <p>
-                Your inquiry is saved for our Brickell team. Our studio manager
-                will reach out personally with founding membership details and
-                help you explore your options.
+                Our Brickell team will contact you with membership options,
+                pricing and next steps.
               </p>
             </details>
             <details>
               <summary>Do I purchase a membership on this page?</summary>
               <p>
-                This form lets us know you’re interested. No payment is
-                collected here. Our studio manager will walk you through
-                membership details and the next steps.
+                No. This form requests information. Our team will explain how to
+                join when they contact you.
               </p>
             </details>
             <details>
               <summary>Which workouts can I explore?</summary>
               <p>
-                Discover Interval, Pilates and Yoga. Talk with our team about
-                your goals, the class experience and the membership options
-                available at Brickell.
+                Interval, Pilates and Yoga. Our team can answer questions about
+                the classes and membership options.
               </p>
             </details>
             <details>
@@ -497,7 +415,7 @@ export default function LandingPage() {
         inert={!stickyVisible}
       >
         <a className="button" href={membershipHref}>
-          Founding membership details <Arrow />
+          Get membership details <Arrow />
         </a>
       </div>
     </div>

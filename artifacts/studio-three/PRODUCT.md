@@ -21,6 +21,7 @@ Capture founding-membership interest and route the visitor's name, email, and ph
 - Inline form with name, email, phone, and an optional unchecked iMessage confirmation consent. Success requires a confirmed, durable Cloudflare D1 lead record. Provider notifications are separately retried and are not represented as final delivery.
 - React/Vite source deployed with a Cloudflare Worker, static assets, and separate dev/production D1 lead databases. The user chose Resend for email, with justin@aryocg.com as the temporary recipient and the verified ARYO sending subdomain. The user chose Comms workspace line +12103933771 for founder confirmations. Keys are server-only secrets; production activation is separate.
 - Website copy refers to the Brickell studio team/manager, with no personal names, as requested by the user. The hero uses the exact brand message "Train for Something Bigger." A submitted inquiry expresses founder interest; it does not purchase or guarantee a membership.
+- Copy should be brief and concrete. Avoid repeated community/chapter/welcome slogans, repeated CTA strips, and decorative embellishment. Present the inquiry form directly after the workouts, using a flat paper layout.
 - Later CTAs can switch to the approved Mariana Tek membership purchase URL.
 
 ## Brand Commitments

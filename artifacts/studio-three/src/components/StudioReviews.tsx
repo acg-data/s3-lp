@@ -1,10 +1,6 @@
 import { studioReviews } from "@/lib/studio-reviews";
 
-export default function StudioReviews({
-  membershipHref,
-}: {
-  membershipHref: string;
-}) {
+export default function StudioReviews() {
   return (
     <section
       className="studio-reviews"
@@ -12,12 +8,8 @@ export default function StudioReviews({
       aria-labelledby="reviews-heading"
     >
       <div className="reviews-intro">
-        <h2 id="reviews-heading">
-          What our
-          <br />
-          <span>community says.</span>
-        </h2>
-        <p>Selected ClassPass review excerpts from our six existing studios.</p>
+        <h2 id="reviews-heading">Studio reviews</h2>
+        <p>ClassPass review excerpts from our six existing studios.</p>
       </div>
       <div className="reviews-grid">
         {studioReviews.map((review) => (
@@ -44,12 +36,6 @@ export default function StudioReviews({
             </figcaption>
           </figure>
         ))}
-      </div>
-      <div className="reviews-invitation">
-        <p>Find your people. Right here in Brickell.</p>
-        <a className="text-link" href={membershipHref}>
-          Explore founding membership <span aria-hidden="true">→</span>
-        </a>
       </div>
     </section>
   );

@@ -108,17 +108,12 @@ export default function InquiryForm() {
         <div className="success-symbol" aria-hidden="true">
           ✓
         </div>
-        <h3>
-          Your first move,
-          <br />
-          made.
-        </h3>
+        <h3>Inquiry received</h3>
         <p>
-          Your founder inquiry has been received. Our Brickell studio manager
-          will reach out personally with membership details and your next steps.
+          Our Brickell team will contact you with founding membership details.
         </p>
         <a className="text-link" href="#studio">
-          Explore Studio Three <span aria-hidden="true">↑</span>
+          View the studio <span aria-hidden="true">↑</span>
         </a>
       </div>
     );
@@ -133,12 +128,7 @@ export default function InquiryForm() {
       aria-labelledby="inquiry-title"
       aria-busy={status === "sending"}
     >
-      <h3 id="inquiry-title">Let’s talk founding membership.</h3>
-      <p className="form-intro">
-        Leave your details for our Brickell team. We’ll reach out personally to
-        answer your questions and help you become part of our founding
-        community.
-      </p>
+      <h3 id="inquiry-title">Contact the studio</h3>
       <fieldset disabled={status === "sending"}>
         {(
           [
@@ -205,21 +195,14 @@ export default function InquiryForm() {
         </div>
         <label className="text-opt-in">
           <input type="checkbox" name="textConsent" />
-          <span>
-            Send me an iMessage confirmation about my founder inquiry.
-            <small>
-              Optional. Our Brickell team will follow up personally.
-            </small>
-          </span>
+          <span>Send me an iMessage confirmation (optional).</span>
         </label>
         <p className="contact-consent">
           By submitting, you agree to be contacted by Studio Three about your
           membership inquiry.
         </p>
         <button className="button" type="submit">
-          {status === "sending"
-            ? "Sending your inquiry…"
-            : "Get founding membership details"}
+          {status === "sending" ? "Sending…" : "Get membership details"}
           <span aria-hidden="true">↗</span>
         </button>
       </fieldset>
@@ -228,11 +211,7 @@ export default function InquiryForm() {
           {sendError}
         </p>
       )}
-      <p className="form-note">
-        Your details are saved for our Brickell team.
-        <br />
-        No payment is collected here.
-      </p>
+      <p className="form-note">No payment is collected here.</p>
     </form>
   );
 }

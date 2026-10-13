@@ -58,7 +58,7 @@
   --heading: "Trade Gothic Next", Arial, sans-serif;
   --body: "Gotham", Arial, sans-serif;
   --gutter: clamp(24px, 5vw, 80px);
-  --section-space: clamp(64px, 7.5vw, 108px);
+  --section-space: clamp(56px, 5.8vw, 84px);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 html {
@@ -283,22 +283,6 @@ button:disabled {
   margin-top: 18px;
   color: #d2cfc9;
 }
-.hero-caption {
-  position: absolute;
-  right: var(--gutter);
-  bottom: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  color: #fff;
-  border-top: 1px solid rgba(255, 255, 255, 0.5);
-  padding-top: 14px;
-  font-size: 10px;
-  line-height: 1.6;
-}
-.hero-caption span:first-child {
-  font-weight: 700;
-}
 
 .location-strip {
   display: grid;
@@ -330,32 +314,13 @@ button:disabled {
   padding: var(--section-space) var(--gutter);
 }
 .studio-intro {
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 72px;
-  align-items: start;
-  margin-bottom: 48px;
+  margin-bottom: 32px;
 }
 .studio-intro h2,
 .membership h2 {
-  font: 700 clamp(42px, 4.5vw, 62px)/1.08 var(--display);
+  font: 700 clamp(36px, 3.5vw, 48px)/1.1 var(--display);
   text-transform: uppercase;
   letter-spacing: -0.015em;
-}
-.studio-intro h2 span {
-  color: var(--blue);
-}
-.intro-copy {
-  max-width: 440px;
-  padding-top: 4px;
-}
-.intro-copy p {
-  font-size: 13px;
-  line-height: 1.95;
-  color: var(--secondary);
-}
-.intro-copy p + p {
-  margin-top: 20px;
 }
 .modality-grid {
   display: grid;
@@ -388,24 +353,6 @@ button:disabled {
   line-height: 1.8;
   max-width: 40ch;
 }
-.modality-invitation {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 24px;
-  margin-top: 40px;
-  padding-top: 24px;
-  border-top: 1px solid var(--line);
-}
-.modality-invitation p {
-  font: 700 28px/1.2 var(--display);
-  text-transform: uppercase;
-}
-.modality-invitation .text-link {
-  font: 700 19px/1.3 var(--display);
-  text-transform: uppercase;
-  min-height: 44px;
-}
 
 .membership {
   position: relative;
@@ -414,65 +361,16 @@ button:disabled {
   grid-template-columns: 1.1fr 1fr;
   gap: clamp(48px, 8vw, 120px);
   align-items: start;
-  background: var(--ink);
-  color: var(--white);
-}
-.membership::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(
-    90deg,
-    var(--blue) 0% 33.333%,
-    var(--orange) 33.333% 66.666%,
-    var(--lime) 66.666%
-  );
-}
-.membership h2 span {
-  color: var(--taupe);
+  background: var(--paper);
+  color: var(--ink);
+  border-block: 1px solid var(--line);
 }
 .membership-copy > p {
-  color: #cbc7c0;
-  margin-top: 28px;
-  font-size: 13px;
-  line-height: 1.95;
+  color: var(--secondary);
+  margin-top: 24px;
+  font-size: 15px;
+  line-height: 1.8;
   max-width: 380px;
-}
-.personal-note {
-  display: flex;
-  gap: 24px;
-  align-items: center;
-  margin-top: 44px;
-  padding-top: 28px;
-  border-top: 1px solid #3b3b37;
-  max-width: 380px;
-}
-.personal-note p {
-  color: #cbc7c0;
-  font-size: 11px;
-  line-height: 1.9;
-}
-.brand-slashes {
-  display: flex;
-  gap: 9px;
-  padding: 0 6px;
-  flex-shrink: 0;
-}
-.brand-slashes i {
-  display: block;
-  width: 8px;
-  height: 32px;
-  transform: skew(-19deg);
-  background: var(--blue);
-}
-.brand-slashes i:nth-child(2) {
-  background: var(--orange);
-}
-.brand-slashes i:nth-child(3) {
-  background: var(--lime);
 }
 .inquiry-form,
 .inquiry-success,
@@ -481,18 +379,21 @@ button:disabled {
   background: var(--paper);
   color: var(--ink);
 }
+.membership .inquiry-form,
+.membership .inquiry-success,
+.membership .membership-direct {
+  padding: 0;
+  background: transparent;
+}
 .inquiry-form h3,
 .inquiry-success h3,
 .membership-direct h3 {
-  font: 700 34px/1.12 var(--heading);
+  font: 700 28px/1.2 var(--heading);
   text-transform: uppercase;
   letter-spacing: -0.02em;
 }
-.form-intro {
-  color: var(--secondary);
-  font-size: 12px;
-  line-height: 1.9;
-  margin: 16px 0 28px;
+.inquiry-form fieldset {
+  margin-top: 24px;
 }
 fieldset {
   border: 0;
@@ -504,7 +405,7 @@ fieldset {
   display: flex;
   flex-direction: column;
   gap: 9px;
-  margin-top: 20px;
+  margin-top: 16px;
 }
 .field:first-child {
   margin-top: 0;
@@ -551,7 +452,7 @@ fieldset {
   color: var(--secondary);
   font-size: 12px;
   line-height: 1.9;
-  margin: 22px 0;
+  margin: 16px 0;
 }
 .text-opt-in {
   display: flex;
@@ -569,12 +470,6 @@ fieldset {
   margin: 2px 0 0;
   flex-shrink: 0;
   accent-color: var(--blue);
-}
-.text-opt-in small {
-  display: block;
-  color: var(--secondary);
-  font-size: 12px;
-  margin-top: 4px;
 }
 .inquiry-form .button {
   width: 100%;
@@ -741,7 +636,7 @@ fieldset {
   .hero-copy {
     width: 100%;
     max-width: none;
-    padding: 40px var(--gutter) 250px;
+    padding: 40px var(--gutter) 210px;
     text-align: center;
   }
   .hero h1 {
@@ -796,16 +691,6 @@ fieldset {
       rgba(11, 11, 11, 0.05) 90%
     );
   }
-  .hero-caption {
-    right: var(--gutter);
-    left: var(--gutter);
-    bottom: 24px;
-    font-size: 11px;
-    text-align: center;
-    align-items: center;
-    width: fit-content;
-    margin-inline: auto;
-  }
   .location-strip {
     grid-template-columns: 1fr 1fr;
     gap: 20px;
@@ -830,13 +715,7 @@ fieldset {
   }
   .studio-intro h2,
   .membership h2 {
-    font-size: clamp(42px, 10vw, 54px);
-  }
-  .intro-copy {
-    padding-top: 0;
-  }
-  .intro-copy p {
-    font-size: 16px;
+    font-size: 38px;
   }
   .modality-grid {
     gap: 36px;
@@ -848,12 +727,6 @@ fieldset {
   .modality h3 {
     margin-top: 20px;
   }
-  .modality-invitation {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    margin-top: 32px;
-  }
   .membership {
     grid-template-columns: 1fr;
     gap: 36px;
@@ -863,20 +736,9 @@ fieldset {
     font-size: 16px;
     margin-top: 22px;
   }
-  .personal-note {
-    margin-top: 24px;
-    padding-top: 20px;
-  }
-  .personal-note p {
-    font-size: 13px;
-  }
   .inquiry-form h3,
   .inquiry-success h3 {
-    font-size: 28px;
-  }
-  .form-intro {
-    font-size: 16px;
-    line-height: 1.65;
+    font-size: 24px;
   }
   .site-footer {
     grid-template-columns: 1fr;
@@ -935,11 +797,11 @@ fieldset {
 }
 .network-intro {
   display: block;
-  margin-bottom: 52px;
+  margin-bottom: 32px;
 }
 .network-intro h2,
 .amenities-copy h2 {
-  font: 700 clamp(42px, 4.5vw, 62px)/1.08 var(--display);
+  font: 700 clamp(36px, 3.5vw, 48px)/1.1 var(--display);
   text-transform: uppercase;
   letter-spacing: -0.015em;
 }
@@ -1027,10 +889,10 @@ fieldset {
   justify-content: space-between;
   gap: 48px;
   align-items: flex-end;
-  margin-bottom: 48px;
+  margin-bottom: 32px;
 }
 .reviews-intro h2 {
-  font: 700 clamp(42px, 4.5vw, 62px)/1.08 var(--display);
+  font: 700 clamp(36px, 3.5vw, 48px)/1.1 var(--display);
   text-transform: uppercase;
   letter-spacing: -0.015em;
 }
@@ -1087,25 +949,6 @@ fieldset {
 .studio-review figcaption a:hover {
   color: var(--white);
 }
-.reviews-invitation {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 24px;
-  margin-top: 48px;
-  padding-top: 28px;
-  border-top: 1px solid #3b3b37;
-}
-.reviews-invitation p {
-  font: 700 28px/1.2 var(--display);
-  text-transform: uppercase;
-}
-.reviews-invitation .text-link {
-  color: var(--lime);
-  font: 700 19px/1.3 var(--display);
-  text-transform: uppercase;
-  min-height: 44px;
-}
 @media (max-width: 1100px) {
   .reviews-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1132,12 +975,6 @@ fieldset {
   .studio-review figcaption {
     margin-top: 20px;
   }
-  .reviews-invitation {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-    margin-top: 32px;
-  }
 }
 .studio-faq {
   padding: var(--section-space) var(--gutter);
@@ -1147,7 +984,7 @@ fieldset {
   background: var(--white);
 }
 .faq-intro h2 {
-  font: 700 clamp(42px, 4.5vw, 62px)/1.08 var(--display);
+  font: 700 clamp(36px, 3.5vw, 48px)/1.1 var(--display);
   text-transform: uppercase;
   letter-spacing: -0.015em;
 }
@@ -1235,7 +1072,7 @@ fieldset {
   }
   .network-intro h2,
   .amenities-copy h2 {
-    font-size: clamp(42px, 10vw, 54px);
+    font-size: 38px;
   }
   .network-directory {
     grid-template-columns: 1fr;

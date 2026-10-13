@@ -21,15 +21,15 @@ typography:
     letterSpacing: "-0.015em"
   headline:
     fontFamily: '"Trade Gothic Next Condensed", "Arial Narrow", sans-serif'
-    fontSize: "clamp(42px, 4.5vw, 62px)"
+    fontSize: "clamp(36px, 3.5vw, 48px)"
     fontWeight: 700
-    lineHeight: 1.08
+    lineHeight: 1.1
     letterSpacing: "-0.015em"
   title:
     fontFamily: '"Trade Gothic Next", Arial, sans-serif'
-    fontSize: "34px"
+    fontSize: "28px"
     fontWeight: 700
-    lineHeight: 1.12
+    lineHeight: 1.2
     letterSpacing: "-0.02em"
   body:
     fontFamily: '"Gotham", Arial, sans-serif'
@@ -49,9 +49,9 @@ rounded:
   square: "0"
 spacing:
   gutter: "clamp(24px, 5vw, 80px)"
-  section: "clamp(64px, 7.5vw, 108px)"
+  section: "clamp(56px, 5.8vw, 84px)"
   compact: "16px"
-  field: "20px"
+  field: "16px"
   medium: "24px"
   content: "28px"
   large: "32px"
@@ -79,7 +79,7 @@ components:
     backgroundColor: "{colors.paper}"
     textColor: "{colors.ink}"
     rounded: "{rounded.square}"
-    padding: "clamp(28px, 3.3vw, 48px)"
+    padding: "0"
 ---
 
 # Design System: Studio Three Brickell
@@ -115,7 +115,7 @@ The three-color brand signature sits within a restrained ink, white, paper, and 
 
 ### Neutral
 
-- **Ink** (`ink`): header, hero, membership, footer, and primary text on light surfaces.
+- **Ink** (`ink`): header, hero, reviews, footer, and primary text on light surfaces.
 - **Paper** (`paper`): studio section and inquiry panel.
 - **White** (`white`): location strip, field interiors, and major text on ink.
 - **Secondary Ink** (`secondary`): supporting text on light surfaces.
@@ -145,9 +145,9 @@ Local font files register Gotham Book/Medium/Bold at weights 400/500/700, and bo
 
 ## Layout
 
-The shared gutter and section spacing in frontmatter set the horizontal and vertical rhythm. Desktop pairs editorial copy and imagery, then copy and the inquiry panel. The studio intro uses a 1.1:1 grid; the modality gallery uses three equal columns; membership uses a 1.1:1 grid with a 1200px-centered inset. The header stays sticky.
+The shared gutter and section spacing in frontmatter set the horizontal and vertical rhythm. The hero leads into the workout gallery, then the membership inquiry, followed by location information, reviews, amenities and FAQs. The workout gallery uses three equal columns; membership uses a 1.1:1 grid with a 1200px-centered inset. The header stays sticky. Section headings are brief labels rather than repeated campaign slogans.
 
-At 1100px and below, the location label leaves the header, gaps compress, and hero copy widens. At 767px and below, navigation simplifies; intro, modalities, membership, and footer stack. The hero uses centered headlines, offer, body, both actions, and caption, with its photo below the principal copy. Primary mobile paragraphs use 16px type; inputs retain 16px to avoid iOS focus zoom. Modality photos become matching 1.4-ratio frames. At 360px and below, the header, action, and inquiry panel tighten further.
+At 1100px and below, the location label leaves the header, gaps compress, and hero copy widens. At 767px and below, modalities, membership, and footer stack. The hero uses centered headlines, offer, body and actions, with its photo below the principal copy. Primary mobile paragraphs use 16px type; inputs retain 16px to avoid iOS focus zoom. Modality photos become matching 1.4-ratio frames. At 360px and below, the header and action tighten further.
 
 The mobile action appears only after the hero leaves view and before the inquiry section reaches the viewport; hidden controls are inert. Safe-area padding protects the bottom action and footer. Anchor offsets account for the sticky header.
 
@@ -163,7 +163,7 @@ The hero photo has a single 750ms clip reveal. Buttons change background over 18
 
 Buttons, fields, panels, and photo frames have square corners. Fields use a fine neutral stroke; sections use quiet horizontal rules. The three skewed brand slashes retain their blue/orange/lime order.
 
-The membership section's three-color boundary is an intentional 4px full-width horizontal signature. Its three equal segments use a hard-stop linear gradient. This is a narrow exception for that evidenced section boundary, not permission to add decorative card-side accent strips.
+The membership section uses a paper surface with fine neutral boundaries. The brand colors remain in the supplied logo and functional controls; there is no decorative three-color section strip.
 
 ## Components
 
@@ -177,7 +177,7 @@ White square fields inside the paper inquiry panel; 52px minimum height, 16px in
 
 ### Cards / Containers
 
-The inquiry, success, and optional direct-membership surfaces share the paper panel primitive. They have no radius, shadow, or ornamental border. Internal padding follows frontmatter and reduces to 24px at the smallest breakpoint. Success is a distinct focusable status state confirming durable inquiry receipt. Provider delivery is tracked separately; this design document does not certify production delivery.
+Membership copy and form share one flat paper section. Inquiry, success and optional direct-membership surfaces use transparent backgrounds and no internal panel padding, radius, shadow or ornamental border. Success is a distinct focusable status state confirming durable inquiry receipt. Provider delivery is tracked separately; this design document does not certify production delivery.
 
 The optional iMessage consent uses an unchecked native 20px checkbox within a full clickable label, with a 44px minimum row. Its copy explains the confirmation and the Brickell team's personal follow-up; it does not promise completed membership or immediate delivery. The hero carries the brand message "Train for Something Bigger," with fluid mobile sizing and a centered three-line composition on narrow phones.
 
@@ -189,7 +189,7 @@ An ink sticky header presents the original logo and a compact membership action.
 
 Use authentic Studio Three photographs with grayscale treatment. Hero and modality crops must retain the subject and meaningful training context. These are experience images, not evidence of the Brickell building. Reuse the three slashes only in their evidenced brand roles.
 
-The Interval, Pilates, and Yoga gallery pairs each 4:3 image with a 42px condensed heading and 14px Gotham description. The three columns share a 28px gap and remain flat on paper without card borders or overlays. On mobile, they stack with a 36px gap. A fine divider introduces a 28px Brickell invitation and the founding-membership link. Image focal positions preserve the Interval athlete and Pilates instructor.
+The Interval, Pilates, and Yoga gallery pairs each 4:3 image with a 42px condensed heading and a short, factual 14px Gotham description. The three columns share a 28px gap and remain flat on paper without card borders or overlays. On mobile, they stack with a 36px gap. Image focal positions preserve the Interval athlete and Pilates instructor. The form follows directly, without an extra CTA strip.
 
 ## Do's and Don'ts
 
@@ -197,11 +197,11 @@ The Interval, Pilates, and Yoga gallery pairs each 4:3 image with a 42px condens
 
 The extension preserves the flat Studio Three system. A white `studio-network` section pairs a condensed heading and Gotham introduction with a three-city directory: Miami, Chicago, Austin. Studios are linked list rows with 1px neutral separators, 14px medium names, supporting addresses, and small navigation arrows. Brickell's row uses the existing blue and returns to the membership action. On mobile the city groups stack in reading order, with 12px address details.
 
-The paper `studio-amenities` section pairs a heading and introduction with three text rows describing arrival, refresh, and community space. Each uses a 28px condensed heading and 14px Gotham body copy with existing neutral separators. Desktop is two columns; mobile is one. Both sections use the existing responsive gutter and section spacing, heading scale, colors, and focus behavior. The source facts come from the official Studio Three directory and Brickell page; the directory does not promise membership access across all studios.
+The paper `studio-amenities` section pairs a short heading with three factual rows describing studio essentials, locker rooms and shared space. Each uses a 28px condensed heading and 14px Gotham body copy with existing neutral separators. Desktop is two columns; mobile is one. The source facts come from the official Studio Three directory and Brickell page; the directory does not promise membership access across all studios.
 
-The white FAQ section follows the membership form, using the same two-column heading/content structure and one-column mobile layout. Native details/summary disclosures keep keyboard and screen-reader behavior intact. Condensed 23px question text, 14px Gotham answers, and fine neutral separators preserve the flat system. Inquiry confirmation now states receipt only after durable storage; it does not claim final email delivery.
+The white FAQ section closes the page, using the same two-column heading/content structure and one-column mobile layout. Native details/summary disclosures keep keyboard and screen-reader behavior intact. Condensed 23px question text, 14px Gotham answers, and fine neutral separators preserve the flat system. Inquiry confirmation states receipt only after durable storage; it does not claim final email delivery.
 
-The ink review section displays six sourced ClassPass excerpts as open quotations with fine dividers, Trade Gothic headings, named reviewers where available, studio/city attribution, and individual source links. Desktop uses three columns, intermediate widths two, and mobile one. A lime heading emphasis and membership link preserve the campaign's existing visual identity. No star ratings or invented review totals are shown. The preceding directory intro contains only its heading after the user's requested paragraph removal.
+The ink review section displays six sourced ClassPass excerpts as open quotations with fine dividers, Trade Gothic headings, named reviewers where available, studio/city attribution, and individual source links. Desktop uses three columns, intermediate widths two, and mobile one. Its heading is simply "Studio reviews." No extra membership invitation, star ratings or invented review totals are shown.
 
 ### Do:
 
@@ -213,6 +213,6 @@ The ink review section displays six sourced ClassPass excerpts as open quotation
 ### Don't:
 
 - **Don't** redraw the logo or replace the brand fonts with an invented identity.
-- **Don't** turn the full-width brand boundary into a recurring decorative card accent.
+- **Don't** add decorative color strips or repeated invitation blocks.
 - **Don't** add shadows or rounded pill treatments to these flat primitives.
 - **Don't** make headline impact depend on illegible mobile supporting text.
