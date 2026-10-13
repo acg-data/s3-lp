@@ -1,0 +1,13 @@
+ALTER TABLE inquiries ADD COLUMN text_permission INTEGER NOT NULL DEFAULT 0 CHECK (text_permission IN (0, 1));
+ALTER TABLE inquiries ADD COLUMN text_number TEXT;
+ALTER TABLE inquiries ADD COLUMN text_body TEXT;
+ALTER TABLE inquiries ADD COLUMN text_status TEXT NOT NULL DEFAULT 'skipped' CHECK (text_status IN ('skipped', 'pending', 'sending', 'accepted', 'unknown', 'failed'));
+ALTER TABLE inquiries ADD COLUMN text_attempts INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE inquiries ADD COLUMN text_started_at INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE inquiries ADD COLUMN text_next_attempt_at INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE inquiries ADD COLUMN text_lease_until INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE inquiries ADD COLUMN text_line TEXT;
+ALTER TABLE inquiries ADD COLUMN text_message_id TEXT;
+ALTER TABLE inquiries ADD COLUMN text_error_code TEXT;
+ALTER TABLE inquiries ADD COLUMN notification_started_at INTEGER NOT NULL DEFAULT 0;
+CREATE INDEX inquiries_text_queue ON inquiries (text_status, text_next_attempt_at);

@@ -1,6 +1,9 @@
-# Copy to .dev.vars for LOCAL tests with a real, approved sender and recipient.
-# Leave blank until the studio team confirms the addresses.
+# Copy to .dev.vars for LOCAL tests. Never commit real keys.
+RESEND_API_KEY=
+COMMS_API_KEY=
 LEAD_RECIPIENT=
 EMAIL_FROM=
 EMAIL_ENABLED=false
+COMMS_ENABLED=false
+COMMS_LINE=
 FRONTEND_ORIGIN=http://localhost:5173

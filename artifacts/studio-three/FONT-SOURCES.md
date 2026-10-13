@@ -22,3 +22,5 @@ The three-modality section uses the existing project Yoga photograph and the fol
 | `public/modalities/pilates.jpg`  | https://studiothree.com/wp-content/uploads/2024/11/2N1A6546-Final-1.jpg |
 
 Descriptions are grounded in the official class pages: https://studiothree.com/classes/interval/, https://studiothree.com/classes/pilates/, and https://studiothree.com/classes/yoga/. No class schedule or equipment beyond these general training descriptions is promised for Brickell.
+
+The page serves WebP variants in `public/photos/`, generated from these originals and the existing community/Yoga images with `scripts/optimize-lander-images.mjs`. Encoding and resizing preserve the original compositions; crops and grayscale remain CSS treatments. Interval has 480/800px variants, Pilates 480/800/1280px variants, and community/Yoga retain their original dimensions.

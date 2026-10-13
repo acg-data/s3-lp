@@ -18,6 +18,7 @@ export default function InquiryForm() {
     const name = String(data.get("name") || "").trim();
     const email = String(data.get("email") || "").trim();
     const phone = String(data.get("phone") || "").trim();
+    const textConsent = data.get("textConsent") === "on";
     const nextErrors: Partial<Record<Field, string>> = {};
     if (name.length < 2 || name.length > 100)
       nextErrors.name = "Enter your name (2–100 characters).";
@@ -30,6 +31,18 @@ export default function InquiryForm() {
       phone.length > 40
     )
       nextErrors.phone = "Enter a valid phone number.";
+    if (textConsent) {
+      const digits = phone.replace(/\D/g, "");
+      if (
+        !(
+          digits.length === 10 ||
+          (digits.length === 11 && digits.startsWith("1")) ||
+          (phone.startsWith("+") && /^[1-9]\d{7,14}$/.test(digits))
+        )
+      )
+        nextErrors.phone =
+          "For texts, enter a US phone number or include your country code.";
+    }
     setErrors(nextErrors);
     setSendError("");
     const firstError = Object.keys(nextErrors)[0];
@@ -41,7 +54,7 @@ export default function InquiryForm() {
     }
 
     setStatus("sending");
-    const payload = JSON.stringify([name, email, phone]);
+    const payload = JSON.stringify([name, email, phone, textConsent]);
     if (submissionRef.current?.payload !== payload) {
       submissionRef.current = { payload, id: crypto.randomUUID() };
     }
@@ -55,6 +68,7 @@ export default function InquiryForm() {
           phone,
           website: String(data.get("website") || ""),
           consent: true,
+          textConsent,
           requestId: submissionRef.current.id,
           attribution: campaignAttribution(),
         }),
@@ -95,13 +109,13 @@ export default function InquiryForm() {
           ✓
         </div>
         <h3>
-          Thanks.
+          Your first move,
           <br />
-          Let’s get you moving.
+          made.
         </h3>
         <p>
-          Your inquiry has been received. Our studio manager will contact you
-          personally with founding membership details.
+          Your founder inquiry has been received. Our Brickell studio manager
+          will reach out personally with membership details and your next steps.
         </p>
         <a className="text-link" href="#studio">
           Explore Studio Three <span aria-hidden="true">↑</span>
@@ -119,10 +133,11 @@ export default function InquiryForm() {
       aria-labelledby="inquiry-title"
       aria-busy={status === "sending"}
     >
-      <h3 id="inquiry-title">Start your Brickell chapter.</h3>
+      <h3 id="inquiry-title">Let’s talk founding membership.</h3>
       <p className="form-intro">
-        Leave your details. Our studio manager will be in touch personally with
-        founding membership information.
+        Leave your details for our Brickell team. We’ll reach out personally to
+        answer your questions and help you become part of our founding
+        community.
       </p>
       <fieldset disabled={status === "sending"}>
         {(
@@ -188,6 +203,15 @@ export default function InquiryForm() {
             tabIndex={-1}
           />
         </div>
+        <label className="text-opt-in">
+          <input type="checkbox" name="textConsent" />
+          <span>
+            Send me an iMessage confirmation about my founder inquiry.
+            <small>
+              Optional. Our Brickell team will follow up personally.
+            </small>
+          </span>
+        </label>
         <p className="contact-consent">
           By submitting, you agree to be contacted by Studio Three about your
           membership inquiry.

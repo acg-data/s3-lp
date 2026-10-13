@@ -1,3 +1,5 @@
+import { providerJson } from "./provider-json.ts";
+
 export type Inquiry = {
   id: string;
   fingerprint: string;
@@ -47,9 +49,9 @@ export function notificationMessage(inquiry: Inquiry, env: Env) {
     .join("");
   const html = `<div style="background:#f7f7f4;padding:32px;font:15px/1.6 Arial,sans-serif;color:#0b0b0b;max-width:600px"><table role="presentation" style="width:100%;border-collapse:collapse"><tr><td style="height:4px;background:#007495"></td><td style="background:#de4316"></td><td style="background:#bdcc00"></td></tr></table><h1 style="font-size:28px;line-height:1.2">New Brickell founding membership inquiry</h1><p>Please follow up personally with membership details.</p><table style="width:100%;border-collapse:collapse">${details}</table>${campaign ? `<p style="white-space:pre-line">${escapeHtml(campaign)}</p>` : ""}<p>This visitor agreed to be contacted about their membership inquiry. Reply to this email to contact them directly.</p><p style="font-size:12px;color:#555650">Reference: ${inquiry.id}</p></div>`;
   return {
-    from: { email: env.EMAIL_FROM, name: "Studio Three Brickell" },
-    to: env.LEAD_RECIPIENT,
-    replyTo: inquiry.email,
+    from: `Studio Three Brickell <${env.EMAIL_FROM}>`,
+    to: [env.LEAD_RECIPIENT],
+    reply_to: inquiry.email,
     subject: "New Brickell founding membership inquiry",
     text,
     html,
@@ -60,6 +62,7 @@ export function notificationMessage(inquiry: Inquiry, env: Env) {
 export function emailConfigured(env: Env) {
   return (
     env.EMAIL_ENABLED === "true" &&
+    !!env.RESEND_API_KEY &&
     emailPattern.test(env.LEAD_RECIPIENT) &&
     emailPattern.test(env.EMAIL_FROM)
   );
@@ -73,23 +76,42 @@ export async function notifyInquiry(
   if (!emailConfigured(env)) return;
   const inquiry = await env.LEADS.prepare(
     `UPDATE inquiries SET notification_status = 'sending',
-       notification_attempts = notification_attempts + 1, lease_until = ?
+       notification_attempts = notification_attempts + 1, lease_until = ?,
+       notification_started_at = CASE WHEN notification_started_at = 0 THEN ? ELSE notification_started_at END
      WHERE id = ? AND notification_attempts < ? AND
+       (notification_started_at = 0 OR notification_started_at > ?) AND
        ((notification_status = 'pending' AND next_attempt_at <= ?) OR
         (notification_status = 'sending' AND lease_until <= ?))
      RETURNING *`,
   )
-    .bind(now + 120, id, MAX_ATTEMPTS, now, now)
+    .bind(now + 120, now, id, MAX_ATTEMPTS, now - 23 * 3600, now, now)
     .first<Inquiry>();
   if (!inquiry) return;
   try {
-    const sent = await env.EMAIL.send(notificationMessage(inquiry, env));
-    if (!sent.messageId) throw new Error("email_not_accepted");
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+        "Idempotency-Key": `brickell-inquiry/${inquiry.id}`,
+      },
+      body: JSON.stringify(notificationMessage(inquiry, env)),
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!response.ok) {
+      await response.body?.cancel();
+      throw Object.assign(new Error("resend_rejected"), {
+        code: `E_RESEND_HTTP_${response.status}`,
+      });
+    }
+    const sent = await providerJson(response);
+    if (typeof sent.id !== "string" || !sent.id)
+      throw new Error("email_not_accepted");
     await env.LEADS.prepare(
       `UPDATE inquiries SET notification_status = 'sent', email_message_id = ?,
         notified_at = ?, lease_until = 0, last_error_code = NULL WHERE id = ?`,
     )
-      .bind(sent.messageId, new Date().toISOString(), id)
+      .bind(sent.id, new Date().toISOString(), id)
       .run();
     console.log(
       JSON.stringify({ event: "inquiry_email_accepted", reference: id }),
@@ -98,7 +120,7 @@ export async function notifyInquiry(
     const rawCode =
       error && typeof error === "object" && "code" in error ? error.code : "";
     const code =
-      typeof rawCode === "string" && /^E_[A-Z_]{1,60}$/.test(rawCode)
+      typeof rawCode === "string" && /^E_[A-Z_0-9]{1,60}$/.test(rawCode)
         ? rawCode
         : "email_delivery_failed";
     const failed = inquiry.notification_attempts >= MAX_ATTEMPTS;
@@ -132,9 +154,10 @@ export async function flushNotifications(
   await env.LEADS.prepare(
     `UPDATE inquiries SET notification_status = 'failed', lease_until = 0,
       last_error_code = 'retry_limit_reached'
-      WHERE notification_status = 'sending' AND lease_until <= ? AND notification_attempts >= ?`,
+      WHERE notification_status IN ('pending', 'sending') AND lease_until <= ?
+      AND (notification_attempts >= ? OR (notification_started_at > 0 AND notification_started_at <= ?))`,
   )
-    .bind(now, MAX_ATTEMPTS)
+    .bind(now, MAX_ATTEMPTS, now - 23 * 3600)
     .run();
   const pending = await env.LEADS.prepare(
     `SELECT id FROM inquiries WHERE notification_attempts < ? AND

@@ -1,15 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import InquiryForm from "@/components/InquiryForm";
 import StudioReviews from "@/components/StudioReviews";
-import community from "@assets/image_1777662764571.png";
-import yoga from "@assets/image_1777662794631.png";
 
 const membershipHref = import.meta.env.VITE_MEMBERSHIP_URL || "#membership";
 const logo = `${import.meta.env.BASE_URL}studio-three-logo.png`;
 const modalities = [
   {
     name: "Interval",
-    image: `${import.meta.env.BASE_URL}modalities/interval.jpg`,
+    image: `${import.meta.env.BASE_URL}photos/interval-800.webp`,
+    srcSet: `${import.meta.env.BASE_URL}photos/interval-480.webp 480w, ${import.meta.env.BASE_URL}photos/interval-800.webp 800w`,
     alt: "A Studio Three athlete doing strength work with a medicine ball",
     width: 800,
     height: 1200,
@@ -18,16 +17,18 @@ const modalities = [
   },
   {
     name: "Pilates",
-    image: `${import.meta.env.BASE_URL}modalities/pilates.jpg`,
+    image: `${import.meta.env.BASE_URL}photos/pilates-800.webp`,
+    srcSet: `${import.meta.env.BASE_URL}photos/pilates-480.webp 480w, ${import.meta.env.BASE_URL}photos/pilates-800.webp 800w, ${import.meta.env.BASE_URL}photos/pilates-1280.webp 1280w`,
     alt: "A Studio Three instructor guiding a mat Pilates class with Pilates rings",
-    width: 2048,
-    height: 2048,
+    width: 800,
+    height: 800,
     description:
       "Low-impact mat work with rings, balls and light weights. Build core strength and flexibility through intentional movement for every level.",
   },
   {
     name: "Yoga",
-    image: yoga,
+    image: `${import.meta.env.BASE_URL}photos/yoga-435.webp`,
+    srcSet: undefined,
     alt: "Three Studio Three members practicing yoga together",
     width: 435,
     height: 442,
@@ -189,10 +190,10 @@ export default function LandingPage() {
         <section className="hero" ref={heroRef} aria-labelledby="hero-heading">
           <div className="hero-photo">
             <img
-              src={community}
+              src={`${import.meta.env.BASE_URL}photos/community-427.webp`}
               alt="Studio Three members training together"
-              width="800"
-              height="600"
+              width="427"
+              height="450"
               fetchPriority="high"
             />
           </div>
@@ -200,16 +201,16 @@ export default function LandingPage() {
           <div className="hero-copy">
             <h1 id="hero-heading">
               <span className="hero-place">Brickell.</span>
-              <span>
-                Be part of
+              <span className="hero-tagline">
+                Train for
                 <br />
-                the beginning.
+                Something Bigger.
               </span>
             </h1>
-            <h2 className="hero-offer">Founding memberships now available.</h2>
+            <h2 className="hero-offer">Become a Brickell founder.</h2>
             <p>
-              A new Studio Three. Right here in Brickell. Join our founding
-              community and make this next chapter yours.
+              Founding memberships are now available. Be here from day one—with
+              Interval, Pilates and Yoga, all in one community.
             </p>
             <a className="button" href={membershipHref}>
               Explore founding membership <Arrow />
@@ -220,7 +221,7 @@ export default function LandingPage() {
           </div>
           <div className="hero-caption">
             <span>Studio Three</span>
-            <span>Train for something bigger.</span>
+            <span>Train for Something Bigger</span>
           </div>
         </section>
 
@@ -255,7 +256,7 @@ export default function LandingPage() {
                 new chapter at 830 Brickell.
               </p>
               <p>
-                Be here from the beginning. Connect with our studio manager to
+                Be here from the beginning. Connect with our studio team to
                 explore founding membership options and find your place in the
                 community.
               </p>
@@ -276,6 +277,8 @@ export default function LandingPage() {
                 <img
                   className={`modality-photo modality-photo-${modality.name.toLowerCase()}`}
                   src={modality.image}
+                  srcSet={modality.srcSet}
+                  sizes="(max-width: 767px) calc(100vw - 48px), (max-width: 1440px) 30vw, 440px"
                   alt={modality.alt}
                   width={modality.width}
                   height={modality.height}
@@ -392,9 +395,9 @@ export default function LandingPage() {
               </span>
             </h2>
             <p>
-              Make Studio Three Brickell part of your routine from day one.
-              Share your details and our studio manager will reach out
-              personally with founding membership information.
+              Be a founder. Make Studio Three Brickell part of your routine from
+              day one. Our Brickell studio manager will reach out personally to
+              walk you through founding membership options.
             </p>
             <div className="personal-note">
               <span className="brand-slashes" aria-hidden="true">
@@ -403,9 +406,9 @@ export default function LandingPage() {
                 <i />
               </span>
               <p>
-                Your community starts here.
+                A personal welcome.
                 <br />
-                Studio Three Brickell.
+                Your goals. Your questions. Your place in Brickell.
               </p>
             </div>
           </div>

@@ -4,6 +4,12 @@ import {
   notifyInquiry,
   type Inquiry,
 } from "./notifications.ts";
+import {
+  textNumber,
+  founderText,
+  notifyFounderText,
+  flushFounderTexts,
+} from "./comms.ts";
 
 const MAX_BODY_BYTES = 4096;
 const idPattern =
@@ -131,7 +137,12 @@ export default {
       const email = typeof data.email === "string" ? data.email.trim() : "";
       const phone = typeof data.phone === "string" ? data.phone.trim() : "";
       const digits = phone.replace(/\D/g, "").length;
+      const wantsText = data.textConsent === true;
+      const number = wantsText ? textNumber(phone) : null;
       if (
+        (data.textConsent !== undefined &&
+          typeof data.textConsent !== "boolean") ||
+        (wantsText && !number) ||
         (data.requestId !== undefined &&
           (typeof data.requestId !== "string" ||
             !idPattern.test(data.requestId))) ||
@@ -155,15 +166,19 @@ export default {
       const digest = await crypto.subtle.digest(
         "SHA-256",
         new TextEncoder().encode(
-          JSON.stringify([name, email.toLowerCase(), phone]),
+          JSON.stringify(
+            wantsText
+              ? [name, email.toLowerCase(), phone, true]
+              : [name, email.toLowerCase(), phone],
+          ),
         ),
       );
       const fingerprint = Array.from(new Uint8Array(digest), (byte) =>
         byte.toString(16).padStart(2, "0"),
       ).join("");
       await env.LEADS.prepare(
-        `INSERT INTO inquiries (id, fingerprint, created_at, name, email, phone, contact_permission, attribution)
-         VALUES (?, ?, ?, ?, ?, ?, 1, ?) ON CONFLICT(id) DO NOTHING`,
+        `INSERT INTO inquiries (id, fingerprint, created_at, name, email, phone, contact_permission, attribution, text_permission, text_number, text_body, text_status)
+         VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?) ON CONFLICT(id) DO NOTHING`,
       )
         .bind(
           id,
@@ -173,6 +188,10 @@ export default {
           email,
           phone,
           JSON.stringify(attribution(data.attribution)),
+          wantsText ? 1 : 0,
+          number,
+          wantsText ? founderText(name) : null,
+          wantsText ? "pending" : "skipped",
         )
         .run();
       const saved = await env.LEADS.prepare(
@@ -184,7 +203,12 @@ export default {
       if (saved.fingerprint !== fingerprint)
         return json({ error: "request_conflict" }, 409);
       try {
-        await notifyInquiry(env, id);
+        const results = await Promise.allSettled([
+          notifyInquiry(env, id),
+          notifyFounderText(env, id),
+        ]);
+        if (results.some((result) => result.status === "rejected"))
+          throw new Error("notification_deferred");
       } catch {
         console.error(
           JSON.stringify({
@@ -202,6 +226,6 @@ export default {
     }
   },
   async scheduled(_controller: ScheduledController, env: Env): Promise<void> {
-    await flushNotifications(env);
+    await Promise.all([flushNotifications(env), flushFounderTexts(env)]);
   },
 } satisfies ExportedHandler<Env>;

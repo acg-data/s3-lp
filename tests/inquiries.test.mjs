@@ -1,9 +1,12 @@
-import test from "node:test";
+import test, { mock, afterEach } from "node:test";
 import assert from "node:assert/strict";
 import { DatabaseSync } from "node:sqlite";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import worker from "../worker/index.ts";
 import { flushNotifications } from "../worker/notifications.ts";
+import { flushFounderTexts, textNumber } from "../worker/comms.ts";
+
+afterEach(() => mock.restoreAll());
 
 const origin = "https://brickell.example.com";
 const lead = {
@@ -27,13 +30,40 @@ function request(body = lead, options = {}) {
 }
 function environment(overrides = {}) {
   const messages = [];
+  const texts = [];
+  const requests = [];
+  const { send, sendText, ...bindings } = overrides;
   const db = new DatabaseSync(":memory:");
-  db.exec(
-    readFileSync(
-      new URL("../migrations/0001_inquiries.sql", import.meta.url),
-      "utf8",
-    ),
-  );
+  for (const migration of readdirSync(
+    new URL("../migrations/", import.meta.url),
+  ).sort())
+    db.exec(
+      readFileSync(
+        new URL(`../migrations/${migration}`, import.meta.url),
+        "utf8",
+      ),
+    );
+  mock.method(globalThis, "fetch", async (url, options) => {
+    const message = JSON.parse(options.body);
+    requests.push({ url, headers: options.headers, message });
+    const isText = url === "https://osis.co/api/v1/comms/messages";
+    const result = isText
+      ? await (
+          sendText ??
+          (async (body) => {
+            texts.push(body);
+            return { message: { id: "msg-test" } };
+          })
+        )(message)
+      : await (
+          send ??
+          (async (body) => {
+            messages.push(body);
+            return { id: "test-message" };
+          })
+        )(message);
+    return result instanceof Response ? result : Response.json(result);
+  });
   const statement = (sql, values = []) => ({
     bind: (...args) => statement(sql, args),
     run: async () => ({
@@ -48,6 +78,8 @@ function environment(overrides = {}) {
   });
   return {
     messages,
+    texts,
+    requests,
     db,
     inquiries: () => db.prepare("SELECT * FROM inquiries").all(),
     env: {
@@ -56,21 +88,19 @@ function environment(overrides = {}) {
       FRONTEND_ORIGIN: "",
       EMAIL_FROM: "inquiries@example.com",
       EMAIL_ENABLED: "true",
-      EMAIL: {
-        send: async (message) => {
-          messages.push(message);
-          return { messageId: "test-message" };
-        },
-      },
+      RESEND_API_KEY: "re_test-only",
+      COMMS_ENABLED: "false",
+      COMMS_API_KEY: "osis_test-only",
+      COMMS_LINE: "+12103933771",
       INQUIRY_LIMITER: { limit: async () => ({ success: true }) },
       ASSETS: { fetch: async () => new Response("static asset") },
-      ...overrides,
+      ...bindings,
     },
   };
 }
 
 test("valid inquiries go to the configured manager with the visitor as reply-to", async () => {
-  const { env, messages } = environment();
+  const { env, messages, requests } = environment();
   const response = await worker.fetch(
     request({ ...lead, name: "Jamie <Example>" }),
     env,
@@ -78,8 +108,15 @@ test("valid inquiries go to the configured manager with the visitor as reply-to"
   assert.equal(response.status, 200);
   assert.equal((await response.json()).ok, true);
   assert.equal(messages.length, 1);
-  assert.equal(messages[0].to, env.LEAD_RECIPIENT);
-  assert.equal(messages[0].replyTo, lead.email);
+  assert.deepEqual(messages[0].to, [env.LEAD_RECIPIENT]);
+  assert.equal(messages[0].reply_to, lead.email);
+  assert.equal(messages[0].from, `Studio Three Brickell <${env.EMAIL_FROM}>`);
+  assert.equal(requests[0].url, "https://api.resend.com/emails");
+  assert.equal(
+    requests[0].headers.Authorization,
+    `Bearer ${env.RESEND_API_KEY}`,
+  );
+  assert.match(requests[0].headers["Idempotency-Key"], /^brickell-inquiry\//);
   assert.match(messages[0].html, /Jamie &lt;Example&gt;/);
   assert.doesNotMatch(messages[0].html, /Jamie <Example>/);
   assert.equal(response.headers.get("Cache-Control"), "no-store");
@@ -110,7 +147,7 @@ test("delivery failures and missing receipts preserve the inquiry for retry", as
     },
     async () => ({}),
   ]) {
-    const { env, inquiries } = environment({ EMAIL: { send } });
+    const { env, inquiries } = environment({ send });
     const response = await worker.fetch(request(), env);
     assert.equal(response.status, 200);
     assert.equal((await response.json()).ok, true);
@@ -164,12 +201,10 @@ test("concurrent duplicate submissions claim the notification only once", async 
   });
   let sends = 0;
   const { env, inquiries } = environment({
-    EMAIL: {
-      send: async () => {
-        sends += 1;
-        await pause;
-        return { messageId: "accepted" };
-      },
+    send: async () => {
+      sends += 1;
+      await pause;
+      return { id: "accepted" };
     },
   });
   const body = { ...lead, requestId: crypto.randomUUID() };
@@ -185,15 +220,13 @@ test("concurrent duplicate submissions claim the notification only once", async 
 test("scheduled retries send a saved inquiry after a temporary failure", async () => {
   let attempts = 0;
   const { env, inquiries } = environment({
-    EMAIL: {
-      send: async () => {
-        attempts += 1;
-        if (attempts === 1)
-          throw Object.assign(new Error("Temporary failure"), {
-            code: "E_RATE_LIMIT_EXCEEDED",
-          });
-        return { messageId: "retry-accepted" };
-      },
+    send: async () => {
+      attempts += 1;
+      if (attempts === 1)
+        throw Object.assign(new Error("Temporary failure"), {
+          code: "E_RATE_LIMIT_EXCEEDED",
+        });
+      return { id: "retry-accepted" };
     },
   });
   await worker.fetch(request(), env);
@@ -208,10 +241,8 @@ test("scheduled retries send a saved inquiry after a temporary failure", async (
 
 test("persistent notification errors stop after eight attempts and leave a reviewable lead", async () => {
   const { env, inquiries } = environment({
-    EMAIL: {
-      send: async () => {
-        throw new Error("Unavailable");
-      },
+    send: async () => {
+      throw new Error("Unavailable");
     },
   });
   await worker.fetch(request(), env);
@@ -373,4 +404,163 @@ test("page requests use the static asset binding", async () => {
     await (await worker.fetch(new Request(`${origin}/`), env)).text(),
     "static asset",
   );
+});
+
+test("Comms sends only for explicit text permission, using the approved line and iMessage", async () => {
+  const { env, texts, requests, inquiries } = environment({
+    COMMS_ENABLED: "true",
+  });
+  await worker.fetch(request(), env);
+  assert.equal(texts.length, 0);
+  assert.equal(inquiries()[0].text_status, "skipped");
+  const response = await worker.fetch(
+    request({ ...lead, textConsent: true }),
+    env,
+  );
+  assert.equal(response.status, 200);
+  assert.equal(texts.length, 1);
+  assert.equal(texts[0].to, "+13055550100");
+  assert.equal(texts[0].line_e164, env.COMMS_LINE);
+  assert.equal(texts[0].channel, "imessage");
+  assert.match(texts[0].body, /founding member at Studio Three Brickell/);
+  assert.match(texts[0].body, /Anastasia.*reach out personally/);
+  const sent = requests.find((item) => item.url.includes("osis.co"));
+  assert.equal(sent.headers.Authorization, `Bearer ${env.COMMS_API_KEY}`);
+  assert.match(sent.headers["Idempotency-Key"], /^brickell-founder\//);
+  assert.equal(inquiries()[1].text_permission, 1);
+  assert.equal(inquiries()[1].text_status, "accepted");
+  assert.equal(inquiries()[1].text_message_id, "msg-test");
+});
+
+test("text opt-in requires a usable phone number and a boolean permission", async () => {
+  for (const patch of [
+    { textConsent: "true" },
+    { textConsent: true, phone: "5550100" },
+  ]) {
+    const { env, inquiries, texts } = environment({ COMMS_ENABLED: "true" });
+    assert.equal(
+      (await worker.fetch(request({ ...lead, ...patch }), env)).status,
+      400,
+    );
+    assert.equal(inquiries().length, 0);
+    assert.equal(texts.length, 0);
+  }
+  assert.equal(textNumber("305 555 0100"), "+13055550100");
+  assert.equal(textNumber("+44 7700 900123"), "+447700900123");
+  assert.equal(textNumber("5550100"), null);
+});
+
+test("missing provider credentials preserve queued notifications without attempts", async () => {
+  const { env, inquiries, requests } = environment({
+    RESEND_API_KEY: "",
+    COMMS_ENABLED: "true",
+    COMMS_API_KEY: "",
+  });
+  assert.equal(
+    (await worker.fetch(request({ ...lead, textConsent: true }), env)).status,
+    200,
+  );
+  assert.equal(requests.length, 0);
+  assert.equal(inquiries()[0].notification_attempts, 0);
+  assert.equal(inquiries()[0].text_attempts, 0);
+  assert.equal(inquiries()[0].text_status, "pending");
+});
+
+test("text failures do not prevent inquiry receipt or an email notification", async () => {
+  const { env, inquiries } = environment({
+    COMMS_ENABLED: "true",
+    sendText: async () =>
+      new Response("private provider detail", { status: 503 }),
+  });
+  assert.equal(
+    (await worker.fetch(request({ ...lead, textConsent: true }), env)).status,
+    200,
+  );
+  assert.equal(inquiries()[0].notification_status, "sent");
+  assert.equal(inquiries()[0].text_status, "pending");
+  assert.equal(inquiries()[0].text_error_code, "comms_http_503");
+});
+
+test("text retries retain the message, line and idempotency key", async () => {
+  let attempts = 0;
+  const { env, inquiries, requests } = environment({
+    COMMS_ENABLED: "true",
+    sendText: async () => {
+      attempts += 1;
+      return attempts === 1
+        ? new Response(null, { status: 503 })
+        : { message: { id: "msg-retry" } };
+    },
+  });
+  await worker.fetch(request({ ...lead, textConsent: true }), env);
+  env.COMMS_LINE = "+13124049364";
+  await flushFounderTexts(env, inquiries()[0].text_next_attempt_at);
+  const sends = requests.filter((item) => item.url.includes("osis.co"));
+  assert.equal(sends.length, 2);
+  assert.deepEqual(sends[0], sends[1]);
+  assert.equal(inquiries()[0].text_status, "accepted");
+});
+
+test("Comms unknown delivery is retained for manual review and is not resent", async () => {
+  const { env, inquiries, requests } = environment({
+    COMMS_ENABLED: "true",
+    sendText: async () => ({
+      message: { id: "msg-unknown" },
+      delivery_unknown: true,
+    }),
+  });
+  await worker.fetch(request({ ...lead, textConsent: true }), env);
+  const record = inquiries()[0];
+  assert.equal(record.text_status, "unknown");
+  await flushFounderTexts(env, record.text_started_at + 1000);
+  assert.equal(
+    requests.filter((item) => item.url.includes("osis.co")).length,
+    1,
+  );
+});
+
+test("an unsupported iMessage recipient is marked for attention without SMS fallback", async () => {
+  const { env, inquiries, requests } = environment({
+    COMMS_ENABLED: "true",
+    sendText: async () => new Response(null, { status: 422 }),
+  });
+  await worker.fetch(request({ ...lead, textConsent: true }), env);
+  assert.equal(inquiries()[0].text_status, "failed");
+  await flushFounderTexts(env);
+  assert.equal(
+    requests.filter((item) => item.url.includes("osis.co")).length,
+    1,
+  );
+});
+
+test("duplicate text requests are sent once", async () => {
+  const { env, inquiries, texts } = environment({ COMMS_ENABLED: "true" });
+  const body = { ...lead, textConsent: true, requestId: crypto.randomUUID() };
+  await worker.fetch(request(body), env);
+  await worker.fetch(request(body), env);
+  assert.equal(inquiries().length, 1);
+  assert.equal(texts.length, 1);
+  assert.equal(
+    (await worker.fetch(request({ ...body, textConsent: false }), env)).status,
+    409,
+  );
+});
+
+test("provider retries stop before their 24-hour idempotency retention expires", async () => {
+  const { env, inquiries, requests } = environment({
+    COMMS_ENABLED: "true",
+    send: async () => new Response(null, { status: 429 }),
+    sendText: async () => new Response(null, { status: 503 }),
+  });
+  await worker.fetch(request({ ...lead, textConsent: true }), env);
+  const record = inquiries()[0];
+  const now =
+    Math.max(record.notification_started_at, record.text_started_at) +
+    23 * 3600;
+  await flushNotifications(env, now);
+  await flushFounderTexts(env, now);
+  assert.equal(inquiries()[0].notification_status, "failed");
+  assert.equal(inquiries()[0].text_status, "failed");
+  assert.equal(requests.length, 2);
+  assert.equal(record.last_error_code, "E_RESEND_HTTP_429");
 });

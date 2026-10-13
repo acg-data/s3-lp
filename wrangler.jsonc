@@ -10,13 +10,6 @@
     "not_found_handling": "single-page-application",
     "run_worker_first": ["/api/*"],
   },
-  "send_email": [
-    {
-      "name": "EMAIL",
-      "allowed_sender_addresses": ["justin@aryocg.com"],
-      "allowed_destination_addresses": ["justin@aryocg.com"],
-    },
-  ],
   "d1_databases": [
     {
       "binding": "LEADS",
@@ -36,21 +29,16 @@
   "vars": {
     "FRONTEND_ORIGIN": "",
     "LEAD_RECIPIENT": "justin@aryocg.com",
-    "EMAIL_FROM": "justin@aryocg.com",
+    "EMAIL_FROM": "justin@automator.aryocg.com",
     "EMAIL_ENABLED": "false",
+    "COMMS_ENABLED": "false",
+    "COMMS_LINE": "",
   },
   "observability": { "enabled": true, "head_sampling_rate": 1 },
   "env": {
     "dev": {
       "name": "s3-brickell-lander-dev",
       "workers_dev": true,
-      "send_email": [
-        {
-          "name": "EMAIL",
-          "allowed_sender_addresses": ["justin@aryocg.com"],
-          "allowed_destination_addresses": ["justin@aryocg.com"],
-        },
-      ],
       "d1_databases": [
         {
           "binding": "LEADS",
@@ -70,8 +58,10 @@
       "vars": {
         "FRONTEND_ORIGIN": "",
         "LEAD_RECIPIENT": "justin@aryocg.com",
-        "EMAIL_FROM": "justin@aryocg.com",
-        "EMAIL_ENABLED": "false",
+        "EMAIL_FROM": "justin@automator.aryocg.com",
+        "EMAIL_ENABLED": "true",
+        "COMMS_ENABLED": "true",
+        "COMMS_LINE": "+12103933771",
       },
     },
   },

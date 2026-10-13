@@ -553,6 +553,29 @@ fieldset {
   line-height: 1.9;
   margin: 22px 0;
 }
+.text-opt-in {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 44px;
+  margin-top: 24px;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.text-opt-in input {
+  width: 20px;
+  height: 20px;
+  margin: 2px 0 0;
+  flex-shrink: 0;
+  accent-color: var(--blue);
+}
+.text-opt-in small {
+  display: block;
+  color: var(--secondary);
+  font-size: 12px;
+  margin-top: 4px;
+}
 .inquiry-form .button {
   width: 100%;
   font-size: 19px;
@@ -718,7 +741,8 @@ fieldset {
   .hero-copy {
     width: 100%;
     max-width: none;
-    padding: 44px var(--gutter) 40px;
+    padding: 40px var(--gutter) 250px;
+    text-align: center;
   }
   .hero h1 {
     font-size: clamp(54px, 13vw, 72px);
@@ -726,15 +750,19 @@ fieldset {
   .hero h1 .hero-place {
     font-size: clamp(68px, 17vw, 84px);
   }
+  .hero .hero-tagline {
+    font-size: clamp(40px, 11.5vw, 68px);
+  }
   .hero-offer {
     max-width: 330px;
     font-size: 21px;
-    margin-top: 26px;
+    margin: 24px auto 0;
   }
   .hero-copy > p {
     max-width: 340px;
-    font-size: 14px;
-    line-height: 1.9;
+    font-size: 16px;
+    line-height: 1.65;
+    margin: 14px auto 24px;
   }
   .hero-copy .button {
     width: 100%;
@@ -742,6 +770,12 @@ fieldset {
     font-size: 18px;
     padding: 17px 20px;
     gap: 18px;
+    margin-inline: auto;
+  }
+  .hero-copy .text-link {
+    margin: 14px auto 0;
+    justify-content: center;
+    min-height: 44px;
   }
   .hero-photo {
     width: 100%;
@@ -762,13 +796,15 @@ fieldset {
       rgba(11, 11, 11, 0.05) 90%
     );
   }
-  .hero-copy {
-    padding-bottom: 270px;
-  }
   .hero-caption {
-    right: 24px;
+    right: var(--gutter);
+    left: var(--gutter);
     bottom: 24px;
-    font-size: 9px;
+    font-size: 11px;
+    text-align: center;
+    align-items: center;
+    width: fit-content;
+    margin-inline: auto;
   }
   .location-strip {
     grid-template-columns: 1fr 1fr;
@@ -779,13 +815,13 @@ fieldset {
     font-size: 30px;
   }
   .location-strip address {
-    font-size: 10px;
+    font-size: 12px;
   }
   .location-strip .text-link {
     grid-column: 1 / -1;
     justify-content: flex-start;
     font-size: 11px;
-    min-height: 32px;
+    min-height: 44px;
   }
   .studio-intro {
     grid-template-columns: 1fr;
@@ -800,7 +836,7 @@ fieldset {
     padding-top: 0;
   }
   .intro-copy p {
-    font-size: 14px;
+    font-size: 16px;
   }
   .modality-grid {
     gap: 36px;
@@ -824,19 +860,23 @@ fieldset {
   }
   .membership-copy > p {
     max-width: 440px;
-    font-size: 14px;
+    font-size: 16px;
     margin-top: 22px;
   }
   .personal-note {
     margin-top: 24px;
     padding-top: 20px;
   }
+  .personal-note p {
+    font-size: 13px;
+  }
   .inquiry-form h3,
   .inquiry-success h3 {
     font-size: 28px;
   }
   .form-intro {
-    font-size: 14px;
+    font-size: 16px;
+    line-height: 1.65;
   }
   .site-footer {
     grid-template-columns: 1fr;

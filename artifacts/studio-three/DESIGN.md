@@ -137,7 +137,7 @@ Local font files register Gotham Book/Medium/Bold at weights 400/500/700, and bo
 - **Display:** the frontmatter hero role; uppercase, tightly spaced, balanced lines. Brickell has its own larger responsive emphasis in source.
 - **Headline:** the frontmatter section-heading role; condensed uppercase for the studio and membership sections.
 - **Title:** regular-width Trade Gothic for form, confirmation, and direct-membership headings.
-- **Body:** Gotham Book for prose; desktop paragraphs generally use the frontmatter body role, with readable widths of 380–440px. Primary mobile paragraphs increase to 14px.
+- **Body:** Gotham Book for prose; desktop paragraphs generally use the frontmatter body role, with readable widths of 380–440px. Primary mobile paragraphs use 16px.
 - **Label:** Gotham Medium for field names. Inputs retain 16px text and a 1.5 line-height at all widths.
 - **Action:** bold condensed uppercase. Compact navigation actions use 17px on desktop; form submit uses 19px.
 
@@ -147,7 +147,7 @@ Local font files register Gotham Book/Medium/Bold at weights 400/500/700, and bo
 
 The shared gutter and section spacing in frontmatter set the horizontal and vertical rhythm. Desktop pairs editorial copy and imagery, then copy and the inquiry panel. The studio intro uses a 1.1:1 grid; the modality gallery uses three equal columns; membership uses a 1.1:1 grid with a 1200px-centered inset. The header stays sticky.
 
-At 1100px and below, the location label leaves the header, gaps compress, and hero copy widens. At 767px and below, navigation simplifies; intro, modalities, membership, and footer stack. The hero becomes a text-first composition with its photo below the principal copy, retaining a deliberate gradient for contrast. Modality photos become matching 1.4-ratio frames. At 360px and below, the header, action, and inquiry panel tighten further.
+At 1100px and below, the location label leaves the header, gaps compress, and hero copy widens. At 767px and below, navigation simplifies; intro, modalities, membership, and footer stack. The hero uses centered headlines, offer, body, both actions, and caption, with its photo below the principal copy. Primary mobile paragraphs use 16px type; inputs retain 16px to avoid iOS focus zoom. Modality photos become matching 1.4-ratio frames. At 360px and below, the header, action, and inquiry panel tighten further.
 
 The mobile action appears only after the hero leaves view and before the inquiry section reaches the viewport; hidden controls are inert. Safe-area padding protects the bottom action and footer. Anchor offsets account for the sticky header.
 
@@ -177,7 +177,9 @@ White square fields inside the paper inquiry panel; 52px minimum height, 16px in
 
 ### Cards / Containers
 
-The inquiry, success, and optional direct-membership surfaces share the paper panel primitive. They have no radius, shadow, or ornamental border. Internal padding follows frontmatter and reduces to 24px at the smallest breakpoint. Success is a distinct focusable status state. Delivery remains unconfigured until the approved sender and recipient are supplied; this design document does not certify production delivery.
+The inquiry, success, and optional direct-membership surfaces share the paper panel primitive. They have no radius, shadow, or ornamental border. Internal padding follows frontmatter and reduces to 24px at the smallest breakpoint. Success is a distinct focusable status state confirming durable inquiry receipt. Provider delivery is tracked separately; this design document does not certify production delivery.
+
+The optional iMessage consent uses an unchecked native 20px checkbox within a full clickable label, with a 44px minimum row. Its copy explains the confirmation and the Brickell team's personal follow-up; it does not promise completed membership or immediate delivery. The hero carries the brand message "Train for Something Bigger," with fluid mobile sizing and a centered three-line composition on narrow phones.
 
 ### Navigation
 
