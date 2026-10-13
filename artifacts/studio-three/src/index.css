@@ -162,8 +162,8 @@ button:focus-visible {
 .button {
   display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 28px;
+  justify-content: center;
+  gap: 12px;
   min-height: 58px;
   padding: 18px 26px;
   background: var(--lime);
@@ -186,7 +186,7 @@ button:focus-visible {
   min-height: 48px;
   padding: 14px 20px;
   font-size: 17px;
-  gap: 20px;
+  gap: 12px;
 }
 button:disabled {
   cursor: wait;
@@ -379,6 +379,35 @@ button:disabled {
   line-height: 1.8;
   max-width: 380px;
 }
+.membership-capture {
+  min-width: 0;
+}
+.membership-reviews {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  min-height: 44px;
+  margin-bottom: 24px;
+  font-size: 12px;
+  line-height: 1.6;
+  text-decoration: none;
+}
+.membership-reviews > span:last-child {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.membership-reviews:hover {
+  color: var(--blue);
+}
+.membership-stars {
+  display: inline-flex;
+  gap: 4px;
+  color: var(--blue);
+}
+.membership-stars svg {
+  flex-shrink: 0;
+}
 .inquiry-form,
 .inquiry-success,
 .membership-direct {
@@ -481,7 +510,7 @@ fieldset {
 .inquiry-form .button {
   width: 100%;
   font-size: 19px;
-  gap: 16px;
+  gap: 12px;
 }
 .form-note {
   color: var(--secondary);
@@ -671,7 +700,7 @@ fieldset {
     max-width: 390px;
     font-size: 18px;
     padding: 17px 20px;
-    gap: 18px;
+    gap: 12px;
     margin-inline: auto;
   }
   .hero-copy .text-link {

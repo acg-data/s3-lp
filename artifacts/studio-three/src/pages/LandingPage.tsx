@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import Arrow from "@/components/Arrow";
 import InquiryForm from "@/components/InquiryForm";
 import StudioReviews from "@/components/StudioReviews";
 
@@ -88,26 +89,6 @@ const studioCities = [
     ],
   },
 ];
-
-function Arrow() {
-  return (
-    <svg
-      aria-hidden="true"
-      width="19"
-      height="19"
-      viewBox="0 0 20 20"
-      fill="none"
-    >
-      <path
-        d="M3 10h14M11 4l6 6-6 6"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
 
 function Logo() {
   return (
@@ -282,17 +263,35 @@ export default function LandingPage() {
               founding membership options and pricing.
             </p>
           </div>
-          {membershipHref === "#membership" ? (
-            <InquiryForm />
-          ) : (
-            <div className="membership-direct">
-              <h3>Join Studio Three Brickell.</h3>
-              <p>View current membership options and pricing.</p>
-              <a className="button" href={membershipHref}>
-                View memberships <Arrow />
-              </a>
-            </div>
-          )}
+          <div className="membership-capture">
+            <a className="membership-reviews" href="#reviews">
+              <span className="membership-stars" aria-hidden="true">
+                {[0, 1, 2, 3, 4].map((star) => (
+                  <svg
+                    key={star}
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="m12 2.5 2.94 5.96 6.58.96-4.76 4.64 1.12 6.55L12 17.52l-5.88 3.09 1.12-6.55L2.48 9.42l6.58-.96L12 2.5Z" />
+                  </svg>
+                ))}
+              </span>
+              <span>Reviews from our other studios</span>
+            </a>
+            {membershipHref === "#membership" ? (
+              <InquiryForm />
+            ) : (
+              <div className="membership-direct">
+                <h3>Join Studio Three Brickell.</h3>
+                <p>View current membership options and pricing.</p>
+                <a className="button" href={membershipHref}>
+                  View memberships <Arrow />
+                </a>
+              </div>
+            )}
+          </div>
         </section>
 
         <section className="studio-network" aria-labelledby="network-heading">

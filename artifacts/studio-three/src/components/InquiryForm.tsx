@@ -1,4 +1,5 @@
 import { useRef, useState, type FormEvent } from "react";
+import Arrow from "@/components/Arrow";
 import { campaignAttribution, trackInquiry } from "@/lib/campaign";
 
 type Field = "name" | "email" | "phone";
@@ -203,7 +204,7 @@ export default function InquiryForm() {
         </p>
         <button className="button" type="submit">
           {status === "sending" ? "Sending…" : "Get membership details"}
-          <span aria-hidden="true">↗</span>
+          <Arrow />
         </button>
       </fieldset>
       {sendError && (

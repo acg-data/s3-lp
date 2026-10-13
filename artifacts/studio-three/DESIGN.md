@@ -171,6 +171,8 @@ The membership section uses a paper surface with fine neutral boundaries. The br
 
 Flat lime rectangles with ink lettering, an arrow, generous internal space, and no shadow. Primary actions have a 58px minimum height; compact header actions have a 48px minimum height, reducing to 44px on mobile. Hover uses the frontmatter hover color; keyboard focus has a 3px blue outline offset by 5px. Disabled buttons use 0.65 opacity and a wait cursor. Form and mobile actions span their available width.
 
+Button labels and the shared 19px right arrow are centered together with a 12px gap. Wide actions retain their full touch area and generous outer padding without sending the arrow to the far edge.
+
 ### Inputs / Fields
 
 White square fields inside the paper inquiry panel; 52px minimum height, 16px input text, and a `#c9c9c2` stroke. Labels are visible above fields. Focus adds a 2px blue outline offset by 2px. Invalid fields and accompanying messages use `#b42c12`; disabled fields use 0.7 opacity. Preserve the Name, Email, and Phone labels, autocomplete, error associations, and first-error focus.
@@ -204,6 +206,8 @@ The paper `studio-amenities` section pairs a short heading with three factual ro
 The white FAQ section closes the page, using the same two-column heading/content structure and one-column mobile layout. Native details/summary disclosures keep keyboard and screen-reader behavior intact. Condensed 23px question text, 14px Gotham answers, and fine neutral separators preserve the flat system. Inquiry confirmation states receipt only after durable storage; it does not claim final email delivery.
 
 The ink review section displays six sourced ClassPass excerpts as open quotations with fine dividers, Trade Gothic headings, named reviewers where available, studio/city attribution, and individual source links. Desktop uses three columns, intermediate widths two, and mobile one. Its heading is simply "Studio reviews." No extra membership invitation, star ratings or invented review totals are shown.
+
+At the user's request, five blue decorative stars sit above the membership form beside a link labeled "Reviews from our other studios." The link goes to the sourced review section, wraps within narrow layouts, and has a 44px minimum touch target. The stars do not display a numeric score or claim a Brickell rating.
 
 ### Do:
 

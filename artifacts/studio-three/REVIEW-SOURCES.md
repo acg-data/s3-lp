@@ -2,6 +2,8 @@
 
 Selected public ClassPass excerpts were verified October 12, 2026. Each excerpt is under 25 words. The exact text lives in `src/lib/studio-reviews.ts`; it is not rewritten as marketing copy. The reviews describe the six existing studios and are not presented as Brickell reviews. No individual star ratings, aggregate scores, review counts, or review dates are invented or displayed.
 
+The user requested stars above the membership capture on October 13. Five decorative stars accompany "Reviews from our other studios," linking to these excerpts. They are hidden from assistive technology and do not announce a numeric or aggregate rating.
+
 | Studio        | Reviewer                                               | Source                                                                 |
 | ------------- | ------------------------------------------------------ | ---------------------------------------------------------------------- |
 | Wynwood       | Betzy                                                  | https://classpass.com/studios/studio-three-miami                       |
