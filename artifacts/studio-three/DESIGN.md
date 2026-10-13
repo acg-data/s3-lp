@@ -189,7 +189,9 @@ An ink sticky header presents the original logo and a compact membership action.
 
 Use authentic Studio Three photographs with grayscale treatment. Hero and modality crops must retain the subject and meaningful training context. These are experience images, not evidence of the Brickell building. Reuse the three slashes only in their evidenced brand roles.
 
-The Interval, Pilates, and Yoga gallery pairs each 4:3 image with a 42px condensed heading and a short, factual 14px Gotham description. The three columns share a 28px gap and remain flat on paper without card borders or overlays. On mobile, they stack with a 36px gap. Image focal positions preserve the Interval athlete and Pilates instructor. The form follows directly, without an extra CTA strip.
+The Strength, Pilates, and Yoga gallery uses the user-supplied October 13 photographs, pairing each 4:3 image with a 42px condensed heading and a short, factual 14px Gotham description. The three columns share a 28px gap and remain flat on paper without card borders or overlays. On mobile, they stack with a 36px gap. Landscape frames retain the plank row, Pilates bridge, and full-height Yoga pose. The form follows directly, without an extra CTA strip.
+
+The header uses the supplied group-training photo, anchored to the right inside an overflow-hidden frame. The image spans 140% of its frame to exclude the woman at the far left while retaining the man on the right. Mobile keeps the centered copy and actions above the visible training scene. Responsive WebP sources limit image transfer without retouching the photographs.
 
 ## Do's and Don'ts
 

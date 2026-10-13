@@ -8,18 +8,10 @@ const output = new URL(
 );
 await mkdir(output, { recursive: true });
 const photos = [
-  ["community", "attached_assets/image_1777662764571.png", [427]],
-  ["yoga", "attached_assets/image_1777662794631.png", [435]],
-  [
-    "interval",
-    "artifacts/studio-three/public/modalities/interval.jpg",
-    [480, 800],
-  ],
-  [
-    "pilates",
-    "artifacts/studio-three/public/modalities/pilates.jpg",
-    [480, 800, 1280],
-  ],
+  ["brickell-header", "attached_assets/brickell-header.jpg", [800, 1600, 2400]],
+  ["brickell-strength", "attached_assets/brickell-strength.jpg", [480, 800, 1280]],
+  ["brickell-pilates", "attached_assets/brickell-pilates.jpg", [480, 800, 1280]],
+  ["brickell-yoga", "attached_assets/brickell-yoga.jpg", [480, 800, 1280]],
 ];
 for (const [name, source, widths] of photos) {
   for (const width of widths) {

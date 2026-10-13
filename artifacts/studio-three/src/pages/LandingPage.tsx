@@ -6,30 +6,30 @@ const membershipHref = import.meta.env.VITE_MEMBERSHIP_URL || "#membership";
 const logo = `${import.meta.env.BASE_URL}studio-three-logo.png`;
 const modalities = [
   {
-    name: "Interval",
-    image: `${import.meta.env.BASE_URL}photos/interval-800.webp`,
-    srcSet: `${import.meta.env.BASE_URL}photos/interval-480.webp 480w, ${import.meta.env.BASE_URL}photos/interval-800.webp 800w`,
-    alt: "A Studio Three athlete doing strength work with a medicine ball",
+    name: "Strength",
+    image: `${import.meta.env.BASE_URL}photos/brickell-strength-800.webp`,
+    srcSet: `${import.meta.env.BASE_URL}photos/brickell-strength-480.webp 480w, ${import.meta.env.BASE_URL}photos/brickell-strength-800.webp 800w, ${import.meta.env.BASE_URL}photos/brickell-strength-1280.webp 1280w`,
+    alt: "A Studio Three athlete performing a dumbbell row in a plank",
     width: 800,
-    height: 1200,
-    description: "Coach-led treadmill intervals and strength training.",
+    height: 534,
+    description: "Strength training with dumbbells and bodyweight exercises.",
   },
   {
     name: "Pilates",
-    image: `${import.meta.env.BASE_URL}photos/pilates-800.webp`,
-    srcSet: `${import.meta.env.BASE_URL}photos/pilates-480.webp 480w, ${import.meta.env.BASE_URL}photos/pilates-800.webp 800w, ${import.meta.env.BASE_URL}photos/pilates-1280.webp 1280w`,
-    alt: "A Studio Three instructor guiding a mat Pilates class with Pilates rings",
+    image: `${import.meta.env.BASE_URL}photos/brickell-pilates-800.webp`,
+    srcSet: `${import.meta.env.BASE_URL}photos/brickell-pilates-480.webp 480w, ${import.meta.env.BASE_URL}photos/brickell-pilates-800.webp 800w, ${import.meta.env.BASE_URL}photos/brickell-pilates-1280.webp 1280w`,
+    alt: "A Studio Three athlete holding a Pilates bridge with a small ball",
     width: 800,
-    height: 800,
-    description: "Mat Pilates with rings, balls and light weights.",
+    height: 534,
+    description: "Mat Pilates with controlled movement and focused core work.",
   },
   {
     name: "Yoga",
-    image: `${import.meta.env.BASE_URL}photos/yoga-435.webp`,
-    srcSet: undefined,
-    alt: "Three Studio Three members practicing yoga together",
-    width: 435,
-    height: 442,
+    image: `${import.meta.env.BASE_URL}photos/brickell-yoga-800.webp`,
+    srcSet: `${import.meta.env.BASE_URL}photos/brickell-yoga-480.webp 480w, ${import.meta.env.BASE_URL}photos/brickell-yoga-800.webp 800w, ${import.meta.env.BASE_URL}photos/brickell-yoga-1280.webp 1280w`,
+    alt: "A Studio Three athlete practicing three-legged downward dog",
+    width: 800,
+    height: 534,
     description: "Flow classes that connect breath and movement.",
   },
 ];
@@ -187,10 +187,12 @@ export default function LandingPage() {
         <section className="hero" ref={heroRef} aria-labelledby="hero-heading">
           <div className="hero-photo">
             <img
-              src={`${import.meta.env.BASE_URL}photos/community-427.webp`}
-              alt="Studio Three members training together"
-              width="427"
-              height="450"
+              src={`${import.meta.env.BASE_URL}photos/brickell-header-1600.webp`}
+              srcSet={`${import.meta.env.BASE_URL}photos/brickell-header-800.webp 800w, ${import.meta.env.BASE_URL}photos/brickell-header-1600.webp 1600w, ${import.meta.env.BASE_URL}photos/brickell-header-2400.webp 2400w`}
+              sizes="(max-width: 767px) 140vw, 96vw"
+              alt="Studio Three athletes training with dumbbells"
+              width="1600"
+              height="1067"
               fetchPriority="high"
             />
           </div>
@@ -205,7 +207,7 @@ export default function LandingPage() {
               </span>
             </h1>
             <h2 className="hero-offer">Founding memberships now available.</h2>
-            <p>Interval, Pilates and Yoga at 830 Brickell.</p>
+            <p>Strength, Pilates and Yoga at 830 Brickell.</p>
             <a className="button" href={membershipHref}>
               Get membership details <Arrow />
             </a>
@@ -240,7 +242,7 @@ export default function LandingPage() {
             className="modality-grid"
             id="modalities"
             role="group"
-            aria-label="Interval, Pilates and Yoga"
+            aria-label="Strength, Pilates and Yoga"
           >
             {modalities.map((modality) => (
               <article
@@ -377,7 +379,7 @@ export default function LandingPage() {
             <details>
               <summary>Which workouts can I explore?</summary>
               <p>
-                Interval, Pilates and Yoga. Our team can answer questions about
+                Strength, Pilates and Yoga. Our team can answer questions about
                 the classes and membership options.
               </p>
             </details>

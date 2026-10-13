@@ -14,13 +14,15 @@ Typography was verified from rendered CSS on the official homepage and Brickell 
 
 The address and building name are supported by https://studiothree.com/studio/brickell/. Training photographs illustrate the Studio Three experience; they are not labeled as photos of the Brickell building.
 
-The three-modality section uses the existing project Yoga photograph and the following official Studio Three photographs, saved unchanged on October 12, 2026:
+The current header and three-modality section use the photographs supplied by the user on October 13, 2026. The originals are retained unchanged for reproducible web asset generation:
 
-| Local file                       | Official source                                                         |
-| -------------------------------- | ----------------------------------------------------------------------- |
-| `public/modalities/interval.jpg` | https://studiothree.com/wp-content/uploads/2022/11/torch.jpeg           |
-| `public/modalities/pilates.jpg`  | https://studiothree.com/wp-content/uploads/2024/11/2N1A6546-Final-1.jpg |
+| Original in repository | User attachment |
+| ---------------------- | --------------- |
+| `attached_assets/brickell-header.jpg` | Landing Page Header.jpg |
+| `attached_assets/brickell-strength.jpg` | LP Strength.jpg |
+| `attached_assets/brickell-pilates.jpg` | LP Pilates.jpg |
+| `attached_assets/brickell-yoga.jpg` | LP Yoga.jpg |
 
-Descriptions are grounded in the official class pages: https://studiothree.com/classes/interval/, https://studiothree.com/classes/pilates/, and https://studiothree.com/classes/yoga/. No class schedule or equipment beyond these general training descriptions is promised for Brickell.
+The user confirmed Strength, Pilates, and Yoga for Brickell, replacing Interval. Descriptions remain general and consistent with the supplied discipline photographs; no class schedule or membership terms are promised.
 
-The page serves WebP variants in `public/photos/`, generated from these originals and the existing community/Yoga images with `scripts/optimize-lander-images.mjs`. Encoding and resizing preserve the original compositions; crops and grayscale remain CSS treatments. Interval has 480/800px variants, Pilates 480/800/1280px variants, and community/Yoga retain their original dimensions.
+The page serves WebP variants in `public/photos/`, generated with `scripts/optimize-lander-images.mjs`. Encoding and resizing preserve the original compositions; framing is handled in CSS. The header has 800/1600/2400px variants, and each discipline has 480/800/1280px variants. The header crop excludes the woman at the far left and keeps the man at the right visible on desktop and mobile.

@@ -34,7 +34,7 @@ The October 9 Danielle/Justin meeting notes, confirmed by the user; existing Stu
 
 The user requested Wynwood and the five other studios as brand context. The official studio directory verifies Wynwood, four Chicago studios (River North, Lincoln Park, Fulton Market, West Loop), Austin, and Brickell. The official Brickell page lists mats/towels, lockers, refillable water, showers and grooming products, blow-dry stations, community space, retail, and Wi-Fi. Location presence is not a claim that a founding membership includes access to every studio.
 
-The featured Brickell modalities are Interval, Pilates, and Yoga, as requested by the user. Each is shown with authentic Studio Three photography and a concise description grounded in its official class page. General modality descriptions do not announce a Brickell timetable or membership terms.
+The user confirmed on October 13 that Brickell's modalities are Strength, Pilates, and Yoga, with no Interval. The header and all three discipline photographs use the new user-supplied images. The header excludes the woman at the far left and retains the man at the right through responsive CSS cropping. General modality descriptions do not announce a Brickell timetable or membership terms. The dedicated Brickell email address and phone number are pending; existing temporary inquiry routing remains in place.
 
 The user authorized launch setup, then prioritized email. Inquiry records retain bounded first-touch campaign attribution and contact permission; a lease-protected notification queue retries temporary sending failures. Four FAQs explain the inquiry process, payment, the selected workouts, and the verified location. Existing analytics/ad account IDs and a production URL are still unavailable.
 

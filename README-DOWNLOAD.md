@@ -78,7 +78,7 @@ Cloudflare setup references:
 
 The Cloudflare development preview is https://s3-brickell-lander-dev.justin-b75.workers.dev. Update it with `pnpm run deploy:dev`. The named `dev` environment has a separate Worker, D1 database, and rate-limit namespace. Production deployment remains separate.
 
-Mobile hero copy and both actions are centered. The authentic photos are served as optimized WebP assets, with responsive Interval/Pilates sizes and lazy loading below the fold. Original assets remain available for provenance. Regenerate the variants with `node scripts/optimize-lander-images.mjs`.
+Mobile hero copy and both actions are centered. The user-supplied header and Strength/Pilates/Yoga photos are served as responsive WebP assets, with lazy loading below the fold. The header crop excludes the woman at the far left and keeps the man at the right visible. Original assets remain available for provenance. Regenerate the variants with `node scripts/optimize-lander-images.mjs`.
 
 The page now includes four FAQs and six real ClassPass review excerpts from Wynwood, Austin, River North, Lincoln Park, Fulton Market, and West Loop. The requested Miami-history paragraph was removed. Review provenance is recorded in `artifacts/studio-three/REVIEW-SOURCES.md`.
 

@@ -221,13 +221,17 @@ button:disabled {
   right: 0;
   bottom: 0;
   width: 68%;
+  overflow: hidden;
   z-index: -2;
 }
 .hero-photo img {
+  position: absolute;
+  right: 0;
+  width: 140%;
+  max-width: none;
   height: 100%;
   object-fit: cover;
-  object-position: 58% top;
-  filter: grayscale(100%);
+  object-position: right 25%;
 }
 .hero-shade {
   position: absolute;
@@ -335,11 +339,14 @@ button:disabled {
   object-fit: cover;
   filter: grayscale(100%);
 }
-.modality-photo-interval {
-  object-position: center 58%;
+.modality-photo-strength {
+  object-position: 55% center;
 }
 .modality-photo-pilates {
-  object-position: center 20%;
+  object-position: 45% center;
+}
+.modality-photo-yoga {
+  object-position: 65% center;
 }
 .modality h3 {
   margin-top: 24px;
@@ -678,9 +685,6 @@ fieldset {
     top: auto;
     bottom: 0;
     opacity: 1;
-  }
-  .hero-photo img {
-    object-position: 58% 43%;
   }
   .hero-shade {
     background: linear-gradient(
