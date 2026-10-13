@@ -2,6 +2,8 @@
 
 The user explicitly requested the supplied Studio Three logo and the fonts used on studiothree.com. The logo is copied unchanged, with its original transparency and colors, to `public/studio-three-logo.png`.
 
+The favicon frames the three colored slashes from that same original PNG on the page's ink background. The SVG embeds the unchanged logo and clips to its existing color mark; the PNG fallback and Apple touch icon are rasterized from that SVG. Regenerate them with `node scripts/generate-lander-favicon.mjs`.
+
 Typography was verified from rendered CSS on the official homepage and Brickell location page on October 12, 2026. Gotham is the body family. Trade Gothic Next is used for location headings; Trade Gothic Next Condensed is used for homepage class headings and campaign display text. The lander serves the requested font files locally.
 
 | Local file                               | Official source                                                                                                                  |
