@@ -2,7 +2,7 @@ import { useRef, useState, type FormEvent } from "react";
 import Arrow from "@/components/Arrow";
 import { campaignAttribution, trackInquiry } from "@/lib/campaign";
 
-type Field = "name" | "email" | "phone";
+type Field = "name" | "email" | "phone" | "textConsent";
 
 export default function InquiryForm() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -44,6 +44,9 @@ export default function InquiryForm() {
         nextErrors.phone =
           "For texts, enter a US phone number or include your country code.";
     }
+    if (!textConsent)
+      nextErrors.textConsent =
+        "Please agree to be contacted about your membership inquiry.";
     setErrors(nextErrors);
     setSendError("");
     const firstError = Object.keys(nextErrors)[0];
@@ -68,7 +71,7 @@ export default function InquiryForm() {
           email,
           phone,
           website: String(data.get("website") || ""),
-          consent: true,
+          consent: textConsent,
           textConsent,
           requestId: submissionRef.current.id,
           attribution: campaignAttribution(),
@@ -194,14 +197,31 @@ export default function InquiryForm() {
             tabIndex={-1}
           />
         </div>
-        <label className="text-opt-in">
-          <input type="checkbox" name="textConsent" />
-          <span>Send me an iMessage confirmation (optional).</span>
-        </label>
-        <p className="contact-consent">
-          By submitting, you agree to be contacted by Studio Three about your
-          membership inquiry.
-        </p>
+        <div className="contact-permission">
+          <label className="contact-opt-in">
+            <input
+              type="checkbox"
+              name="textConsent"
+              required
+              aria-invalid={!!errors.textConsent}
+              aria-describedby={
+                errors.textConsent ? "error-textConsent" : undefined
+              }
+              onChange={() =>
+                setErrors((prev) => ({ ...prev, textConsent: undefined }))
+              }
+            />
+            <span>
+              By submitting, you agree to be contacted by Studio Three about your
+              membership inquiry.
+            </span>
+          </label>
+          {errors.textConsent && (
+            <p className="field-error" id="error-textConsent">
+              {errors.textConsent}
+            </p>
+          )}
+        </div>
         <button className="button" type="submit">
           {status === "sending" ? "Sending…" : "Get membership details"}
           <Arrow />

@@ -496,28 +496,35 @@ fieldset {
 .submit-error {
   margin-top: 16px;
 }
-.contact-consent {
-  color: var(--secondary);
-  font-size: 12px;
-  line-height: 1.9;
-  margin: 16px 0;
+.contact-permission {
+  display: grid;
+  gap: 8px;
+  margin: 24px 0;
 }
-.text-opt-in {
+.contact-opt-in {
   display: flex;
   align-items: flex-start;
   gap: 12px;
   min-height: 44px;
-  margin-top: 24px;
   cursor: pointer;
+  color: var(--secondary);
   font-size: 13px;
   line-height: 1.65;
 }
-.text-opt-in input {
+.contact-opt-in input {
   width: 20px;
   height: 20px;
   margin: 2px 0 0;
   flex-shrink: 0;
   accent-color: var(--blue);
+}
+.contact-opt-in input[aria-invalid="true"] {
+  outline: 2px solid #b42c12;
+  outline-offset: 2px;
+}
+.contact-opt-in input:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
 }
 .inquiry-form .button {
   width: 100%;

@@ -183,7 +183,7 @@ White square fields inside the paper inquiry panel; 52px minimum height, 16px in
 
 Membership copy and form share one flat paper section. Inquiry, success and optional direct-membership surfaces use transparent backgrounds and no internal panel padding, radius, shadow or ornamental border. Success is a distinct focusable status state confirming durable inquiry receipt. Provider delivery is tracked separately; this design document does not certify production delivery.
 
-The optional iMessage consent uses an unchecked native 20px checkbox within a full clickable label, with a 44px minimum row. Its copy explains the confirmation and the Brickell team's personal follow-up; it does not promise completed membership or immediate delivery. The hero carries the brand message "Train for Something Bigger," with fluid mobile sizing and a centered three-line composition on narrow phones.
+Contact permission uses a required, initially unchecked native 20px checkbox within a full clickable label, with a 44px minimum row. The user-specified label is "By submitting, you agree to be contacted by Studio Three about your membership inquiry." This replaces both the optional iMessage label and the separate consent paragraph. Missing permission shows an associated error and focuses the checkbox; selection clears the error. Submitting with permission queues the existing text confirmation. The hero carries the brand message "Train for Something Bigger," with fluid mobile sizing and a centered three-line composition on narrow phones.
 
 ### Navigation
 
