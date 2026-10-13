@@ -290,12 +290,24 @@ button:disabled {
 
 .location-strip {
   display: grid;
-  grid-template-columns: 1fr 1fr auto;
-  gap: 36px;
-  padding: 32px var(--gutter);
+  grid-template-columns: minmax(220px, 0.75fr) minmax(0, 1.25fr);
+  gap: 48px;
+  padding: 48px var(--gutter);
   background: var(--white);
   border-bottom: 1px solid var(--line);
   align-items: center;
+}
+.location-details {
+  display: grid;
+  gap: 16px;
+  justify-items: start;
+}
+.location-map {
+  display: block;
+  width: 100%;
+  height: 320px;
+  border: 0;
+  background: var(--paper);
 }
 .location-building {
   font: 700 34px/1.1 var(--display);
@@ -303,8 +315,8 @@ button:disabled {
 }
 .location-strip address {
   font-style: normal;
-  font-size: 12px;
-  line-height: 1.9;
+  font-size: 14px;
+  line-height: 1.8;
   color: var(--secondary);
 }
 .location-strip .text-link {
@@ -725,18 +737,20 @@ fieldset {
     );
   }
   .location-strip {
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    padding: 28px var(--gutter);
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 32px var(--gutter);
   }
   .location-building {
     font-size: 30px;
   }
   .location-strip address {
-    font-size: 12px;
+    font-size: 16px;
+  }
+  .location-map {
+    height: 280px;
   }
   .location-strip .text-link {
-    grid-column: 1 / -1;
     justify-content: flex-start;
     font-size: 11px;
     min-height: 44px;

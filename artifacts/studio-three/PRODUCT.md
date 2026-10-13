@@ -36,6 +36,8 @@ The user requested Wynwood and the five other studios as brand context. The offi
 
 The user confirmed on October 13 that Brickell's modalities are Strength, Pilates, and Yoga, with no Interval. The header and all three discipline photographs use the new user-supplied images. The header excludes the woman at the far left and retains the man at the right through responsive CSS cropping. General modality descriptions do not announce a Brickell timetable or membership terms. The dedicated Brickell email address and phone number are pending; existing temporary inquiry routing remains in place.
 
+The user requested an on-page map. The embed and directions use the Google Maps place for the 830 Brickell building, verified October 13. Google lists that place as 830 Brickell Plaza, Miami, FL 33131; the Studio Three page lists 96 SE 8th St, Miami, FL 33131. The printed studio street address remains based on Studio Three's source and needs confirmation before launch. The map is labeled as the building rather than as a separately verified studio entrance.
+
 The user authorized launch setup, then prioritized email. Inquiry records retain bounded first-touch campaign attribution and contact permission; a lease-protected notification queue retries temporary sending failures. Four FAQs explain the inquiry process, payment, the selected workouts, and the verified location. Existing analytics/ad account IDs and a production URL are still unavailable.
 
 The user requested reviews from all six existing studios and removal of the Miami-history paragraph. Six short public ClassPass excerpts are individually attributed and linked to their sources. They describe the existing locations, not Brickell. See REVIEW-SOURCES.md for provenance.

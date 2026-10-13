@@ -35,7 +35,9 @@ const modalities = [
   },
 ];
 const directionsHref =
-  "https://maps.google.com/maps?saddr=&daddr=96+SE+8th.+St%2CMiami%2CUnited+States+of+America";
+  "https://www.google.com/maps/dir/?api=1&destination=830%20Brickell%2C%20Miami%2C%20FL%2033131";
+const mapEmbedHref =
+  "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3593.1362875007762!2d-80.19476582487792!3d25.76606157734922!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88d9b730e94fd8db%3A0x5c2cda73e5cb9eda!2s830%20Brickell!5e0!3m2!1sen!2sus!4v1791910136392!5m2!1sen!2sus";
 
 const studioCities = [
   {
@@ -198,22 +200,40 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <aside className="location-strip" aria-label="Brickell studio location">
-          <div className="location-building">830 Brickell</div>
-          <address>
-            96 SE 8th St
-            <br />
-            Miami, FL 33131
-          </address>
-          <a
-            className="text-link"
-            href={directionsHref}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Get directions <Arrow />
-          </a>
-        </aside>
+        <section
+          className="location-strip"
+          id="location"
+          aria-labelledby="location-heading"
+        >
+          <div className="location-details">
+            <h2 className="location-building" id="location-heading">
+              830 Brickell
+            </h2>
+            <address>
+              96 SE 8th St
+              <br />
+              Miami, FL 33131
+            </address>
+            <a
+              className="text-link"
+              href={directionsHref}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Get directions <Arrow />
+            </a>
+          </div>
+          <iframe
+            className="location-map"
+            title="Map showing the 830 Brickell building in Miami"
+            src={mapEmbedHref}
+            width="800"
+            height="320"
+            loading="lazy"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          />
+        </section>
 
         <section className="studio-section" id="studio">
           <div className="studio-intro">

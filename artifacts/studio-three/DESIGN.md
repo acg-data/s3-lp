@@ -151,6 +151,8 @@ At 1100px and below, the location label leaves the header, gaps compress, and he
 
 The mobile action appears only after the hero leaves view and before the inquiry section reaches the viewport; hidden controls are inert. Safe-area padding protects the bottom action and footer. Anchor offsets account for the sticky header.
 
+The location section directly below the hero pairs the existing studio address and directions link with an interactive Google Maps embed for the 830 Brickell building. Desktop uses two columns with a 320px-high map; mobile places a 280px-high map below the address. The iframe has an accessible title, lazy loading, and reserved dimensions. Google Maps attribution and controls remain intact.
+
 **The Intent First Rule.** Responsive changes preserve headline hierarchy, visible faces, readable prose, and access to the founding-membership action.
 
 ## Elevation & Depth
