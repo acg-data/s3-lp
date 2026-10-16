@@ -10,6 +10,7 @@ import {
   notifyFounderText,
   flushFounderTexts,
 } from "./comms.ts";
+import { deliveryPage, resendWebhook } from "./delivery.ts";
 
 const MAX_BODY_BYTES = 4096;
 const idPattern =
@@ -89,7 +90,19 @@ function attribution(value: unknown) {
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
+    if (
+      url.hostname === "www.studiothreefounders.com" ||
+      (url.hostname === "studiothreefounders.com" && url.protocol !== "https:")
+    ) {
+      url.protocol = "https:";
+      url.hostname = "studiothreefounders.com";
+      return Response.redirect(url.href, 308);
+    }
     if (!url.pathname.startsWith("/api/")) return env.ASSETS.fetch(request);
+    if (url.pathname === "/api/webhooks/resend")
+      return resendWebhook(request, env);
+    if (url.pathname.startsWith("/api/delivery/"))
+      return deliveryPage(request, env);
     if (url.pathname !== "/api/inquiries")
       return json({ error: "not_found" }, 404);
     if (request.method !== "POST")

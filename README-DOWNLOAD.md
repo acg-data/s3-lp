@@ -31,7 +31,11 @@ Open http://localhost:5173. Vite proxies `/api` to the local Worker on port 8787
 
 Every accepted inquiry is saved to Cloudflare D1 before confirmation. Development and production use separate databases. Stored records include contact permission, bounded first-touch campaign attribution, notification status, attempt count, and a follow-up status. No public endpoint exposes these records.
 
-The Worker sends a transactional notification through Resend. The visitor's email becomes `reply_to`, so the receiving team can reply personally. No automated email is sent to the visitor. Notification success means Resend accepted the message, not final inbox delivery. The page confirms durable inquiry receipt and does not claim email delivery.
+The Worker sends a transactional notification through Resend. The visitor's email becomes `reply_to`, so the receiving team can reply personally. No automated email is sent to the visitor. `notification_status = 'sent'` means Resend accepted the message; signed Resend webhooks separately record sent, delayed, delivered, failed, suppressed, bounced, and complained events. The page confirms durable inquiry receipt and does not claim email delivery.
+
+Each notification includes a private delivery-status link that expires after 30 days. It shows email delivery and spam complaints, plus the saved text-send status, without showing visitor contact details. The signature is verified before reading the record. Webhooks use Svix signature/timestamp verification, bounded payloads, event deduplication, and project tags to handle a receipt arriving before the send response. Unrelated emails are ignored. Late events cannot overwrite a spam complaint or bounce with a successful status. No raw webhook message or recipient data is retained in the delivery-event table.
+
+Resend delivery means acceptance by the receiving mail server. A spam complaint means the recipient marked the message as spam. Neither proves automatic Inbox/Spam placement; check the receiving mailbox for that. Open and click tracking are disabled for the new production sending domain.
 
 Temporary sending failures leave the lead saved and pending. A five-minute Worker cron retries due records, with backoff and an atomic lease to prevent simultaneous sends. Retries stop after eight attempts or 23 hours from the first attempt, within the providers' 24-hour idempotency retention. Stable provider keys prevent duplicate sends during that window. A stable client request ID prevents a normal network retry from creating a second lead.
 
@@ -39,20 +43,22 @@ The form requires an initially unchecked contact-permission checkbox labeled "By
 
 An inquiry preserves UTM source/medium/campaign/content/term and supported ad click IDs. Only a referrer hostname is retained, never a full referrer URL. The frontend emits `studio-three:inquiry-received` after confirmed receipt with the reference and studio only; it contains no contact details. GA4, Google Ads, and Meta integrations have not been activated because account IDs are unavailable.
 
-## Before launch
+## Live configuration — October 16, 2026
 
-1. The temporary receiving inbox is `justin@aryocg.com`. Resend already verifies `automator.aryocg.com`; use `justin@automator.aryocg.com` as the temporary sender. Studio Three's own sending domain and Anastasia's receiving inbox can replace these after approval.
-2. Store `RESEND_API_KEY` with `pnpm exec wrangler secret put RESEND_API_KEY --env dev`. Use a sending-only key scoped to `automator.aryocg.com`. Store `COMMS_API_KEY` in the same way. Keep keys out of Git, browser code, and `VITE_*` variables.
-3. Dev Resend and Comms secrets are connected and both sending switches are enabled. On October 12, 2026, a synthetic inquiry sent its manager notification to `justin@aryocg.com` through Resend, which reported `delivered`; the visitor's reply-to was retained. Comms reported a single, clearly labeled test `delivered` over iMessage from the approved workspace line to the user's approved mobile recipient. The text queue/retry paths also passed mocked integration tests. Base production settings remain disabled; apply migrations, install secrets, and choose the approved production settings separately before launch.
-4. Confirm the final copy and photography with Danielle. Existing photos illustrate the Studio Three experience; they are not presented as photos of the new Brickell studio.
-5. Choose the landing-page domain/subdomain and attach it in the existing Cloudflare account.
-6. Send an approved test inquiry and verify inbox arrival, reply-to, and manager follow-up before using the URL in ads.
+- Production: https://studiothreefounders.com, served by `s3-brickell-lander`. Both HTTP and `www` redirect to the HTTPS apex. Cloudflare manages DNS and TLS for both custom domains. The HTML canonical and Open Graph URL use the apex.
+- Production sender: `Studio Three Brickell <notifications@studiothreefounders.com>`. The temporary receiving inbox remains `justin@aryocg.com`. Replying to a notification contacts the inquirer directly.
+- Resend verified the domain's DKIM, SPF, bounce-domain MX, and sending CNAME. DMARC is published in monitoring mode (`p=none`, relaxed alignment). This domain is configured for sending; no new receiving inbox was created.
+- Resend and Comms are enabled in production and development. The approved Comms workspace line remains `+12103933771`. Existing provider history confirms the October 14 test was delivered over iMessage. No additional text was sent for the October 16 email check.
+- `RESEND_API_KEY`, `COMMS_API_KEY`, `RESEND_WEBHOOK_SECRET`, and `DELIVERY_LINK_SECRET` are installed as Worker secrets. Dev and production have separate webhook signing and status-link secrets. Keep these out of Git, browser code, and `VITE_*` variables. Production webhook: `/api/webhooks/resend` on the production domain; dev has its own endpoint on the development Worker.
+- The October 16 synthetic inquiry reached `justin@aryocg.com` in Gmail **Inbox**, with SPF, DKIM, and DMARC all **PASS**. Gmail reported delivery in one second. Resend's real webhook updated the production D1 record to `delivered`, and its signed status link returned the same result. This verifies that test; it is not a guarantee about every future mailbox decision.
+
+The final Brickell receiving email and public phone number are still pending from the studio. Replace temporary routing when supplied. GA4, Google Ads, and Meta IDs remain pending; those integrations are not activated.
 
 HTTP 200 means the inquiry is durably stored. If storage fails, the Worker returns HTTP 503 and the visitor can retry. Tests mock provider requests; local development keeps both sending switches off unless explicitly configured. A test-suite receipt does not establish real inbox delivery.
 
-Review leads in the account's D1 database console. Notification failures can be found with `SELECT id, created_at, notification_status, notification_attempts, last_error_code FROM inquiries WHERE notification_status = 'failed'`. Text attention can be found with `SELECT id, created_at, text_status, text_attempts, text_error_code FROM inquiries WHERE text_status IN ('failed', 'unknown')`. Before manually retrying an expired or unknown send, inspect the provider history to avoid contacting someone twice. Keep any exported contact data out of Git and public files.
+Review leads in the account's D1 database console. Notification failures can be found with `SELECT id, created_at, notification_status, notification_attempts, last_error_code FROM inquiries WHERE notification_status = 'failed'`. Delivery problems can be found with `SELECT id, email_delivery_status, email_event_at FROM inquiries WHERE email_delivery_status IN ('bounced', 'complained', 'failed', 'suppressed', 'delivery_delayed')`. Text attention can be found with `SELECT id, created_at, text_status, text_attempts, text_error_code FROM inquiries WHERE text_status IN ('failed', 'unknown')`. Before manually retrying an expired or unknown send, inspect the provider history to avoid contacting someone twice. Keep any exported contact data out of Git and public files.
 
-The initial database migration is applied in both remote databases. The founder-text migration is applied locally and in dev; apply it to production before its release. For a new local checkout, run:
+All three migrations are applied to both remote databases. For a new local checkout, run:
 
     pnpm exec wrangler d1 migrations apply LEADS --local
 
@@ -76,7 +82,7 @@ Cloudflare setup references:
 
 `deploy:check` builds the frontend and performs a Wrangler dry run. It does not deploy. The automated inquiry tests use mocked bindings and never send real emails.
 
-The Cloudflare development preview is https://s3-brickell-lander-dev.justin-b75.workers.dev. Update it with `pnpm run deploy:dev`. The named `dev` environment has a separate Worker, D1 database, and rate-limit namespace. Production deployment remains separate.
+The Cloudflare development preview is https://s3-brickell-lander-dev.justin-b75.workers.dev. Update it with `pnpm run deploy:dev`. The named `dev` environment has a separate Worker, D1 database, rate-limit namespace, webhook, and status-link signing key. Update the public site with `pnpm run deploy:lander` after applying any new production migrations.
 
 Mobile hero copy and both actions are centered. The user-supplied header and Strength/Pilates/Yoga photos are served as responsive WebP assets, with lazy loading below the fold. The header crop excludes the woman at the far left and keeps the man at the right visible. Original assets remain available for provenance. Regenerate the variants with `node scripts/optimize-lander-images.mjs`.
 

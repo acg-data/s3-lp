@@ -1,6 +1,10 @@
 # Copy to .dev.vars for LOCAL tests. Never commit real keys.
 RESEND_API_KEY=
 COMMS_API_KEY=
+RESEND_WEBHOOK_SECRET=
+DELIVERY_LINK_SECRET=
+PUBLIC_ORIGIN=http://localhost:8787
+DELIVERY_PROJECT=studio-three-brickell-local
 LEAD_RECIPIENT=
 EMAIL_FROM=
 EMAIL_ENABLED=false

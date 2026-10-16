@@ -5,8 +5,42 @@ import { readFileSync, readdirSync } from "node:fs";
 import worker from "../worker/index.ts";
 import { flushNotifications } from "../worker/notifications.ts";
 import { flushFounderTexts, textNumber } from "../worker/comms.ts";
+import { Webhook } from "svix";
+import { deliveryLink } from "../worker/delivery.ts";
 
 afterEach(() => mock.restoreAll());
+
+function webhookRequest(
+  env,
+  inquiryId,
+  type = "email.delivered",
+  options = {},
+) {
+  const eventId = options.eventId || `msg_${crypto.randomUUID()}`;
+  const timestamp = options.timestamp || new Date();
+  const payload = JSON.stringify({
+    type,
+    created_at: options.occurredAt || new Date().toISOString(),
+    data: {
+      email_id: options.emailId || "test-message",
+      tags: { project: env.DELIVERY_PROJECT, inquiry_id: inquiryId },
+      ...options.data,
+    },
+  });
+  return new Request(`${origin}/api/webhooks/resend`, {
+    method: "POST",
+    headers: {
+      "svix-id": eventId,
+      "svix-timestamp": String(Math.floor(timestamp.getTime() / 1000)),
+      "svix-signature": new Webhook(env.RESEND_WEBHOOK_SECRET).sign(
+        eventId,
+        timestamp,
+        payload,
+      ),
+    },
+    body: options.body || payload,
+  });
+}
 
 const origin = "https://brickell.example.com";
 const lead = {
@@ -92,6 +126,10 @@ function environment(overrides = {}) {
       COMMS_ENABLED: "false",
       COMMS_API_KEY: "osis_test-only",
       COMMS_LINE: "+12103933771",
+      PUBLIC_ORIGIN: origin,
+      DELIVERY_PROJECT: "studio-three-brickell-test",
+      DELIVERY_LINK_SECRET: "test-only-link-signing-key",
+      RESEND_WEBHOOK_SECRET: `whsec_${Buffer.from("test-only-webhook-secret").toString("base64")}`,
       INQUIRY_LIMITER: { limit: async () => ({ success: true }) },
       ASSETS: { fetch: async () => new Response("static asset") },
       ...bindings,
@@ -563,4 +601,177 @@ test("provider retries stop before their 24-hour idempotency retention expires",
   assert.equal(inquiries()[0].text_status, "failed");
   assert.equal(requests.length, 2);
   assert.equal(record.last_error_code, "E_RESEND_HTTP_429");
+});
+
+test("signed provider events record delivery and deduplicate retries", async () => {
+  const { env, db, inquiries } = environment();
+  const { reference } = await (await worker.fetch(request(), env)).json();
+  const event = webhookRequest(env, reference);
+  assert.equal((await worker.fetch(event.clone(), env)).status, 200);
+  assert.equal((await worker.fetch(event, env)).status, 200);
+  assert.equal(inquiries()[0].email_delivery_status, "delivered");
+  assert.equal(
+    db.prepare("SELECT count(*) AS n FROM email_delivery_events").get().n,
+    1,
+  );
+});
+
+test("a spam complaint remains visible after late sent and delivered events", async () => {
+  const { env, inquiries } = environment();
+  const { reference } = await (await worker.fetch(request(), env)).json();
+  for (const type of ["email.complained", "email.sent", "email.delivered"])
+    assert.equal(
+      (await worker.fetch(webhookRequest(env, reference, type), env)).status,
+      200,
+    );
+  assert.equal(inquiries()[0].email_delivery_status, "complained");
+  assert.ok(inquiries()[0].email_complained_at);
+});
+
+test("bounce, failed and suppressed reports are retained as delivery problems", async () => {
+  for (const type of ["email.bounced", "email.failed", "email.suppressed"]) {
+    const { env, inquiries } = environment();
+    const { reference } = await (await worker.fetch(request(), env)).json();
+    assert.equal(
+      (await worker.fetch(webhookRequest(env, reference, type), env)).status,
+      200,
+    );
+    assert.equal(inquiries()[0].email_delivery_status, type.slice(6));
+  }
+});
+
+test("tampered and expired webhook signatures cannot change delivery status", async () => {
+  const { env, inquiries } = environment();
+  const { reference } = await (await worker.fetch(request(), env)).json();
+  assert.equal(
+    (
+      await worker.fetch(
+        webhookRequest(env, reference, "email.complained", { body: "{}" }),
+        env,
+      )
+    ).status,
+    400,
+  );
+  assert.equal(
+    (
+      await worker.fetch(
+        webhookRequest(env, reference, "email.complained", {
+          timestamp: new Date(Date.now() - 600000),
+        }),
+        env,
+      )
+    ).status,
+    400,
+  );
+  assert.equal(inquiries()[0].email_delivery_status, "unreported");
+});
+
+test("webhook tags handle delivery before acknowledgement without accepting other projects", async () => {
+  const { env, db, inquiries } = environment({ EMAIL_ENABLED: "false" });
+  const { reference } = await (await worker.fetch(request(), env)).json();
+  const unrelated = webhookRequest(env, reference, "email.delivered", {
+    data: { tags: { project: "another-project", inquiry_id: reference } },
+  });
+  assert.equal(
+    (await (await worker.fetch(unrelated, env)).json()).ignored,
+    true,
+  );
+  assert.equal(
+    db.prepare("SELECT count(*) AS n FROM email_delivery_events").get().n,
+    0,
+  );
+  assert.equal(
+    (await worker.fetch(webhookRequest(env, reference), env)).status,
+    200,
+  );
+  assert.equal(inquiries()[0].email_delivery_status, "delivered");
+});
+
+test("provider webhook storage failures ask for retry without claiming delivery", async () => {
+  const { env } = environment();
+  env.LEADS = {
+    prepare: () => {
+      throw new Error("db unavailable");
+    },
+  };
+  assert.equal(
+    (await worker.fetch(webhookRequest(env, crypto.randomUUID()), env)).status,
+    503,
+  );
+});
+
+test("webhook payloads are bounded without trusting Content-Length", async () => {
+  const { env } = environment();
+  assert.equal(
+    (
+      await worker.fetch(
+        webhookRequest(env, crypto.randomUUID(), "email.sent", {
+          body: " ".repeat(17000),
+        }),
+        env,
+      )
+    ).status,
+    413,
+  );
+});
+
+test("notification emails contain a private live status link without exposing contact data", async () => {
+  const { env, messages } = environment();
+  const { reference } = await (await worker.fetch(request(), env)).json();
+  const statusUrl = await deliveryLink(
+    env,
+    reference,
+    new Date().toISOString(),
+  );
+  assert.match(messages[0].text, /Delivery and spam-complaint status: https:/);
+  const page = await worker.fetch(new Request(statusUrl), env);
+  assert.equal(page.status, 200);
+  const html = await page.text();
+  assert.match(html, /No spam complaint has been reported/);
+  assert.match(
+    html,
+    /does not show whether that mailbox placed it in Inbox or Spam/,
+  );
+  assert.doesNotMatch(html, /jamie@example.com|Jamie Example|555-0100/);
+  assert.equal(page.headers.get("Cache-Control"), "no-store");
+  assert.equal(page.headers.get("Referrer-Policy"), "no-referrer");
+  assert.match(page.headers.get("X-Robots-Tag"), /noindex/);
+  const changed = new URL(statusUrl);
+  changed.pathname = `/api/delivery/${crypto.randomUUID()}`;
+  assert.equal((await worker.fetch(new Request(changed), env)).status, 404);
+  const expired = await deliveryLink(
+    env,
+    reference,
+    new Date(Date.now() - 31 * 86400000).toISOString(),
+  );
+  assert.equal((await worker.fetch(new Request(expired), env)).status, 404);
+  assert.equal(
+    (
+      await worker.fetch(
+        new Request(`${origin}/api/delivery/${reference}`),
+        env,
+      )
+    ).status,
+    404,
+  );
+});
+
+test("the public domain redirects HTTP and www to its HTTPS canonical URL", async () => {
+  const { env } = environment();
+  for (const url of [
+    "http://studiothreefounders.com/?utm_source=test",
+    "https://www.studiothreefounders.com/?utm_source=test",
+  ]) {
+    const res = await worker.fetch(new Request(url), env);
+    assert.equal(res.status, 308);
+    assert.equal(
+      res.headers.get("Location"),
+      "https://studiothreefounders.com/?utm_source=test",
+    );
+  }
+  assert.equal(
+    (await worker.fetch(new Request("https://studiothreefounders.com/"), env))
+      .status,
+    200,
+  );
 });

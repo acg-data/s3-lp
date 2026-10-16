@@ -1,4 +1,5 @@
 import { providerJson } from "./provider-json.ts";
+import { deliveryLink } from "./delivery.ts";
 
 export type Inquiry = {
   id: string;
@@ -26,7 +27,8 @@ function escapeHtml(value: string) {
   );
 }
 
-export function notificationMessage(inquiry: Inquiry, env: Env) {
+export async function notificationMessage(inquiry: Inquiry, env: Env) {
+  const statusUrl = await deliveryLink(env, inquiry.id, inquiry.created_at);
   const attribution = JSON.parse(inquiry.attribution) as Record<string, string>;
   const campaign = [
     attribution.utm_source && `Source: ${attribution.utm_source}`,
@@ -53,9 +55,24 @@ export function notificationMessage(inquiry: Inquiry, env: Env) {
     to: [env.LEAD_RECIPIENT],
     reply_to: inquiry.email,
     subject: "New Brickell founding membership inquiry",
-    text,
-    html,
+    text:
+      text +
+      (statusUrl
+        ? `\n\nDelivery and spam-complaint status: ${statusUrl}\nInbox or spam-folder placement is determined by the receiving mailbox.`
+        : ""),
+    html:
+      html +
+      (statusUrl
+        ? `<p style="font:12px/1.6 Arial,sans-serif"><a href="${escapeHtml(statusUrl)}">View delivery and spam-complaint status</a><br>Inbox or spam-folder placement is determined by the receiving mailbox.</p>`
+        : ""),
     headers: { "X-Studio-Three-Inquiry": inquiry.id },
+    tags: [
+      {
+        name: "project",
+        value: env.DELIVERY_PROJECT || "studio-three-brickell",
+      },
+      { name: "inquiry_id", value: inquiry.id },
+    ],
   };
 }
 
@@ -95,7 +112,7 @@ export async function notifyInquiry(
         "Content-Type": "application/json",
         "Idempotency-Key": `brickell-inquiry/${inquiry.id}`,
       },
-      body: JSON.stringify(notificationMessage(inquiry, env)),
+      body: JSON.stringify(await notificationMessage(inquiry, env)),
       signal: AbortSignal.timeout(8000),
     });
     if (!response.ok) {
