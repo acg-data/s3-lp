@@ -22,7 +22,7 @@ export function textNumber(phone: string): string | null {
 
 export function founderText(name: string) {
   const firstName = name.split(/\s+/)[0];
-  return `Hi ${firstName}, thanks for your interest in becoming a founding member at Studio Three Brickell. Anastasia, our studio manager, will reach out personally with membership details and next steps. — Studio Three Brickell`;
+  return `Hi ${firstName}, thanks for your interest in becoming a founding member at Studio Three Brickell. Our Brickell team will reach out personally with membership details and next steps. — Studio Three Brickell`;
 }
 
 function configured(env: Env) {

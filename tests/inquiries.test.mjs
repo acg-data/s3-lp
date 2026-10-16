@@ -160,6 +160,45 @@ test("valid inquiries go to the configured manager with the visitor as reply-to"
   assert.equal(response.headers.get("Cache-Control"), "no-store");
 });
 
+test("membership inquiry notifications reach Justin and Adriana with the visitor as reply-to", async () => {
+  const { env, messages } = environment({
+    LEAD_RECIPIENT: "justin@aryocg.com, adriana@studiothree.com",
+  });
+  const response = await worker.fetch(
+    request({ ...lead, to: "unapproved@example.com" }),
+    env,
+  );
+  assert.equal(response.status, 200);
+  assert.equal(messages.length, 1);
+  assert.deepEqual(messages[0].to, [
+    "justin@aryocg.com",
+    "adriana@studiothree.com",
+  ]);
+  assert.equal(messages[0].reply_to, lead.email);
+});
+
+test("notification recipient configuration is validated completely before sending", async () => {
+  for (const LEAD_RECIPIENT of [
+    "manager@example.com,invalid",
+    "manager@example.com,",
+    ",manager@example.com",
+  ]) {
+    const { env, messages, inquiries } = environment({ LEAD_RECIPIENT });
+    assert.equal((await worker.fetch(request(), env)).status, 200);
+    assert.equal(messages.length, 0);
+    assert.equal(inquiries()[0].notification_status, "pending");
+    assert.equal(inquiries()[0].notification_attempts, 0);
+  }
+});
+
+test("duplicate notification recipients receive one copy", async () => {
+  const { env, messages } = environment({
+    LEAD_RECIPIENT: "manager@example.com, MANAGER@example.com",
+  });
+  assert.equal((await worker.fetch(request(), env)).status, 200);
+  assert.deepEqual(messages[0].to, ["manager@example.com"]);
+});
+
 test("inquiries remain durably saved while the email setup is pending", async () => {
   const { env, messages, inquiries } = environment({ LEAD_RECIPIENT: "" });
   const response = await worker.fetch(request(), env);
@@ -461,7 +500,8 @@ test("Comms sends only for explicit text permission, using the approved line and
   assert.equal(texts[0].line_e164, env.COMMS_LINE);
   assert.equal(texts[0].channel, "imessage");
   assert.match(texts[0].body, /founding member at Studio Three Brickell/);
-  assert.match(texts[0].body, /Anastasia.*reach out personally/);
+  assert.match(texts[0].body, /Our Brickell team will reach out personally/);
+  assert.doesNotMatch(texts[0].body, /Anastasia/);
   const sent = requests.find((item) => item.url.includes("osis.co"));
   assert.equal(sent.headers.Authorization, `Bearer ${env.COMMS_API_KEY}`);
   assert.match(sent.headers["Idempotency-Key"], /^brickell-founder\//);

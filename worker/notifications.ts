@@ -17,6 +17,22 @@ export const emailPattern =
   /^[^\s@<>(),;:"\\[\]]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 const MAX_ATTEMPTS = 8;
 
+function notificationRecipients(env: Env) {
+  const recipients = env.LEAD_RECIPIENT.split(",").map((email) => email.trim());
+  if (
+    recipients.length > 10 ||
+    recipients.some((email) => !emailPattern.test(email))
+  )
+    return [];
+  const seen = new Set<string>();
+  return recipients.filter((email) => {
+    const key = email.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 function escapeHtml(value: string) {
   return value.replace(
     /[&<>"']/g,
@@ -52,7 +68,7 @@ export async function notificationMessage(inquiry: Inquiry, env: Env) {
   const html = `<div style="background:#f7f7f4;padding:32px;font:15px/1.6 Arial,sans-serif;color:#0b0b0b;max-width:600px"><table role="presentation" style="width:100%;border-collapse:collapse"><tr><td style="height:4px;background:#007495"></td><td style="background:#de4316"></td><td style="background:#bdcc00"></td></tr></table><h1 style="font-size:28px;line-height:1.2">New Brickell founding membership inquiry</h1><p>Please follow up personally with membership details.</p><table style="width:100%;border-collapse:collapse">${details}</table>${campaign ? `<p style="white-space:pre-line">${escapeHtml(campaign)}</p>` : ""}<p>This visitor agreed to be contacted about their membership inquiry. Reply to this email to contact them directly.</p><p style="font-size:12px;color:#555650">Reference: ${inquiry.id}</p></div>`;
   return {
     from: `Studio Three Brickell <${env.EMAIL_FROM}>`,
-    to: [env.LEAD_RECIPIENT],
+    to: notificationRecipients(env),
     reply_to: inquiry.email,
     subject: "New Brickell founding membership inquiry",
     text:
@@ -80,7 +96,7 @@ export function emailConfigured(env: Env) {
   return (
     env.EMAIL_ENABLED === "true" &&
     !!env.RESEND_API_KEY &&
-    emailPattern.test(env.LEAD_RECIPIENT) &&
+    notificationRecipients(env).length > 0 &&
     emailPattern.test(env.EMAIL_FROM)
   );
 }
