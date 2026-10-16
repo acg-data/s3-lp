@@ -108,22 +108,42 @@ export async function resendWebhook(request: Request, env: Env) {
     return response({ error: "invalid_event" }, 400);
   // Tags allow a verified delivery event to arrive before the send response is saved.
   const tags = data?.tags as Record<string, unknown> | undefined;
+  const taggedKind =
+    tags?.message_kind === "confirmation"
+      ? "confirmation"
+      : tags?.message_kind === undefined || tags.message_kind === "notification"
+        ? "notification"
+        : null;
   const taggedId =
     tags?.project === env.DELIVERY_PROJECT &&
+    taggedKind &&
     typeof tags?.inquiry_id === "string" &&
     idPattern.test(tags.inquiry_id)
       ? tags.inquiry_id
       : "";
   try {
     const inquiry = await env.LEADS.prepare(
-      "SELECT id FROM inquiries WHERE email_message_id = ? OR (id = ? AND (email_message_id IS NULL OR email_message_id = ?)) LIMIT 1",
+      `SELECT id, CASE WHEN confirmation_message_id = ? THEN 'confirmation'
+        WHEN email_message_id = ? THEN 'notification' ELSE ? END AS kind
+       FROM inquiries WHERE email_message_id = ? OR confirmation_message_id = ? OR
+       (id = ? AND ((? = 'confirmation' AND confirmation_status != 'skipped' AND confirmation_message_id IS NULL)
+         OR (? = 'notification' AND email_message_id IS NULL))) LIMIT 1`,
     )
-      .bind(emailId, taggedId, emailId)
-      .first<{ id: string }>();
+      .bind(
+        emailId,
+        emailId,
+        taggedKind,
+        emailId,
+        emailId,
+        taggedId,
+        taggedKind,
+        taggedKind,
+      )
+      .first<{ id: string; kind: "confirmation" | "notification" }>();
     if (!inquiry) return response({ ok: true, ignored: true });
     const timestamp = new Date(occurredAt).toISOString();
     await env.LEADS.prepare(
-      "INSERT INTO email_delivery_events (event_id, inquiry_id, email_id, event_type, occurred_at, received_at) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(event_id) DO NOTHING",
+      "INSERT INTO email_delivery_events (event_id, inquiry_id, email_id, event_type, occurred_at, received_at, message_kind) VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT(event_id) DO NOTHING",
     )
       .bind(
         eventId,
@@ -132,13 +152,15 @@ export async function resendWebhook(request: Request, env: Env) {
         type,
         timestamp,
         new Date().toISOString(),
+        inquiry.kind,
       )
       .run();
     // Reapplying a duplicate is safe, including a retry after a failed status update.
+    const prefix = inquiry.kind === "confirmation" ? "confirmation_" : "email_";
     await env.LEADS.prepare(
-      `UPDATE inquiries SET email_delivery_status = ?, email_delivery_rank = ?, email_event_at = ?,
-      email_complained_at = CASE WHEN ? = 'email.complained' THEN COALESCE(email_complained_at, ?) ELSE email_complained_at END
-      WHERE id = ? AND (email_delivery_rank < ? OR (email_delivery_rank = ? AND (email_event_at IS NULL OR email_event_at < ?)))`,
+      `UPDATE inquiries SET ${prefix}delivery_status = ?, ${prefix}delivery_rank = ?, ${prefix}event_at = ?,
+      ${prefix}complained_at = CASE WHEN ? = 'email.complained' THEN COALESCE(${prefix}complained_at, ?) ELSE ${prefix}complained_at END
+      WHERE id = ? AND (${prefix}delivery_rank < ? OR (${prefix}delivery_rank = ? AND (${prefix}event_at IS NULL OR ${prefix}event_at < ?)))`,
     )
       .bind(
         type.slice(6),
@@ -157,6 +179,7 @@ export async function resendWebhook(request: Request, env: Env) {
         event: "inquiry_email_delivery_event",
         reference: inquiry.id,
         type,
+        kind: inquiry.kind,
       }),
     );
     return response({ ok: true });
@@ -194,7 +217,7 @@ export async function deliveryPage(request: Request, env: Env) {
   );
   if (!valid) return response({ error: "not_found_or_expired" }, 404);
   const inquiry = await env.LEADS.prepare(
-    "SELECT notification_status, email_delivery_status, email_event_at, email_complained_at, text_status FROM inquiries WHERE id = ?",
+    "SELECT notification_status, email_delivery_status, email_event_at, email_complained_at, text_status, confirmation_status, confirmation_delivery_status, confirmation_complained_at FROM inquiries WHERE id = ?",
   )
     .bind(id)
     .first<{
@@ -203,6 +226,9 @@ export async function deliveryPage(request: Request, env: Env) {
       email_event_at: string | null;
       email_complained_at: string | null;
       text_status: string;
+      confirmation_status: string;
+      confirmation_delivery_status: string;
+      confirmation_complained_at: string | null;
     }>();
   if (!inquiry) return response({ error: "not_found_or_expired" }, 404);
   const labels: Record<string, string> = {
@@ -226,8 +252,18 @@ export async function deliveryPage(request: Request, env: Env) {
     unknown: "Delivery unknown — review in Comms",
     skipped: "No text requested",
   };
+  const confirmationLabel =
+    inquiry.confirmation_status === "skipped"
+      ? "Not requested for this earlier inquiry"
+      : inquiry.confirmation_delivery_status !== "unreported"
+        ? labels[inquiry.confirmation_delivery_status]
+        : inquiry.confirmation_status === "sent"
+          ? "Accepted by Resend; awaiting delivery report"
+          : inquiry.confirmation_status === "failed"
+            ? "Confirmation email needs attention — check the Resend dashboard"
+            : "Queued for sending";
   return new Response(
-    `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Studio Three — delivery status</title><style>body{margin:0;background:#f4f1ec;color:#171817;font:16px/1.65 Arial,sans-serif}main{max-width:620px;margin:8vh auto;padding:32px}h1{font-size:32px;line-height:1.15}h2{font-size:18px;margin:32px 0 8px}small{color:#555}a{color:#006a85}</style></head><body><main><small>STUDIO THREE BRICKELL</small><h1>Inquiry delivery status</h1><h2>Email</h2><p>${labels[inquiry.email_delivery_status] || "Awaiting delivery report"}</p><h2>Spam complaint</h2><p>${inquiry.email_complained_at ? "A spam complaint was reported. Review the recipient and sending configuration in Resend." : "No spam complaint has been reported for this email."}</p><p>A delivery report confirms that the receiving mail server accepted the message. It does not show whether that mailbox placed it in Inbox or Spam. Spam complaints report a recipient marking an email as spam; automatic filtering may not send a complaint.</p><h2>Text confirmation</h2><p>${textLabels[inquiry.text_status] || "Awaiting provider report"}</p><small>This private link expires after 30 days. No visitor contact details are displayed.</small></main></body></html>`,
+    `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Studio Three — delivery status</title><style>body{margin:0;background:#f4f1ec;color:#171817;font:16px/1.65 Arial,sans-serif}main{max-width:620px;margin:8vh auto;padding:32px}h1{font-size:32px;line-height:1.15}h2{font-size:18px;margin:32px 0 8px}small{color:#555}a{color:#006a85}</style></head><body><main><small>STUDIO THREE BRICKELL</small><h1>Inquiry delivery status</h1><h2>Team notification email</h2><p>${labels[inquiry.email_delivery_status] || "Awaiting delivery report"}</p><h2>Spam complaint</h2><p>${inquiry.email_complained_at ? "A spam complaint was reported. Review the recipient and sending configuration in Resend." : "No spam complaint has been reported for this email."}</p><p>A delivery report confirms that the receiving mail server accepted the message. It does not show whether that mailbox placed it in Inbox or Spam. Spam complaints report a recipient marking an email as spam; automatic filtering may not send a complaint.</p><h2>Member confirmation email</h2><p>${confirmationLabel || "Awaiting delivery report"}</p><p>${inquiry.confirmation_complained_at ? "A spam complaint was reported for the member confirmation." : "No spam complaint has been reported for the member confirmation."}</p><h2>Text confirmation</h2><p>${textLabels[inquiry.text_status] || "Awaiting provider report"}</p><small>This private link expires after 30 days. No visitor contact details are displayed.</small></main></body></html>`,
     {
       headers: {
         "Content-Type": "text/html; charset=utf-8",

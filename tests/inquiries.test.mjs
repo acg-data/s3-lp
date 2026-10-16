@@ -7,6 +7,10 @@ import { flushNotifications } from "../worker/notifications.ts";
 import { flushFounderTexts, textNumber } from "../worker/comms.ts";
 import { Webhook } from "svix";
 import { deliveryLink } from "../worker/delivery.ts";
+import {
+  flushConfirmations,
+  notifyConfirmation,
+} from "../worker/confirmations.ts";
 
 afterEach(() => mock.restoreAll());
 
@@ -93,7 +97,14 @@ function environment(overrides = {}) {
           send ??
           (async (body) => {
             messages.push(body);
-            return { id: "test-message" };
+            return {
+              id: body.tags?.some(
+                (tag) =>
+                  tag.name === "message_kind" && tag.value === "confirmation",
+              )
+                ? "confirmation-message"
+                : "test-message",
+            };
           })
         )(message);
     return result instanceof Response ? result : Response.json(result);
@@ -122,6 +133,8 @@ function environment(overrides = {}) {
       FRONTEND_ORIGIN: "",
       EMAIL_FROM: "inquiries@example.com",
       EMAIL_ENABLED: "true",
+      CONFIRMATION_EMAIL_ENABLED: "false",
+      CONFIRMATION_REPLY_TO: "adriana@studiothree.com",
       RESEND_API_KEY: "re_test-only",
       COMMS_ENABLED: "false",
       COMMS_API_KEY: "osis_test-only",
@@ -814,4 +827,191 @@ test("the public domain redirects HTTP and www to its HTTPS canonical URL", asyn
       .status,
     200,
   );
+});
+
+test("a new inquiry sends a separate branded thank-you email with replies routed to Adriana", async () => {
+  const { env, messages, inquiries, requests } = environment({
+    CONFIRMATION_EMAIL_ENABLED: "true",
+  });
+  const response = await worker.fetch(
+    request({ ...lead, name: "<Jamie> Example" }),
+    env,
+  );
+  assert.equal(response.status, 200);
+  assert.equal(messages.length, 2);
+  const confirmation = messages.find((message) =>
+    message.subject.startsWith("Thank you"),
+  );
+  assert.deepEqual(confirmation.to, [lead.email]);
+  assert.equal(confirmation.reply_to, "adriana@studiothree.com");
+  assert.equal(confirmation.from, `Studio Three Brickell <${env.EMAIL_FROM}>`);
+  assert.match(confirmation.html, /Thank you, &lt;Jamie&gt;/);
+  assert.match(confirmation.text, /founding membership/);
+  assert.match(confirmation.text, /Train for Something Bigger/);
+  assert.doesNotMatch(
+    confirmation.html,
+    /<Jamie>|manager@example.com|555-0100|api\/delivery|utm_source|Anastasia/,
+  );
+  assert.equal(inquiries()[0].confirmation_status, "sent");
+  assert.equal(inquiries()[0].notification_status, "sent");
+  assert.equal(inquiries()[0].confirmation_message_id, "confirmation-message");
+  assert.equal(
+    new Set(requests.map((item) => item.headers["Idempotency-Key"])).size,
+    2,
+  );
+});
+
+test("retrying and concurrently submitting an inquiry sends one thank-you email", async () => {
+  const { env, messages } = environment({ CONFIRMATION_EMAIL_ENABLED: "true" });
+  const body = { ...lead, requestId: crypto.randomUUID() };
+  await Promise.all([
+    worker.fetch(request(body), env),
+    worker.fetch(request(body), env),
+  ]);
+  await worker.fetch(request(body), env);
+  assert.equal(
+    messages.filter((message) => message.subject.startsWith("Thank you"))
+      .length,
+    1,
+  );
+  assert.equal(
+    messages.filter((message) => message.subject.startsWith("New Brickell"))
+      .length,
+    1,
+  );
+});
+
+test("a thank-you email failure does not block inquiry receipt or notify the team twice", async () => {
+  let confirmationAttempts = 0;
+  const { env, inquiries, requests } = environment({
+    CONFIRMATION_EMAIL_ENABLED: "true",
+    send: async (body) => {
+      if (!body.subject.startsWith("Thank you")) return { id: "test-message" };
+      if (++confirmationAttempts === 1)
+        return new Response(null, { status: 503 });
+      return { id: "confirmation-message" };
+    },
+  });
+  assert.equal((await worker.fetch(request(), env)).status, 200);
+  assert.equal(inquiries()[0].notification_status, "sent");
+  assert.equal(inquiries()[0].confirmation_status, "pending");
+  await flushConfirmations(env, Math.floor(Date.now() / 1000) + 121);
+  assert.equal(inquiries()[0].confirmation_status, "sent");
+  assert.equal(
+    requests.filter((item) => item.message.subject.startsWith("New Brickell"))
+      .length,
+    1,
+  );
+  const confirmations = requests.filter((item) =>
+    item.message.subject.startsWith("Thank you"),
+  );
+  assert.equal(confirmations.length, 2);
+  assert.equal(
+    confirmations[0].headers["Idempotency-Key"],
+    confirmations[1].headers["Idempotency-Key"],
+  );
+  assert.deepEqual(confirmations[0].message, confirmations[1].message);
+});
+
+test("a team-notification failure does not stop the member confirmation", async () => {
+  const { env, inquiries } = environment({
+    CONFIRMATION_EMAIL_ENABLED: "true",
+    send: async (body) =>
+      body.subject.startsWith("Thank you")
+        ? { id: "confirmation-message" }
+        : new Response(null, { status: 503 }),
+  });
+  assert.equal((await worker.fetch(request(), env)).status, 200);
+  assert.equal(inquiries()[0].notification_status, "pending");
+  assert.equal(inquiries()[0].confirmation_status, "sent");
+});
+
+test("enabling confirmations does not email existing inquiries", async () => {
+  const { env, db, messages, inquiries } = environment({
+    CONFIRMATION_EMAIL_ENABLED: "true",
+  });
+  const id = crypto.randomUUID();
+  db.prepare(
+    "INSERT INTO inquiries (id, fingerprint, created_at, name, email, phone, contact_permission) VALUES (?, 'legacy', ?, ?, ?, ?, 1)",
+  ).run(id, new Date().toISOString(), lead.name, lead.email, lead.phone);
+  await notifyConfirmation(env, id);
+  await flushConfirmations(env);
+  assert.equal(messages.length, 0);
+  assert.equal(inquiries()[0].confirmation_status, "skipped");
+});
+
+test("thank-you retries stop within the provider idempotency window", async () => {
+  const { env, db, inquiries, requests } = environment({
+    CONFIRMATION_EMAIL_ENABLED: "true",
+    send: async (body) =>
+      body.subject.startsWith("Thank you")
+        ? new Response(null, { status: 503 })
+        : { id: "test-message" },
+  });
+  await worker.fetch(request(), env);
+  const reference = inquiries()[0].id;
+  db.prepare(
+    "UPDATE inquiries SET confirmation_started_at = ?, confirmation_next_attempt_at = 0 WHERE id = ?",
+  ).run(Math.floor(Date.now() / 1000) - 24 * 3600, reference);
+  await flushConfirmations(env);
+  assert.equal(inquiries()[0].confirmation_status, "failed");
+  assert.equal(
+    requests.filter((item) => item.message.subject.startsWith("Thank you"))
+      .length,
+    1,
+  );
+});
+
+test("confirmation delivery and complaints are tracked separately from team notifications", async () => {
+  const { env, inquiries, db } = environment({
+    CONFIRMATION_EMAIL_ENABLED: "true",
+  });
+  const { reference } = await (await worker.fetch(request(), env)).json();
+  await worker.fetch(webhookRequest(env, reference, "email.delivered"), env);
+  await worker.fetch(
+    webhookRequest(env, reference, "email.complained", {
+      emailId: "confirmation-message",
+      data: {
+        tags: {
+          project: env.DELIVERY_PROJECT,
+          inquiry_id: reference,
+          message_kind: "confirmation",
+        },
+      },
+    }),
+    env,
+  );
+  assert.equal(inquiries()[0].email_delivery_status, "delivered");
+  assert.equal(inquiries()[0].email_complained_at, null);
+  assert.equal(inquiries()[0].confirmation_delivery_status, "complained");
+  assert.ok(inquiries()[0].confirmation_complained_at);
+  assert.equal(
+    db
+      .prepare(
+        "SELECT message_kind FROM email_delivery_events WHERE email_id = 'confirmation-message'",
+      )
+      .get().message_kind,
+    "confirmation",
+  );
+});
+
+test("a member delivery receipt arriving before the send response updates only confirmation status", async () => {
+  const { env, inquiries } = environment({ EMAIL_ENABLED: "false" });
+  const { reference } = await (await worker.fetch(request(), env)).json();
+  const result = await worker.fetch(
+    webhookRequest(env, reference, "email.delivered", {
+      emailId: "confirmation-message",
+      data: {
+        tags: {
+          project: env.DELIVERY_PROJECT,
+          inquiry_id: reference,
+          message_kind: "confirmation",
+        },
+      },
+    }),
+    env,
+  );
+  assert.equal(result.status, 200);
+  assert.equal(inquiries()[0].confirmation_delivery_status, "delivered");
+  assert.equal(inquiries()[0].email_delivery_status, "unreported");
 });

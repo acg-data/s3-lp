@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "build:lander": "node scripts/build-lander.mjs",
-    "dev:worker": "wrangler dev --local --port 8787",
+    "dev:worker": "wrangler dev --env dev --local --port 8787 --var EMAIL_ENABLED:false --var CONFIRMATION_EMAIL_ENABLED:false --var COMMS_ENABLED:false",
     "typecheck:worker": "tsc -p tsconfig.worker.json",
     "types:worker": "wrangler types --include-runtime=false --strict-vars=false",
     "test:inquiries": "node --test tests/inquiries.test.mjs",

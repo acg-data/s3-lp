@@ -116,6 +116,10 @@ export default function InquiryForm() {
         <p>
           Our Brickell team will contact you with founding membership details.
         </p>
+        <p>
+          Check your inbox for a confirmation email. If you don’t see it, check
+          your spam or junk folder.
+        </p>
         <a className="text-link" href="#studio">
           View the studio <span aria-hidden="true">↑</span>
         </a>
@@ -212,8 +216,8 @@ export default function InquiryForm() {
               }
             />
             <span>
-              By submitting, you agree to be contacted by Studio Three about your
-              membership inquiry.
+              By submitting, you agree to be contacted by Studio Three about
+              your membership inquiry.
             </span>
           </label>
           {errors.textConsent && (

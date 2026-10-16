@@ -11,6 +11,7 @@ import {
   flushFounderTexts,
 } from "./comms.ts";
 import { deliveryPage, resendWebhook } from "./delivery.ts";
+import { flushConfirmations, notifyConfirmation } from "./confirmations.ts";
 
 const MAX_BODY_BYTES = 4096;
 const idPattern =
@@ -190,8 +191,8 @@ export default {
         byte.toString(16).padStart(2, "0"),
       ).join("");
       await env.LEADS.prepare(
-        `INSERT INTO inquiries (id, fingerprint, created_at, name, email, phone, contact_permission, attribution, text_permission, text_number, text_body, text_status)
-         VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?) ON CONFLICT(id) DO NOTHING`,
+        `INSERT INTO inquiries (id, fingerprint, created_at, name, email, phone, contact_permission, attribution, text_permission, text_number, text_body, text_status, confirmation_status)
+         VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, 'pending') ON CONFLICT(id) DO NOTHING`,
       )
         .bind(
           id,
@@ -219,6 +220,7 @@ export default {
         const results = await Promise.allSettled([
           notifyInquiry(env, id),
           notifyFounderText(env, id),
+          notifyConfirmation(env, id),
         ]);
         if (results.some((result) => result.status === "rejected"))
           throw new Error("notification_deferred");
@@ -239,6 +241,10 @@ export default {
     }
   },
   async scheduled(_controller: ScheduledController, env: Env): Promise<void> {
-    await Promise.all([flushNotifications(env), flushFounderTexts(env)]);
+    await Promise.all([
+      flushNotifications(env),
+      flushFounderTexts(env),
+      flushConfirmations(env),
+    ]);
   },
 } satisfies ExportedHandler<Env>;

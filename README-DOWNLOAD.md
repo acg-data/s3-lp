@@ -12,9 +12,10 @@ Use Node.js 24 and pnpm. From the repository root:
 
     pnpm install --frozen-lockfile
     pnpm run build:lander
+    pnpm exec wrangler d1 migrations apply LEADS --local --env dev
     pnpm run dev:worker
 
-This serves the built website and Worker together at http://localhost:8787.
+This serves the built website and Worker together at http://localhost:8787, using the dev configuration and local database. The preview script disables outbound email and Comms. Using dev avoids applying production custom-domain redirects to localhost.
 
 For frontend hot reload, use a second PowerShell terminal:
 
@@ -31,9 +32,13 @@ Open http://localhost:5173. Vite proxies `/api` to the local Worker on port 8787
 
 Every accepted inquiry is saved to Cloudflare D1 before confirmation. Development and production use separate databases. Stored records include contact permission, bounded first-touch campaign attribution, notification status, attempt count, and a follow-up status. No public endpoint exposes these records.
 
-The Worker sends a transactional notification through Resend. The visitor's email becomes `reply_to`, so the receiving team can reply personally. No automated email is sent to the visitor. `notification_status = 'sent'` means Resend accepted the message; signed Resend webhooks separately record sent, delayed, delivered, failed, suppressed, bounced, and complained events. The page confirms durable inquiry receipt and does not claim email delivery.
+The Worker sends a transactional notification through Resend. The visitor's email becomes `reply_to`, so the receiving team can reply personally. New inquirers also receive a separate branded thank-you email confirming receipt and explaining that the Brickell team will follow up with founding membership options and pricing. Replies to that confirmation go to `adriana@studiothree.com`. It contains no internal lead details or private delivery-status link. The success message says, "Check your inbox for a confirmation email. If you don’t see it, check your spam or junk folder."
 
-Each notification includes a private delivery-status link that expires after 30 days. It shows email delivery and spam complaints, plus the saved text-send status, without showing visitor contact details. The signature is verified before reading the record. Webhooks use Svix signature/timestamp verification, bounded payloads, event deduplication, and project tags to handle a receipt arriving before the send response. Unrelated emails are ignored. Late events cannot overwrite a spam complaint or bounce with a successful status. No raw webhook message or recipient data is retained in the delivery-event table.
+Team notifications and visitor confirmations have separate queues, attempt counts, leases, idempotency keys, and provider message IDs. A failure in either email does not block the other email or durable inquiry receipt. Existing inquiries default to `confirmation_status = 'skipped'`; deploying this feature does not email past leads. Only new submissions queue the thank-you email. Both `EMAIL_ENABLED` and `CONFIRMATION_EMAIL_ENABLED` must be true, with a valid `CONFIRMATION_REPLY_TO` address.
+
+`notification_status = 'sent'` and `confirmation_status = 'sent'` mean Resend accepted each message. Signed Resend webhooks separately record sent, delayed, delivered, failed, suppressed, bounced, and complained events for each email. The page confirms durable inquiry receipt and invites the visitor to check their email; it does not promise final inbox delivery.
+
+Each team notification includes a private delivery-status link that expires after 30 days. It shows team-email and member-confirmation delivery and spam complaints separately, plus the saved text-send status, without showing visitor contact details. The signature is verified before reading the record. Webhooks use Svix signature/timestamp verification, bounded payloads, event deduplication, and project/message-kind tags to handle a receipt arriving before the send response. Unrelated emails are ignored. Late events cannot overwrite a spam complaint or bounce with a successful status. No raw webhook message or recipient data is retained in the delivery-event table.
 
 Resend delivery means acceptance by the receiving mail server. A spam complaint means the recipient marked the message as spam. Neither proves automatic Inbox/Spam placement; check the receiving mailbox for that. Open and click tracking are disabled for the new production sending domain.
 
@@ -51,6 +56,7 @@ An inquiry preserves UTM source/medium/campaign/content/term and supported ad cl
 - Resend and Comms are enabled in production and development. The approved Comms workspace line remains `+12103933771`. Existing provider history confirms the October 14 test was delivered over iMessage. No additional text was sent for the October 16 email check.
 - `RESEND_API_KEY`, `COMMS_API_KEY`, `RESEND_WEBHOOK_SECRET`, and `DELIVERY_LINK_SECRET` are installed as Worker secrets. Dev and production have separate webhook signing and status-link secrets. Keep these out of Git, browser code, and `VITE_*` variables. Production webhook: `/api/webhooks/resend` on the production domain; dev has its own endpoint on the development Worker.
 - The October 16 synthetic inquiry reached `justin@aryocg.com` in Gmail **Inbox**, with SPF, DKIM, and DMARC all **PASS**. Gmail reported delivery in one second. Resend's real webhook updated the production D1 record to `delivered`, and its signed status link returned the same result. This verifies that test; it is not a guarantee about every future mailbox decision.
+- The new visitor thank-you email was tested separately using that explicitly marked synthetic inquiry. It reached `justin@aryocg.com` in Gmail **Inbox**, with `reply_to` set to Adriana. Its real webhook updated `confirmation_delivery_status` to `delivered` independently of the earlier team notification. The updated success message was checked in the local form at desktop and mobile widths with outbound providers disabled.
 
 The studio manager's notification inbox is connected. The public Brickell contact email and phone number remain pending; the manager's address is used for notifications and is not published on the page. GA4, Google Ads, and Meta IDs remain pending; those integrations are not activated.
 
@@ -58,9 +64,9 @@ HTTP 200 means the inquiry is durably stored. If storage fails, the Worker retur
 
 Review leads in the account's D1 database console. Notification failures can be found with `SELECT id, created_at, notification_status, notification_attempts, last_error_code FROM inquiries WHERE notification_status = 'failed'`. Delivery problems can be found with `SELECT id, email_delivery_status, email_event_at FROM inquiries WHERE email_delivery_status IN ('bounced', 'complained', 'failed', 'suppressed', 'delivery_delayed')`. Text attention can be found with `SELECT id, created_at, text_status, text_attempts, text_error_code FROM inquiries WHERE text_status IN ('failed', 'unknown')`. Before manually retrying an expired or unknown send, inspect the provider history to avoid contacting someone twice. Keep any exported contact data out of Git and public files.
 
-All three migrations are applied to both remote databases. For a new local checkout, run:
+All four migrations are applied to both remote databases. For a new local checkout, run:
 
-    pnpm exec wrangler d1 migrations apply LEADS --local
+    pnpm exec wrangler d1 migrations apply LEADS --local --env dev
 
 For deployment to a newly configured database, apply its migrations before deploying:
 

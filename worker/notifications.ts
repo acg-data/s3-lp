@@ -33,7 +33,7 @@ function notificationRecipients(env: Env) {
   });
 }
 
-function escapeHtml(value: string) {
+export function escapeHtml(value: string) {
   return value.replace(
     /[&<>"']/g,
     (character) =>
@@ -88,6 +88,7 @@ export async function notificationMessage(inquiry: Inquiry, env: Env) {
         value: env.DELIVERY_PROJECT || "studio-three-brickell",
       },
       { name: "inquiry_id", value: inquiry.id },
+      { name: "message_kind", value: "notification" },
     ],
   };
 }
