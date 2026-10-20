@@ -41,7 +41,7 @@
   ],
   "vars": {
     "FRONTEND_ORIGIN": "",
-    "LEAD_RECIPIENT": "justin@aryocg.com,adriana@studiothree.com",
+    "LEAD_RECIPIENT": "justin@aryocg.com,brickell@studiothree.com",
     "EMAIL_FROM": "notifications@studiothreefounders.com",
     "EMAIL_ENABLED": "true",
     "CONFIRMATION_EMAIL_ENABLED": "true",
@@ -83,7 +83,7 @@
       ],
       "vars": {
         "FRONTEND_ORIGIN": "",
-        "LEAD_RECIPIENT": "justin@aryocg.com,adriana@studiothree.com",
+        "LEAD_RECIPIENT": "justin@aryocg.com,brickell@studiothree.com",
         "EMAIL_FROM": "justin@automator.aryocg.com",
         "EMAIL_ENABLED": "true",
         "CONFIRMATION_EMAIL_ENABLED": "true",
