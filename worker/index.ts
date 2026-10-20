@@ -99,7 +99,19 @@ export default {
       url.hostname = "studiothreefounders.com";
       return Response.redirect(url.href, 308);
     }
-    if (!url.pathname.startsWith("/api/")) return env.ASSETS.fetch(request);
+    if (!url.pathname.startsWith("/api/")) {
+      const asset = await env.ASSETS.fetch(request);
+      if (/^\/thank-you\/?$/.test(url.pathname)) {
+        const headers = new Headers(asset.headers);
+        headers.set("X-Robots-Tag", "noindex, nofollow");
+        return new Response(asset.body, {
+          status: asset.status,
+          statusText: asset.statusText,
+          headers,
+        });
+      }
+      return asset;
+    }
     if (url.pathname === "/api/webhooks/resend")
       return resendWebhook(request, env);
     if (url.pathname.startsWith("/api/delivery/"))

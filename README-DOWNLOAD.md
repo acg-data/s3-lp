@@ -32,7 +32,7 @@ Open http://localhost:5173. Vite proxies `/api` to the local Worker on port 8787
 
 Every accepted inquiry is saved to Cloudflare D1 before confirmation. Development and production use separate databases. Stored records include contact permission, bounded first-touch campaign attribution, notification status, attempt count, and a follow-up status. No public endpoint exposes these records.
 
-The Worker sends a transactional notification through Resend. The visitor's email becomes `reply_to`, so the receiving team can reply personally. New inquirers also receive a separate branded thank-you email confirming receipt and explaining that the Brickell team will follow up with founding membership options and pricing. Replies to that confirmation go to `adriana@studiothree.com`. It contains no internal lead details or private delivery-status link. The success message says, "Check your inbox for a confirmation email. If you don’t see it, check your spam or junk folder."
+The Worker sends a transactional notification through Resend. The visitor's email becomes `reply_to`, so the receiving team can reply personally. New inquirers also receive a separate branded thank-you email confirming receipt and explaining that the Brickell team will follow up with founding membership options and pricing. Replies to that confirmation go to `adriana@studiothree.com`. It contains no internal lead details or private delivery-status link. After confirmed receipt, the form redirects to `/thank-you/`, which says, "Check your inbox for a confirmation email. If you don’t see it, check your spam or junk folder."
 
 Team notifications and visitor confirmations have separate queues, attempt counts, leases, idempotency keys, and provider message IDs. A failure in either email does not block the other email or durable inquiry receipt. Existing inquiries default to `confirmation_status = 'skipped'`; deploying this feature does not email past leads. Only new submissions queue the thank-you email. Both `EMAIL_ENABLED` and `CONFIRMATION_EMAIL_ENABLED` must be true, with a valid `CONFIRMATION_REPLY_TO` address.
 
@@ -46,7 +46,15 @@ Temporary sending failures leave the lead saved and pending. A five-minute Worke
 
 The form requires an initially unchecked contact-permission checkbox labeled "By submitting, you agree to be contacted by Studio Three about your membership inquiry." It submits both contact permission and `textConsent: true`, queuing the text confirmation after the inquiry is saved. Comms uses the user-approved workspace line `+12103933771` and the `imessage` channel; it does not fall back to SMS or WhatsApp. The message thanks the visitor for their founder interest and explains that the Brickell team will reach out personally. Phone numbers are normalized to E.164, and consent, the original message/line, attempts, and provider message ID are stored in D1. Unknown delivery is held for manual review rather than automatically resent. Personal replies are handled in the Comms inbox; this project does not activate an AI reply agent.
 
-An inquiry preserves UTM source/medium/campaign/content/term and supported ad click IDs. Only a referrer hostname is retained, never a full referrer URL. The frontend emits `studio-three:inquiry-received` after confirmed receipt with the reference and studio only; it contains no contact details. GA4, Google Ads, and Meta integrations have not been activated because account IDs are unavailable.
+An inquiry preserves UTM source/medium/campaign/content/term and supported ad click IDs. Only a referrer hostname is retained, never a full referrer URL. The frontend emits `studio-three:inquiry-received` after confirmed receipt with the reference and studio only; it contains no contact details. GA4 and Google Ads integrations remain inactive because account IDs are unavailable.
+
+## Meta Pixel and thank-you conversion — October 20, 2026
+
+The user-provided Meta Pixel `1319802326887263` loads asynchronously and tracks `PageView` on `studiothreefounders.com` and `www.studiothreefounders.com`. JavaScript tracking is disabled on local, development, and other Worker hostnames to keep previews out of live campaign totals. The supplied no-JavaScript PageView image is retained in the HTML.
+
+Only an accepted API response containing a valid inquiry reference navigates to `/thank-you/`. Its footer component sends the standard `Lead` event when the page renders; visitors do not have to scroll to the footer. The event uses the opaque inquiry reference as `eventID` and includes only the membership content name, with no submitted name, email, or phone fields. History and session storage keep a 30-minute receipt and a tracked flag to prevent another Lead on refresh or repeated rendering. Direct visits without a receipt, expired receipts, validation errors, failed requests, and missing Pixel scripts do not fire Lead. A direct visit shows a neutral link back to the inquiry form. The route has a `noindex, nofollow` response header and client meta tag.
+
+"Accepted" means the inquiry was durably saved, not that a membership was approved or purchased. Pixel availability and ad blockers can affect reporting; tests establish application behavior, not receipt in Meta Events Manager. No live synthetic lead was sent to validate this change.
 
 ## Live configuration — October 16, 2026
 
@@ -58,7 +66,7 @@ An inquiry preserves UTM source/medium/campaign/content/term and supported ad cl
 - The October 16 synthetic inquiry reached `justin@aryocg.com` in Gmail **Inbox**, with SPF, DKIM, and DMARC all **PASS**. Gmail reported delivery in one second. Resend's real webhook updated the production D1 record to `delivered`, and its signed status link returned the same result. This verifies that test; it is not a guarantee about every future mailbox decision.
 - The new visitor thank-you email was tested separately using that explicitly marked synthetic inquiry. It reached `justin@aryocg.com` in Gmail **Inbox**, with `reply_to` set to Adriana. Its real webhook updated `confirmation_delivery_status` to `delivered` independently of the earlier team notification. The updated success message was checked in the local form at desktop and mobile widths with outbound providers disabled.
 
-The studio manager's notification inbox is connected. The public Brickell contact email and phone number remain pending; the manager's address is used for notifications and is not published on the page. GA4, Google Ads, and Meta IDs remain pending; those integrations are not activated.
+The studio manager's notification inbox is connected. The public Brickell contact email and phone number remain pending; the manager's address is used for notifications and is not published on the page. GA4 and Google Ads IDs remain pending. Meta tracking is configured as described above.
 
 HTTP 200 means the inquiry is durably stored. If storage fails, the Worker returns HTTP 503 and the visitor can retry. Tests mock provider requests; local development keeps both sending switches off unless explicitly configured. A test-suite receipt does not establish real inbox delivery.
 
@@ -84,6 +92,7 @@ Cloudflare setup references:
     pnpm --filter @workspace/studio-three run typecheck
     pnpm run typecheck:worker
     pnpm run test:inquiries
+    pnpm run test:tracking
     pnpm run deploy:check
 
 `deploy:check` builds the frontend and performs a Wrangler dry run. It does not deploy. The automated inquiry tests use mocked bindings and never send real emails.

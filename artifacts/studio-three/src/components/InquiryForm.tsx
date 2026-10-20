@@ -1,15 +1,17 @@
 import { useRef, useState, type FormEvent } from "react";
 import Arrow from "@/components/Arrow";
 import { campaignAttribution, trackInquiry } from "@/lib/campaign";
+import { rememberConfirmedInquiry } from "@/lib/meta-pixel";
+import { useLocation } from "wouter";
 
 type Field = "name" | "email" | "phone" | "textConsent";
 
 export default function InquiryForm() {
   const formRef = useRef<HTMLFormElement>(null);
-  const successRef = useRef<HTMLDivElement>(null);
+  const [, navigate] = useLocation();
   const submissionRef = useRef<{ payload: string; id: string } | null>(null);
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
-  const [status, setStatus] = useState<"idle" | "sending" | "success">("idle");
+  const [status, setStatus] = useState<"idle" | "sending">("idle");
   const [sendError, setSendError] = useState("");
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -91,40 +93,14 @@ export default function InquiryForm() {
       if (result.ok !== true || typeof result.reference !== "string")
         throw new Error("Unconfirmed inquiry");
       trackInquiry(result.reference);
-      setStatus("success");
-      requestAnimationFrame(() => successRef.current?.focus());
+      const receipt = rememberConfirmedInquiry(result.reference);
+      navigate("/thank-you/", { state: { s3Inquiry: receipt } });
     } catch {
       setSendError(
         "We couldn’t confirm your inquiry. Please check your connection and try again.",
       );
       setStatus("idle");
     }
-  }
-
-  if (status === "success") {
-    return (
-      <div
-        className="inquiry-success"
-        ref={successRef}
-        tabIndex={-1}
-        role="status"
-      >
-        <div className="success-symbol" aria-hidden="true">
-          ✓
-        </div>
-        <h3>Inquiry received</h3>
-        <p>
-          Our Brickell team will contact you with founding membership details.
-        </p>
-        <p>
-          Check your inbox for a confirmation email. If you don’t see it, check
-          your spam or junk folder.
-        </p>
-        <a className="text-link" href="#studio">
-          View the studio <span aria-hidden="true">↑</span>
-        </a>
-      </div>
-    );
   }
 
   return (

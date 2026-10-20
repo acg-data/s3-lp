@@ -8,6 +8,7 @@
     "typecheck:worker": "tsc -p tsconfig.worker.json",
     "types:worker": "wrangler types --include-runtime=false --strict-vars=false",
     "test:inquiries": "node --test tests/inquiries.test.mjs",
+    "test:tracking": "node --test tests/meta-pixel.test.mjs",
     "deploy:check": "pnpm run build:lander && wrangler deploy --dry-run",
     "deploy:lander": "pnpm run build:lander && wrangler deploy",
     "deploy:dev": "pnpm run build:lander && wrangler deploy --env dev",

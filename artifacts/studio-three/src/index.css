@@ -1144,3 +1144,94 @@ fieldset {
     padding: 18px 0;
   }
 }
+
+.thank-you-page {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+.thank-you-header {
+  justify-content: space-between;
+}
+.thank-you-main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  flex: 1;
+}
+.thank-you-copy {
+  align-self: center;
+  padding: clamp(48px, 5vw, 80px) var(--gutter);
+}
+.thank-you-copy h1 {
+  font: 700 clamp(52px, 5.5vw, 80px)/1.04 var(--display);
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+  max-width: 580px;
+}
+.thank-you-copy h1 span {
+  color: var(--blue);
+}
+.thank-you-description,
+.thank-you-email {
+  max-width: 440px;
+  font-size: 15px;
+  line-height: 1.9;
+}
+.thank-you-description {
+  margin-top: 28px;
+}
+.thank-you-email {
+  margin-top: 20px;
+  color: var(--secondary);
+}
+.thank-you-copy .button {
+  margin-top: 32px;
+}
+.thank-you-photo {
+  display: block;
+  min-height: 480px;
+  overflow: hidden;
+}
+.thank-you-photo img {
+  height: 100%;
+  object-fit: cover;
+  object-position: 59% center;
+}
+.thank-you-footer > p {
+  font: 700 24px/1.2 var(--display);
+  text-transform: uppercase;
+}
+@media (max-width: 767px) {
+  .thank-you-header .brand {
+    width: 180px;
+  }
+  .thank-you-header .nav-about {
+    font-size: 15px;
+  }
+  .thank-you-main {
+    grid-template-columns: 1fr;
+  }
+  .thank-you-copy {
+    padding: 48px var(--gutter);
+  }
+  .thank-you-copy h1 {
+    font-size: clamp(44px, 11.5vw, 64px);
+  }
+  .thank-you-description,
+  .thank-you-email {
+    font-size: 16px;
+  }
+  .thank-you-copy .button {
+    width: 100%;
+  }
+  .thank-you-photo {
+    min-height: 0;
+    aspect-ratio: 1.5;
+  }
+  .thank-you-photo img {
+    object-position: center;
+  }
+  .thank-you-footer {
+    gap: 24px;
+  }
+}

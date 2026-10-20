@@ -496,6 +496,16 @@ test("page requests use the static asset binding", async () => {
   );
 });
 
+test("thank-you routes remain available and are excluded from search indexing", async () => {
+  const { env } = environment();
+  for (const path of ["/thank-you", "/thank-you/"]) {
+    const response = await worker.fetch(new Request(`${origin}${path}`), env);
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("X-Robots-Tag"), "noindex, nofollow");
+    assert.equal(await response.text(), "static asset");
+  }
+});
+
 test("Comms sends only for explicit text permission, using the approved line and iMessage", async () => {
   const { env, texts, requests, inquiries } = environment({
     COMMS_ENABLED: "true",

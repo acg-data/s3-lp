@@ -90,7 +90,7 @@ components:
 
 This lander extends the actual Studio Three identity chosen by the user: the original transparent logo, Gotham and Trade Gothic typography, monochrome training photography, and the blue/orange/lime brand marks. Bold condensed headlines and generous section spacing give the page a confident studio presence; restrained body text keeps the next step understandable.
 
-Scope is this landing page. Evidence is `src/index.css`, `src/pages/LandingPage.tsx`, `src/components/InquiryForm.tsx`, the direction contract in `index.html`, and the final desktop/mobile renders. This records implemented visual decisions, not a new identity proposal.
+Scope is this landing page and its inquiry-completion page. Evidence is `src/index.css`, `src/pages/LandingPage.tsx`, `src/pages/ThankYouPage.tsx`, `src/components/InquiryForm.tsx`, the direction contract in `index.html`, and the final desktop/mobile renders. This records implemented visual decisions, not a new identity proposal.
 
 **Key Characteristics:**
 
@@ -110,7 +110,7 @@ The three-color brand signature sits within a restrained ink, white, paper, and 
 
 ### Secondary
 
-- **Studio Blue** (`blue`): the community heading emphasis, directional icon, keyboard focus, and first brand slash.
+- **Studio Blue** (`blue`): heading emphasis, including the inquiry-completion message, directional icon, keyboard focus, and first brand slash.
 - **Studio Orange** (`orange`): the middle brand slash and the corresponding membership boundary segment.
 
 ### Neutral
@@ -136,7 +136,7 @@ Local font files register Gotham Book/Medium/Bold at weights 400/500/700, and bo
 
 - **Display:** the frontmatter hero role; uppercase, tightly spaced, balanced lines. Brickell has its own larger responsive emphasis in source.
 - **Headline:** the frontmatter section-heading role; condensed uppercase for the studio and membership sections.
-- **Title:** regular-width Trade Gothic for form, confirmation, and direct-membership headings.
+- **Title:** regular-width Trade Gothic for form and direct-membership headings. The dedicated inquiry-completion page instead uses the condensed display family, preserving the editorial heading character.
 - **Body:** Gotham Book for prose; desktop paragraphs generally use the frontmatter body role, with readable widths of 380–440px. Primary mobile paragraphs use 16px.
 - **Label:** Gotham Medium for field names. Inputs retain 16px text and a 1.5 line-height at all widths.
 - **Action:** bold condensed uppercase. Compact navigation actions use 17px on desktop; form submit uses 19px.
@@ -152,6 +152,8 @@ At 1100px and below, the location label leaves the header, gaps compress, and he
 The mobile action appears only after the hero leaves view and before the inquiry section reaches the viewport; hidden controls are inert. Safe-area padding protects the bottom action and footer. Anchor offsets account for the sticky header.
 
 The location section directly below the hero pairs the existing studio address and directions link with an interactive Google Maps embed for the 830 Brickell building. Desktop uses two columns with a 320px-high map; mobile places a 280px-high map below the address. The iframe has an accessible title, lazy loading, and reserved dimensions. Google Maps attribution and controls remain intact.
+
+The inquiry-completion page uses a full-height shell with the shared ink header and footer. Desktop pairs a vertically centered paper copy area with an equal-width monochrome Strength photograph. At the existing mobile breakpoint, copy precedes the photograph, the lime return action spans the content width, and the photo becomes a landscape frame. The page has no floating membership action; the return link and header studio link provide its navigation.
 
 **The Intent First Rule.** Responsive changes preserve headline hierarchy, visible faces, readable prose, and access to the founding-membership action.
 
@@ -181,13 +183,19 @@ White square fields inside the paper inquiry panel; 52px minimum height, 16px in
 
 ### Cards / Containers
 
-Membership copy and form share one flat paper section. Inquiry, success and optional direct-membership surfaces use transparent backgrounds and no internal panel padding, radius, shadow or ornamental border. Success is a distinct focusable status state confirming durable inquiry receipt. Provider delivery is tracked separately; this design document does not certify production delivery.
+Membership copy and form share one flat paper section. Inquiry and optional direct-membership surfaces use transparent backgrounds and no internal panel padding, radius, shadow or ornamental border. Successful inquiries navigate to the dedicated completion page described below. Provider delivery is tracked separately; this design document does not certify production delivery.
 
 Contact permission uses a required, initially unchecked native 20px checkbox within a full clickable label, with a 44px minimum row. The user-specified label is "By submitting, you agree to be contacted by Studio Three about your membership inquiry." This replaces both the optional iMessage label and the separate consent paragraph. Missing permission shows an associated error and focuses the checkbox; selection clears the error. Submitting with permission queues the existing text confirmation. The hero carries the brand message "Train for Something Bigger," with fluid mobile sizing and a centered three-line composition on narrow phones.
 
 ### Navigation
 
 An ink sticky header presents the original logo and a compact membership action. The studio anchor uses condensed uppercase type and turns lime on hover. Mobile removes that auxiliary anchor and keeps the primary action. Text links remain understated Gotham controls, underline on hover, and keep visible keyboard focus.
+
+### Inquiry completion
+
+The `/thank-you/` route continues the original mark, paper background, ink footer, blue heading emphasis, and square lime action. A recent successful inquiry receipt shows “Thank you. We’ll be in touch.” with a brief explanation of team follow-up and an inbox/spam reminder. A visit without that receipt shows founding-membership information and a link to the inquiry form; it does not display a false success message. Both states share the same composition and authentic Strength photograph.
+
+The heading receives focus on arrival without scrolling, and route navigation resets the viewport to the top. The original logo returns home; “View the studio” and the confirmed-state action return to the studio section. Mobile hides the auxiliary header link, retaining the logo and main return action for navigation. Its main content preserves readable Gotham text and a full-width touch target. The footer uses the established brand message, location, and privacy link without adding a second conversion action. Conversion tracking is an invisible footer effect after a confirmed receipt, not an extra visible interface element.
 
 ### Photography and brand signature
 
